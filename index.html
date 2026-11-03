@@ -1,0 +1,1014 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AD600S · 价格排期平台</title></head><body><div id="pw-boot" role="status">正在载入已保存的价格数据…</div><div id="ad600s-price-workspace" aria-label="AD600S 价格工作台" hidden>
+  <header class="pw-header">
+    <div class="pw-brand"><span class="pw-brand-mark">T</span><div><strong>TOPDON</strong><span>价格工作台</span></div><span class="pw-demo-tag">网页平台</span></div>
+    <div class="pw-save" id="pw-save" role="status" aria-live="polite"><span class="pw-save-dot"></span>源数据已载入</div>
+  </header>
+  <div class="pw-storage-bar"><span>保存位置：<b id="pw-storage-mode"></b></span><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="backup">下载备份</button><button type="button" class="pw-button" data-action="restore">恢复备份</button><button type="button" class="pw-button" data-action="history">修改历史</button><input id="pw-restore-file" type="file" accept=".json" aria-label="恢复价格备份" hidden></div></div><div id="pw-storage-error" class="pw-storage-error" role="alert" hidden><span id="pw-storage-error-text"></span><div class="pw-row pw-wrap"><button class="pw-button" type="button" data-action="retry-save">重试保存</button><button class="pw-button" type="button" data-action="backup">备份本次修改</button><button class="pw-button" type="button" data-action="reload-saved">重新载入已保存数据</button></div></div><nav class="pw-nav" aria-label="工作台页面">
+    <button type="button" class="pw-nav-button is-active" data-page="schedule" aria-current="page">价格排期</button>
+    <button type="button" class="pw-nav-button" data-page="reference">参考价检测</button>
+    <button type="button" class="pw-nav-button" data-page="calculator">价格计算器</button>
+  </nav>
+  <main class="pw-main">
+    <div class="pw-title-row">
+      <div><div class="pw-kicker">AMAZON US <span>／</span> AD600S <span>／</span> USD</div><h1 id="pw-page-title">价格排期</h1><div class="pw-subtitle" id="pw-page-subtitle"></div></div>
+      <label class="pw-anchor">统计锚点<input type="date" id="pw-anchor" aria-label="统计锚点" value="2026-11-03"><span>默认跟随最新实际日期</span><button type="button" class="pw-quiet-button pw-anchor-auto" data-action="auto-anchor">跟随最新实际日期</button></label>
+    </div>
+    <div id="pw-alert" class="pw-alert" role="alert" hidden></div>
+    <section id="pw-schedule" aria-label="价格排期页面">
+      <div class="pw-metrics" id="pw-metrics"></div>
+      <div id="pw-metric-detail" class="pw-detail" hidden></div>
+      <section class="pw-panel pw-chart-panel" aria-label="实际与计划价格走势">
+        <div class="pw-panel-head"><div><h2>实际与计划</h2><span class="pw-small" id="pw-chart-period"></span></div><div class="pw-legend"><span><b class="pw-line-key"></b>实际</span><span><b class="pw-line-key pw-plan-key"></b>计划</span><span><b class="pw-line-key pw-ref-key"></b>List Price</span></div></div>
+        <div id="pw-chart" class="pw-chart"></div>
+      </section>
+      <section class="pw-panel pw-record-panel" aria-label="可编辑价格明细">
+        <div class="pw-panel-head pw-wrap"><div class="pw-record-title"><h2>每日价格记录</h2><span class="pw-count" id="pw-filter-count"></span></div><div class="pw-row pw-wrap"><div class="pw-segment" aria-label="展示方式"><button type="button" data-view="table" class="is-active">表格</button><button type="button" data-view="calendar">月历</button></div><button type="button" class="pw-button" data-action="open-import">批量导入 / 粘贴</button><button type="button" class="pw-button pw-primary" data-action="add">新增记录</button></div></div>
+        <section class="pw-import-panel" id="pw-import-panel" aria-label="批量导入每日价格" hidden>
+          <div class="pw-detail-head"><h3>批量更新每日价格</h3><button type="button" class="pw-quiet-button" data-action="close-import">收起</button></div>
+          <div class="pw-import-controls"><label class="pw-import-file-label">上传价格文件<input type="file" id="pw-import-file" accept=".xlsx,.csv,.tsv,.txt" aria-label="上传价格文件"></label><label id="pw-import-sheet-label" hidden>工作表<select id="pw-import-sheet" aria-label="导入工作表"></select></label></div>
+          <label class="pw-paste-label" for="pw-import-text">或从Excel复制包含列名的数据，直接粘贴</label><textarea id="pw-import-text" rows="4" aria-label="粘贴价格数据" placeholder="抓取时间&#9;实际成交价&#9;实际挂价&#9;活动类型&#9;实际活动价"></textarea>
+          <div class="pw-import-actions"><button type="button" class="pw-button" data-action="preview-paste">识别并预览粘贴内容</button><span class="pw-small">同日取最后一次有效抓取；空价跳过，原有备注保留，计划与实际分别更新。</span></div>
+          <div id="pw-import-message" class="pw-small" role="status" aria-live="polite">先预览字段映射与更新内容，再确认更新。</div>
+          <div id="pw-import-preview" hidden><div id="pw-import-mapping" class="pw-import-mapping"></div><p id="pw-import-summary" class="pw-small"></p><div id="pw-import-issues" class="pw-import-issues pw-warn" role="alert" hidden></div><div id="pw-import-preview-table" class="pw-table-wrap"></div><div class="pw-import-actions"><button type="button" id="pw-import-apply" class="pw-button pw-primary" data-action="apply-import">确认更新到每日记录</button><button type="button" id="pw-import-undo" class="pw-button" data-action="undo-import" hidden>撤销本次导入</button></div></div>
+        </section>
+        <div class="pw-filter-row">
+          <label>查看月份<select id="pw-month" aria-label="查看月份"></select></label>
+          <div id="pw-range" class="pw-date-range" hidden><label>开始日期<input type="date" id="pw-start" aria-label="区间开始日期"></label><span>至</span><label>结束日期<input type="date" id="pw-end" aria-label="区间结束日期"></label></div>
+          <label>记录范围<select id="pw-status" aria-label="记录范围"><option value="all">实际 + 计划</option><option value="actual">仅实际</option><option value="plan">仅计划</option><option value="pending">待确认</option></select></label>
+          <span class="pw-filter-help">明细筛选不改变看板的回看窗口</span>
+        </div>
+        <div id="pw-editor" class="pw-editor" hidden></div>
+        <div class="pw-table-wrap" id="pw-records"></div>
+        <div class="pw-pager" id="pw-pager"></div>
+      </section>
+    </section>
+    <section id="pw-reference" aria-label="参考价检测页面" hidden>
+      <div class="pw-reference-layout">
+        <section class="pw-panel pw-reference-settings">
+          <h2>List Price 检测</h2>
+          <label class="pw-scope-setting">检测范围<select id="pw-reference-scope" aria-label="参考价检测范围"><option value="actual">仅实际记录</option><option value="with-plans">实际＋计划（预测）</option></select></label>
+          <label class="pw-price-setting">设置参考价（USD）<div class="pw-money-input"><span>$</span><input type="number" id="pw-list-price" aria-label="设置参考价" min="0.01" step="0.01" value="239.99"></div></label>
+          <div class="pw-rule-row"><span>回看区间</span><strong id="pw-reference-window"></strong></div><div class="pw-rule-row"><span>设置目标</span><strong>90天内 ≥ 9天</strong></div><div class="pw-rule-row"><span>计数方式</span><span id="pw-reference-count-rule">实际成交价等于设置价<br>同一日期只计一次</span></div>
+          <div class="pw-reference-result" id="pw-reference-result" aria-live="polite"></div><div class="pw-progress"><div id="pw-reference-progress"></div></div><p class="pw-small pw-reference-note" id="pw-reference-note">按实际价格记录与设置规则检测，平台认可状态需另行确认。</p><p class="pw-small pw-reference-note pw-warn" id="pw-reference-conflicts" role="alert" hidden></p>
+        </section>
+        <section class="pw-panel pw-window-panel"><div class="pw-panel-head"><div><h2>90天记录分布</h2><span class="pw-small" id="pw-coverage"></span></div></div><div class="pw-window-legend" id="pw-reference-legend"></div><div id="pw-day-grid" class="pw-day-grid"></div><div id="pw-day-selection" class="pw-day-selection" aria-live="polite">点击日期查看该日记录</div></section>
+      </div>
+      <section class="pw-panel pw-matches-panel"><div class="pw-panel-head"><h2>匹配日期明细</h2><span id="pw-match-count" class="pw-small"></span></div><div id="pw-matches"></div></section>
+      <section class="pw-panel pw-price-advice" id="pw-price-advice" aria-label="参考价价格建议" hidden><div class="pw-panel-head"><div><h2>价格建议</h2><span class="pw-small">按现有记录与未来计划，补齐目标窗口的价格日期</span></div><span class="pw-demo-tag">排期预测</span></div><div id="pw-price-advice-body" class="pw-price-advice-body" aria-live="polite"></div></section>
+    </section>
+    <section id="pw-calculator" aria-label="价格计算器页面" hidden>
+      <section class="pw-panel pw-basis-panel"><div class="pw-panel-head pw-wrap"><div><h2>AD600S 基础价格</h2><span class="pw-small">B–E 默认取实际看板；可手动覆盖试算。F 单独输入。</span></div><button type="button" class="pw-button" data-action="relink">重新从看板取数</button></div><div id="pw-basis" class="pw-basis"></div></section>
+      <div class="pw-scenario-tabs" id="pw-scenario-tabs" aria-label="活动计算规则"></div>
+      <section class="pw-panel pw-calculation-panel"><div class="pw-panel-head pw-wrap"><div><h2 id="pw-scenario-title"></h2><span class="pw-small" id="pw-scenario-scope"></span></div><button type="button" class="pw-button" data-action="toggle-formulas" id="pw-formula-toggle">编辑列名与公式</button></div><div id="pw-formula-help" class="pw-formula-help" hidden>用列标识引用数值，如 B*0.9、MIN(H:J)。支持 MIN、MAX、IF、ROUND、SUM、AVERAGE 与四则运算。</div><div class="pw-table-wrap" id="pw-rules"></div><div id="pw-calculation-result" class="pw-calculation-result" aria-live="polite"></div></section>
+    </section>
+    <section class="pw-panel" id="pw-history" hidden><div class="pw-panel-head"><h2>修改历史 · 最近30次</h2><button type="button" class="pw-quiet-button" data-action="close-history">收起</button></div><div id="pw-history-list"></div></section><footer class="pw-footer"><span id="pw-source-info"></span><button type="button" data-action="show-scope">保存与统计口径</button></footer>
+    <section class="pw-scope" id="pw-scope" hidden><h3>保存与统计口径</h3><p id="pw-storage-description"></p><p>实际／计划由备注中的“计划”区分，未来未标计划的记录列为待确认。促销价统计采用“成交价$”；不含促销仅保留平销、无活动类型且无活动价的记录。COUPON记录按表内成交价计入，未额外推算券后金额。</p><p>Was Price按90天窗口内有效实际日价格排序取数值中位数；缺失日期不补零。日常参考价展示设定值与匹配天数。同日不同实际价格先排除并提示冲突。2026会员日计算规则仅用于该模板场景。</p></section>
+  </main>
+</div>
+<style>
+#ad600s-price-workspace{--pw-bg:light-dark(#f5f6fa,#141821);--pw-surface:light-dark(#ffffff,#1d2330);--pw-ink:light-dark(#20293b,#e9edf5);--pw-muted:light-dark(#667185,#aeb8cc);--pw-line:light-dark(#e4e8f0,#353e50);--pw-blue:light-dark(#4056c8,#a8b5ff);--pw-blue-soft:light-dark(#edf0ff,#303b66);--pw-amber:light-dark(#a46213,#f7c373);--pw-amber-soft:light-dark(#fff5e6,#443525);--pw-red:light-dark(#ae3f44,#ffadb1);--pw-red-soft:light-dark(#fff0f1,#4c3039);--pw-green:light-dark(#267454,#91d6b4);--pw-green-soft:light-dark(#edf7f1,#263f35);color:var(--pw-ink);background:var(--pw-bg);font:14px/1.5 'Segoe UI','Microsoft YaHei',sans-serif;border:1px solid var(--pw-line);border-radius:14px;overflow:hidden;min-width:0;font-variant-numeric:tabular-nums;}
+#ad600s-price-workspace *{box-sizing:border-box}#ad600s-price-workspace [hidden]{display:none!important}#ad600s-price-workspace button,#ad600s-price-workspace input,#ad600s-price-workspace select{font:inherit;color:inherit}#ad600s-price-workspace button{cursor:var(--cursor-interaction,auto)}#ad600s-price-workspace button:focus-visible,#ad600s-price-workspace input:focus-visible,#ad600s-price-workspace select:focus-visible{outline:2px solid var(--pw-blue);outline-offset:2px}#ad600s-price-workspace h1,#ad600s-price-workspace h2,#ad600s-price-workspace h3,#ad600s-price-workspace p{margin:0}#ad600s-price-workspace h1{font-size:25px;font-weight:500;letter-spacing:-.6px;margin:4px 0}#ad600s-price-workspace h2{font-size:15px;font-weight:500}#ad600s-price-workspace h3{font-size:14px;font-weight:500}#ad600s-price-workspace strong{font-weight:500}#ad600s-price-workspace .pw-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:19px 28px 15px;background:var(--pw-surface)}#ad600s-price-workspace .pw-brand{display:flex;align-items:center;gap:10px;min-width:0}#ad600s-price-workspace .pw-brand-mark{width:31px;height:31px;background:var(--pw-blue);color:light-dark(#fff,#1b2345);border-radius:8px;display:grid;place-items:center;font-size:21px;font-weight:500}#ad600s-price-workspace .pw-brand>div{display:flex;gap:12px;align-items:center}#ad600s-price-workspace .pw-brand strong{letter-spacing:1px;font-size:14px}#ad600s-price-workspace .pw-brand>div>span{padding-left:12px;border-left:1px solid var(--pw-line);color:var(--pw-muted);font-size:13px}#ad600s-price-workspace .pw-demo-tag{font-size:11px;background:var(--pw-blue-soft);color:var(--pw-blue);padding:3px 7px;border-radius:5px;white-space:nowrap}#ad600s-price-workspace .pw-save{font-size:11px;color:var(--pw-muted);display:flex;gap:6px;align-items:center;margin-right:68px}#ad600s-price-workspace .pw-save-dot{width:5px;height:5px;background:var(--pw-green);border-radius:50%;display:inline-block}#ad600s-price-workspace .pw-nav{display:flex;gap:25px;padding:0 28px;background:var(--pw-surface);border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace .pw-nav-button{border:0;border-bottom:2px solid transparent;background:none;display:flex;gap:7px;align-items:center;padding:13px 1px 12px;color:var(--pw-muted);font-size:13px;white-space:nowrap}#ad600s-price-workspace .pw-nav-button.is-active{border-bottom-color:var(--pw-blue);color:var(--pw-blue);font-weight:500}#ad600s-price-workspace i,#ad600s-price-workspace svg.lucide{width:15px;height:15px;flex-shrink:0}#ad600s-price-workspace .pw-main{padding:23px 26px 18px}#ad600s-price-workspace .pw-title-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:19px}#ad600s-price-workspace .pw-kicker{font-size:11px;letter-spacing:.4px;color:var(--pw-muted)}#ad600s-price-workspace .pw-kicker span{padding:0 6px;opacity:.55}#ad600s-price-workspace .pw-subtitle{font-size:12px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor{display:grid;grid-template-columns:auto 136px;align-items:center;gap:4px 9px;font-size:12px;flex-shrink:0}#ad600s-price-workspace .pw-anchor span{grid-column:2;color:var(--pw-muted);font-size:11px}#ad600s-price-workspace input,#ad600s-price-workspace select{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:6px;padding:7px 9px;min-width:0}#ad600s-price-workspace input[type=date]{color-scheme:light dark;padding:6px 7px;font-size:12px}#ad600s-price-workspace .pw-panel{background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:10px;margin-top:15px}#ad600s-price-workspace .pw-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px 12px}#ad600s-price-workspace .pw-panel-head>div:first-child{min-width:0}#ad600s-price-workspace .pw-small{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-row,#ad600s-price-workspace .pw-record-title{display:flex;align-items:center;gap:10px}#ad600s-price-workspace .pw-wrap{flex-wrap:wrap}#ad600s-price-workspace .pw-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 11px;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);font-size:12px;white-space:nowrap}#ad600s-price-workspace .pw-primary{background:var(--pw-blue);color:light-dark(#fff,#172041);border-color:var(--pw-blue)}#ad600s-price-workspace .pw-button:disabled{opacity:.4;cursor:default}#ad600s-price-workspace .pw-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}#ad600s-price-workspace .pw-metric{background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:9px;padding:14px 13px 11px;text-align:left;min-width:0}#ad600s-price-workspace .pw-metric:hover{border-color:var(--pw-blue)}#ad600s-price-workspace .pw-metric-label{display:block;color:var(--pw-muted);font-size:11px;min-height:34px}#ad600s-price-workspace .pw-metric-value{display:block;font-size:25px;line-height:1.3;font-weight:500;letter-spacing:-.8px;white-space:nowrap}#ad600s-price-workspace .pw-metric-foot{display:block;color:var(--pw-muted);font-size:11px;margin-top:8px;white-space:normal}#ad600s-price-workspace .pw-good{color:var(--pw-green)!important}#ad600s-price-workspace .pw-warn{color:var(--pw-amber)!important}#ad600s-price-workspace .pw-detail{padding:13px 16px;background:var(--pw-blue-soft);border-radius:8px;margin-top:10px;font-size:12px}#ad600s-price-workspace .pw-detail-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px}#ad600s-price-workspace .pw-quiet-button{background:none;border:0;padding:0;color:var(--pw-muted);font-size:12px}#ad600s-price-workspace .pw-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-legend>span{display:flex;align-items:center;gap:5px}#ad600s-price-workspace .pw-line-key{display:inline-block;width:17px;border-top:2px solid var(--pw-blue)}#ad600s-price-workspace .pw-plan-key{border-top:2px dashed var(--pw-amber)}#ad600s-price-workspace .pw-ref-key{border-top:1px dotted var(--pw-muted)}#ad600s-price-workspace .pw-chart{padding:0 12px 10px;height:177px}#ad600s-price-workspace .pw-chart svg{display:block;width:100%;height:100%;overflow:visible}#ad600s-price-workspace .pw-chart text{font-family:inherit;fill:var(--pw-muted);font-size:11px}#ad600s-price-workspace .pw-chart .pw-grid-line{stroke:var(--pw-line);stroke-width:1}#ad600s-price-workspace .pw-chart .pw-chart-actual{stroke:var(--pw-blue);fill:none;stroke-width:2}#ad600s-price-workspace .pw-chart .pw-chart-plan{stroke:var(--pw-amber);fill:none;stroke-width:2;stroke-dasharray:5 4}#ad600s-price-workspace .pw-chart .pw-chart-reference{stroke:var(--pw-muted);stroke-width:1;stroke-dasharray:2 4}#ad600s-price-workspace .pw-chart circle.pw-dot-actual{fill:var(--pw-blue)}#ad600s-price-workspace .pw-chart circle.pw-dot-plan{fill:var(--pw-amber)}#ad600s-price-workspace .pw-chart .pw-chart-area{fill:var(--pw-blue-soft)}#ad600s-price-workspace .pw-count{font-size:11px;background:var(--pw-bg);border-radius:5px;padding:2px 6px;color:var(--pw-muted)}#ad600s-price-workspace .pw-segment{display:flex;padding:2px;background:var(--pw-bg);border-radius:6px;border:1px solid var(--pw-line)}#ad600s-price-workspace .pw-segment button{background:none;border:0;border-radius:4px;padding:4px 9px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-segment button.is-active{background:var(--pw-surface);color:var(--pw-ink);box-shadow:0 1px 3px light-dark(#202a3b14,#00000022)}#ad600s-price-workspace .pw-filter-row{display:flex;align-items:end;flex-wrap:wrap;gap:10px;padding:0 18px 14px}#ad600s-price-workspace .pw-filter-row label{display:grid;gap:3px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-filter-row select{font-size:12px;color:var(--pw-ink);min-width:116px}#ad600s-price-workspace .pw-filter-help{font-size:11px;color:var(--pw-muted);margin-left:auto;padding-bottom:7px}#ad600s-price-workspace .pw-date-range{display:flex;gap:6px;align-items:end}#ad600s-price-workspace .pw-date-range>span{padding-bottom:7px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-table-wrap{overflow-x:auto;width:100%}#ad600s-price-workspace table{width:100%;border-collapse:collapse;text-align:left;font-size:12px}#ad600s-price-workspace .pw-record-table{min-width:780px}#ad600s-price-workspace th{font-weight:400;color:var(--pw-muted);background:var(--pw-bg);font-size:11px;padding:9px 12px;white-space:nowrap;border-top:1px solid var(--pw-line);border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace td{padding:9px 12px;border-bottom:1px solid var(--pw-line);vertical-align:middle}#ad600s-price-workspace td:first-child,#ad600s-price-workspace th:first-child{padding-left:18px}#ad600s-price-workspace td:last-child,#ad600s-price-workspace th:last-child{padding-right:18px}#ad600s-price-workspace .pw-money-cell{text-align:right;white-space:nowrap}#ad600s-price-workspace .pw-cell-input{width:80px;max-width:100%;padding:4px 5px;border-color:transparent;background:transparent;text-align:right;font-size:12px}#ad600s-price-workspace .pw-cell-input:hover,#ad600s-price-workspace .pw-note-input:hover{border-color:var(--pw-line)}#ad600s-price-workspace .pw-note-input{padding:4px 5px;border-color:transparent;background:transparent;min-width:74px;width:100%;max-width:130px;font-size:12px}#ad600s-price-workspace .pw-weekday{font-size:11px;color:var(--pw-muted);margin-left:5px}#ad600s-price-workspace .pw-status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;font-size:11px;background:var(--pw-blue-soft);color:var(--pw-blue);white-space:nowrap}#ad600s-price-workspace .pw-status-pill.plan{color:var(--pw-amber);background:var(--pw-amber-soft)}#ad600s-price-workspace .pw-status-pill.pending{color:var(--pw-red);background:var(--pw-red-soft)}#ad600s-price-workspace .pw-type{font-size:11px;color:var(--pw-muted);white-space:nowrap}#ad600s-price-workspace .pw-type.pw-blackfriday{color:var(--pw-red);background:var(--pw-red-soft);padding:2px 5px;border-radius:4px}#ad600s-price-workspace .pw-edit-button{background:none;border:0;font-size:11px;color:var(--pw-blue);padding:4px}#ad600s-price-workspace .pw-pager{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 17px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-pager>div{display:flex;align-items:center;gap:9px}#ad600s-price-workspace .pw-pager button{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:4px;padding:2px 7px}#ad600s-price-workspace .pw-pager button:disabled{opacity:.35;cursor:default}#ad600s-price-workspace .pw-empty{padding:35px 18px;text-align:center;color:var(--pw-muted);font-size:12px}#ad600s-price-workspace .pw-editor{margin:0 17px 14px;padding:14px;background:var(--pw-bg);border:1px solid var(--pw-line);border-radius:7px}#ad600s-price-workspace .pw-editor-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:10px 0}#ad600s-price-workspace .pw-editor-fields label{display:grid;gap:3px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-editor-fields input,#ad600s-price-workspace .pw-editor-fields select{width:100%;font-size:12px}#ad600s-price-workspace .pw-editor-fields .pw-span2{grid-column:span 2}#ad600s-price-workspace .pw-editor-actions{display:flex;align-items:center;gap:8px;justify-content:flex-end;font-size:11px}#ad600s-price-workspace .pw-editor-actions>span{margin-right:auto;color:var(--pw-muted)}#ad600s-price-workspace .pw-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:0 12px 12px;gap:5px}#ad600s-price-workspace .pw-calendar-weekday{text-align:center;color:var(--pw-muted);font-size:11px;padding:5px}#ad600s-price-workspace .pw-calendar-day{min-height:78px;border:1px solid var(--pw-line);border-radius:5px;background:var(--pw-surface);padding:7px;text-align:left;display:flex;flex-direction:column;gap:3px;min-width:0}#ad600s-price-workspace .pw-calendar-day.plan{background:var(--pw-amber-soft)}#ad600s-price-workspace .pw-calendar-day.pw-blackfriday{background:var(--pw-red-soft)}#ad600s-price-workspace .pw-calendar-day strong{font-size:13px}#ad600s-price-workspace .pw-calendar-day>span{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-calendar-empty{min-height:60px;background:var(--pw-bg);border-radius:5px}#ad600s-price-workspace .pw-reference-layout{display:grid;grid-template-columns:255px minmax(0,1fr);gap:15px}#ad600s-price-workspace .pw-reference-settings{padding:18px;margin-top:0}#ad600s-price-workspace .pw-price-setting{display:grid;gap:6px;font-size:12px;color:var(--pw-muted);margin-top:18px}#ad600s-price-workspace .pw-money-input{display:flex;align-items:center;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);padding-left:10px;color:var(--pw-ink)}#ad600s-price-workspace .pw-money-input input{border:0;width:100%;background:transparent;font-size:22px;padding:8px}#ad600s-price-workspace .pw-rule-row{display:flex;justify-content:space-between;gap:8px;font-size:11px;padding:13px 0;border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace .pw-rule-row>span:first-child{color:var(--pw-muted);flex-shrink:0}#ad600s-price-workspace .pw-rule-row>span:last-child{text-align:right}#ad600s-price-workspace .pw-rule-row strong{text-align:right;max-width:145px}#ad600s-price-workspace .pw-reference-result{margin-top:22px}#ad600s-price-workspace .pw-reference-result .pw-days-value{font-size:36px;letter-spacing:-1px}#ad600s-price-workspace .pw-reference-result .pw-days-unit{font-size:13px;color:var(--pw-muted);margin-left:6px}#ad600s-price-workspace .pw-reference-result .pw-day-status{display:block;font-size:12px;margin-top:2px}#ad600s-price-workspace .pw-progress{margin:12px 0;height:6px;background:var(--pw-bg);border-radius:5px;overflow:hidden}#ad600s-price-workspace .pw-progress>div{height:100%;background:var(--pw-green);border-radius:5px;transition:width .2s}#ad600s-price-workspace .pw-reference-note{margin-top:12px;line-height:1.6}#ad600s-price-workspace .pw-window-panel{margin-top:0;min-width:0}#ad600s-price-workspace .pw-window-legend{display:flex;gap:14px;flex-wrap:wrap;padding:0 18px 13px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-window-legend>span{display:flex;align-items:center;gap:4px}#ad600s-price-workspace .pw-window-key{width:9px;height:9px;border-radius:2px;display:inline-block}#ad600s-price-workspace .pw-hit-key{background:var(--pw-blue)}#ad600s-price-workspace .pw-actual-key{background:var(--pw-blue-soft)}#ad600s-price-workspace .pw-missing-key{background:var(--pw-bg)}#ad600s-price-workspace .pw-day-grid{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:4px;padding:0 18px 15px}#ad600s-price-workspace .pw-day-tile{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1.12;border:0;border-radius:4px;background:var(--pw-blue-soft);color:var(--pw-blue);font-size:11px;padding:0;min-width:0}#ad600s-price-workspace .pw-day-tile.hit{background:var(--pw-blue);color:light-dark(#fff,#172041)}#ad600s-price-workspace .pw-day-tile.missing{background:var(--pw-bg);color:var(--pw-muted)}#ad600s-price-workspace .pw-day-tile.selected{outline:2px solid var(--pw-amber);outline-offset:1px}#ad600s-price-workspace .pw-day-selection{padding:12px 18px;border-top:1px solid var(--pw-line);font-size:12px;min-height:44px;color:var(--pw-muted)}#ad600s-price-workspace .pw-matches{display:flex;flex-wrap:wrap;gap:7px;padding:2px 18px 18px}#ad600s-price-workspace .pw-match{background:var(--pw-blue-soft);border:0;border-radius:5px;padding:7px 10px;text-align:left;font-size:11px;display:flex;align-items:center;gap:8px}#ad600s-price-workspace .pw-match span{color:var(--pw-muted);font-size:11px}#ad600s-price-workspace .pw-basis-panel{margin-top:0}#ad600s-price-workspace .pw-basis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:2px 18px 18px}#ad600s-price-workspace .pw-basis-item{min-width:0}#ad600s-price-workspace .pw-basis-label{font-size:11px;min-height:37px;display:flex;gap:5px;align-items:start;color:var(--pw-muted)}#ad600s-price-workspace .pw-col-id{font:11px/1.4 ui-monospace,monospace;background:var(--pw-bg);padding:1px 4px;border-radius:3px;color:var(--pw-muted);flex-shrink:0}#ad600s-price-workspace .pw-basis-input{width:100%;font-size:18px!important;padding:8px!important}#ad600s-price-workspace .pw-basis-item>span{display:block;font-size:11px;color:var(--pw-muted);margin-top:5px}#ad600s-price-workspace .pw-basis-item input:placeholder-shown{border-color:var(--pw-amber)}#ad600s-price-workspace .pw-label-edit{padding:2px 3px!important;width:100%;font-size:11px!important}#ad600s-price-workspace .pw-scenario-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:20px}#ad600s-price-workspace .pw-scenario-tab{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:6px;font-size:12px;padding:8px 13px;color:var(--pw-muted)}#ad600s-price-workspace .pw-scenario-tab.is-active{background:var(--pw-blue-soft);color:var(--pw-blue);border-color:var(--pw-blue)}#ad600s-price-workspace .pw-calculation-panel{margin-top:10px}#ad600s-price-workspace .pw-rule-table{min-width:540px}#ad600s-price-workspace .pw-rule-table th:nth-child(1){width:47px}#ad600s-price-workspace .pw-rule-table th:nth-child(2){width:31%}#ad600s-price-workspace .pw-rule-table th:nth-child(3){width:40%}#ad600s-price-workspace .pw-rule-table td{padding-top:13px;padding-bottom:13px}#ad600s-price-workspace .pw-rule-table code{font:12px/1.5 ui-monospace,'Microsoft YaHei',monospace;color:var(--pw-muted);white-space:normal;overflow-wrap:anywhere}#ad600s-price-workspace .pw-rule-table input{width:100%;font-size:12px;padding:5px 7px}#ad600s-price-workspace .pw-rule-value{text-align:right;white-space:nowrap}#ad600s-price-workspace .pw-rule-value.is-error{color:var(--pw-amber);font-size:11px}#ad600s-price-workspace .pw-formula-help{font-size:11px;background:var(--pw-bg);color:var(--pw-muted);padding:9px 18px;border-top:1px solid var(--pw-line)}#ad600s-price-workspace .pw-calculation-result{padding:19px 20px;background:var(--pw-blue-soft);display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:0 0 9px 9px}#ad600s-price-workspace .pw-result-price{font-size:31px;letter-spacing:-1px;font-weight:500}#ad600s-price-workspace .pw-result-label{font-size:12px;color:var(--pw-muted)}#ad600s-price-workspace .pw-result-note{font-size:11px;color:var(--pw-muted);text-align:right;max-width:360px}#ad600s-price-workspace .pw-result-note>span{display:block}#ad600s-price-workspace .pw-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--pw-muted);padding-top:17px}#ad600s-price-workspace .pw-footer button{font-size:11px;background:none;border:0;color:var(--pw-muted);padding:0}#ad600s-price-workspace .pw-scope{margin-top:12px;background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:7px;padding:14px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-scope p{margin-top:7px}#ad600s-price-workspace .pw-alert{background:var(--pw-amber-soft);color:var(--pw-amber);padding:10px 13px;font-size:12px;border-radius:6px;margin-bottom:13px}#ad600s-price-workspace[data-density="roomy"] td{padding-top:14px;padding-bottom:14px}
+@media(max-width:800px){#ad600s-price-workspace .pw-main{padding:20px 18px 16px}#ad600s-price-workspace .pw-header{padding:16px 20px 12px}#ad600s-price-workspace .pw-nav{padding:0 20px}#ad600s-price-workspace .pw-metric{padding:12px 10px}#ad600s-price-workspace .pw-metric-value{font-size:22px}#ad600s-price-workspace .pw-filter-help{margin-left:0;flex-basis:100%;padding:0}#ad600s-price-workspace .pw-reference-layout{grid-template-columns:225px minmax(0,1fr)}#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(10,minmax(0,1fr))}#ad600s-price-workspace .pw-reference-settings{padding:15px}#ad600s-price-workspace .pw-basis{gap:8px}#ad600s-price-workspace .pw-basis-input{font-size:16px!important}}
+@media(max-width:620px){#ad600s-price-workspace .pw-header{flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-save{margin-right:0}#ad600s-price-workspace .pw-title-row{align-items:start;flex-direction:column;gap:12px}#ad600s-price-workspace .pw-anchor{grid-template-columns:auto 143px}#ad600s-price-workspace .pw-anchor span{grid-column:1 / -1}#ad600s-price-workspace .pw-nav{gap:19px}#ad600s-price-workspace .pw-nav-button{font-size:12px}#ad600s-price-workspace .pw-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#ad600s-price-workspace .pw-metric:last-child{grid-column:span 2}#ad600s-price-workspace .pw-metric-label{min-height:0}#ad600s-price-workspace .pw-metric-foot{margin-top:5px}#ad600s-price-workspace .pw-metric-value{margin-top:5px;font-size:25px}#ad600s-price-workspace .pw-chart-panel .pw-panel-head{align-items:start;flex-direction:column;gap:8px}#ad600s-price-workspace .pw-main{padding:18px 12px 14px}#ad600s-price-workspace .pw-reference-layout{grid-template-columns:minmax(0,1fr)}#ad600s-price-workspace .pw-reference-result{margin-top:12px}#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(10,minmax(0,1fr))}#ad600s-price-workspace .pw-reference-settings{display:block}#ad600s-price-workspace .pw-rule-row strong{max-width:none}#ad600s-price-workspace .pw-basis{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}#ad600s-price-workspace .pw-basis-item:last-child{grid-column:span 2}#ad600s-price-workspace .pw-basis-label{min-height:0;margin-bottom:5px}#ad600s-price-workspace .pw-calculation-result{align-items:start;flex-direction:column}#ad600s-price-workspace .pw-result-note{text-align:left}#ad600s-price-workspace .pw-editor-fields{grid-template-columns:repeat(2,minmax(0,1fr))}#ad600s-price-workspace .pw-month-grid{gap:3px;padding:0 7px 8px}#ad600s-price-workspace .pw-calendar-day{padding:5px 3px;min-height:75px}#ad600s-price-workspace .pw-calendar-day strong{font-size:11px}#ad600s-price-workspace .pw-calendar-day>span{font-size:11px}#ad600s-price-workspace .pw-filter-row{padding-left:12px;padding-right:12px}#ad600s-price-workspace .pw-panel-head{padding-left:13px;padding-right:13px}#ad600s-price-workspace .pw-brand>div>span{display:none}}
+@media(pointer:coarse){#ad600s-price-workspace button{min-height:40px}#ad600s-price-workspace input,#ad600s-price-workspace select{font-size:16px!important}#ad600s-price-workspace .pw-day-tile{min-height:30px}#ad600s-price-workspace .pw-cell-input{width:90px}}
+@media(prefers-reduced-motion:reduce){#ad600s-price-workspace *{transition:none!important}}
+#ad600s-price-workspace .pw-calendar-meta{display:flex;gap:3px;flex-wrap:wrap}
+@media(max-width:620px){#ad600s-price-workspace .pw-calendar-meta{flex-direction:column;align-items:center;gap:2px}#ad600s-price-workspace .pw-calendar-day{align-items:center;min-height:54px}#ad600s-price-workspace .pw-calendar-day>strong,#ad600s-price-workspace .pw-calendar-day>span:last-child{display:none}#ad600s-price-workspace .pw-date-range{flex-wrap:wrap}#ad600s-price-workspace .pw-pager{align-items:start;flex-wrap:wrap}}
+@media(max-width:360px){#ad600s-price-workspace .pw-nav{padding:0 12px;gap:8px;justify-content:space-between}#ad600s-price-workspace .pw-nav-button{font-size:11px;gap:4px}#ad600s-price-workspace .pw-nav-button svg{width:13px;height:13px}}
+#ad600s-price-workspace .pw-scope-setting{display:grid;gap:6px;margin-top:16px;font-size:12px;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-scope-setting select{width:100%;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-reference-breakdown{display:block;margin-top:8px}
+#ad600s-price-workspace .pw-day-tile.plan{background:var(--pw-amber-soft);color:var(--pw-amber)}
+#ad600s-price-workspace .pw-day-tile.plan.hit,#ad600s-price-workspace .pw-window-key.pw-plan-hit-key{background:var(--pw-amber);color:light-dark(#fff,#302310)}
+#ad600s-price-workspace .pw-window-key.pw-plan-key-fill,#ad600s-price-workspace .pw-match.plan{background:var(--pw-amber-soft);color:var(--pw-amber)}
+#ad600s-price-workspace .pw-progress>div.forecast{background:var(--pw-amber)}
+#ad600s-price-workspace .pw-reference-settings{min-width:0}
+#ad600s-price-workspace .pw-import-panel{margin:0 17px 15px;padding:15px;background:var(--pw-bg);border:1px solid var(--pw-line);border-radius:8px;min-width:0}
+#ad600s-price-workspace .pw-import-controls,#ad600s-price-workspace .pw-import-actions{display:flex;align-items:end;flex-wrap:wrap;gap:10px;margin:12px 0}
+#ad600s-price-workspace .pw-import-controls>label{display:grid;gap:4px;font-size:11px;color:var(--pw-muted);min-width:0;max-width:100%}
+#ad600s-price-workspace input[type=file]{font-size:11px;max-width:100%;width:260px}
+#ad600s-price-workspace .pw-paste-label{font-size:11px;color:var(--pw-muted);display:block;margin:8px 0 5px}
+#ad600s-price-workspace textarea{font:12px/1.6 ui-monospace,'Microsoft YaHei',monospace;color:var(--pw-ink);width:100%;max-width:100%;resize:vertical;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);padding:9px;min-height:90px}
+#ad600s-price-workspace .pw-import-mapping{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}
+#ad600s-price-workspace .pw-import-mapping label{display:grid;gap:4px;font-size:11px;color:var(--pw-muted);min-width:0}
+#ad600s-price-workspace .pw-import-mapping select{font-size:12px;width:100%;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-import-table{min-width:650px;margin-top:12px;background:var(--pw-surface)}
+#ad600s-price-workspace .pw-import-stamp{display:block;font-size:11px;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-import-issues{font-size:11px;margin:9px 0}
+#ad600s-price-workspace .pw-price-advice-body{padding:0 18px 17px;font-size:12px;line-height:1.8}
+#ad600s-price-workspace .pw-advice-facts{display:flex;flex-wrap:wrap;gap:7px 20px;margin-bottom:10px;color:var(--pw-muted);font-size:11px}
+#ad600s-price-workspace .pw-advice-facts strong{color:var(--pw-ink)}
+#ad600s-price-workspace .pw-advice-main{margin:4px 0 8px}
+#ad600s-price-workspace .pw-advice-main strong{color:var(--pw-blue)}
+#ad600s-price-workspace .pw-advice-foot{margin-top:10px}
+@media(max-width:620px){#ad600s-price-workspace .pw-import-panel{margin:0 10px 12px;padding:12px}#ad600s-price-workspace .pw-import-mapping{grid-template-columns:repeat(2,minmax(0,1fr))}#ad600s-price-workspace .pw-import-controls{align-items:start;flex-direction:column}#ad600s-price-workspace .pw-price-advice-body{padding-left:13px;padding-right:13px}}
+@media(max-width:360px){#ad600s-price-workspace .pw-import-mapping{grid-template-columns:minmax(0,1fr)}}
+@media(pointer:coarse){#ad600s-price-workspace textarea{font-size:16px}}
+@media(max-width:620px){#ad600s-price-workspace .pw-import-controls{align-items:stretch}#ad600s-price-workspace .pw-import-controls .pw-import-file-label{width:100%}#ad600s-price-workspace .pw-import-file-label input[type=file]{width:100%}}
+</style>
+<script>
+(async () => {
+function validateWorkspace(state){
+  if(!state||typeof state!=='object'||Array.isArray(state)||state.version!==1)throw Error('备份或工作区版本不正确。');
+  const serialized=JSON.stringify(state);
+  if(new TextEncoder().encode(serialized).length>2*1024*1024)throw Error('本次工作区超过2MB，请缩小单次导入范围。');
+  const visit=value=>{if(value&&typeof value==='object')for(const key of Object.keys(value)){if(['__proto__','constructor','prototype'].includes(key))throw Error('数据含不支持的字段。');visit(value[key]);}};
+  visit(state);
+  const dateValid=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T00:00:00Z'))&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;
+  const amountValid=value=>value===null||value===undefined||String(value).trim()===''||(/^\d+(\.\d+)?$/.test(String(value).replace(/[$,\s]/g,''))&&Number.isFinite(Number(String(value).replace(/[$,\s]/g,'')))&&Number(String(value).replace(/[$,\s]/g,''))>0);
+  if(!Array.isArray(state.baseRows)||!Array.isArray(state.added)||state.baseRows.length+state.added.length>20000)throw Error('记录列表不正确或超过20000条。');
+  const ids=new Set();
+  for(const row of [...state.baseRows,...state.added]){
+    if(!row||typeof row.id!=='string'||!/^[-a-zA-Z0-9_]{1,160}$/.test(row.id)||ids.has(row.id)||!dateValid(row.date))throw Error('记录日期或唯一标识无效，请检查重复记录。');
+    ids.add(row.id);
+    for(const key of ['price','list','eventPrice'])if(!amountValid(row[key]))throw Error(row.date+' 的价格必须大于0，或留空。');
+  }
+  if(!state.patches||typeof state.patches!=='object'||Array.isArray(state.patches))throw Error('记录修改内容不正确。');
+  for(const [id,patch] of Object.entries(state.patches)){
+    if(!ids.has(id)||!patch||typeof patch!=='object'||Array.isArray(patch))throw Error('修改内容引用了不存在的记录。');
+    if(patch.date!==undefined&&!dateValid(patch.date))throw Error('修改后的日期无效。');
+    for(const key of ['price','list','eventPrice'])if(!amountValid(patch[key]))throw Error('价格必须大于0，或留空。');
+  }
+  if(state.anchor!==undefined&&!dateValid(state.anchor))throw Error('统计锚点不是有效日期。');
+  if(!amountValid(state.listPrice))throw Error('List Price必须大于0，或留空。');
+  for(const key of ['overrides','labels','formulas'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key]))throw Error('计算器设置不正确。');
+  for(const value of Object.values(state.formulas))if(typeof value!=='string'||value.length>240)throw Error('每项公式最多240字符。');
+  for(const value of Object.values(state.labels))if(typeof value!=='string'||value.length>40)throw Error('列名最多40字符。');
+  for(const value of Object.values(state.overrides))if(!amountValid(value))throw Error('计算器输入必须大于0，或留空。');
+  for(const key of ['overrides','labels','formulas'])for(const id of Object.keys(state[key]))if(!/^[A-Z]{1,2}$/.test(id))throw Error('计算器列标识无效。');
+  for(const [key,allowed] of Object.entries({page:['schedule','reference','calculator'],referenceScope:['actual','with-plans'],status:['all','actual','plan','pending'],view:['table','calendar'],scenario:['bd','ped','prime-bd','prime-ped'],density:['compact','roomy']}))if(!allowed.includes(state[key]))throw Error('界面设置无效：'+key);
+  if(state.month!=='custom'&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(state.month))throw Error('月份设置无效。');
+  if(!dateValid(state.start)||!dateValid(state.end)||!Number.isInteger(state.pageIndex)||state.pageIndex<0||typeof state.anchorAuto!=='boolean')throw Error('日期区间或页码设置无效。');
+  return state;
+}
+function businessFingerprint(state){
+  return JSON.stringify(Object.fromEntries(['baseRows','patches','added','listPrice','anchor','anchorAuto','referenceScope','overrides','labels','formulas'].map(key=>[key,state[key]??null])));
+}
+
+const PriceStorage=(()=>{
+  const conflict=()=>Object.assign(Error('其他窗口已更新数据，本次修改尚未保存。请先备份本次修改，再重新载入。'),{conflict:true});
+  async function open(initial,options={}){
+    if(options.mode!=='browser'&&(location.protocol==='http:'||location.protocol==='https:')){
+      const request=async(url,options)=>{const response=await fetch(url,{cache:'no-store',...options});let body;try{body=await response.json();}catch{throw Error('无法读取价格服务，请使用“启动价格平台”入口。');}if(!response.ok){if(response.status===409)throw conflict();throw Error(body.error||'本地数据服务请求失败。');}return body;};
+      let revision;
+      return{mode:'server',label:'本机数据库',load:async()=>{const envelope=await request('/api/workspace');revision=envelope.revision;return envelope;},save:async(state,reason)=>{validateWorkspace(state);const result=await request('/api/workspace',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({baseRevision:revision,state,reason})});revision=result.revision;return result;},history:async()=>(await request('/api/history')).items,snapshot:revision=>request('/api/history/'+revision)};
+    }
+    let db;
+    try{
+      db=await new Promise((resolve,reject)=>{const req=indexedDB.open(options.databaseName||'ad600s-price-platform-v1',1);req.onupgradeneeded=()=>{req.result.createObjectStore('workspace');req.result.createObjectStore('history',{autoIncrement:true});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+    }catch(error){throw Error(options.mode==='browser'?'浏览器未允许保存网站数据，请使用常规浏览窗口并允许网站保存数据。'+error.message:'浏览器未允许本地保存。请使用“启动价格平台”入口打开。'+error.message);}
+    let revision;
+    const transaction=(stores,mode,work)=>new Promise((resolve,reject)=>{const tx=db.transaction(stores,mode);let value,problem;tx.oncomplete=()=>resolve(value);tx.onerror=()=>reject(problem||tx.error||Error('浏览器保存失败。'));tx.onabort=()=>reject(problem||tx.error||Error('浏览器保存失败。'));work(tx,result=>{value=result;},error=>{problem=error;tx.abort();});});
+    return{mode:'browser',label:'本浏览器',
+      load:async()=>{const envelope=await transaction(['workspace','history'],'readwrite',(tx,done)=>{const store=tx.objectStore('workspace'),req=store.get('main');req.onsuccess=()=>{const saved=req.result||{revision:0,state:structuredClone(initial),savedAt:null};if(!req.result){store.put(saved,'main');tx.objectStore('history').add({...saved,reason:'初始数据'});}done(saved);};});revision=envelope.revision;return envelope;},
+      save:async(state,reason)=>{validateWorkspace(state);const result=await transaction(['workspace','history'],'readwrite',(tx,done,fail)=>{const store=tx.objectStore('workspace'),req=store.get('main');req.onsuccess=()=>{const previous=req.result;if(previous.revision!==revision){fail(conflict());return;}const saved={revision:revision+1,state:structuredClone(state),savedAt:new Date().toISOString()};store.put(saved,'main');if(businessFingerprint(previous.state)!==businessFingerprint(state))tx.objectStore('history').add({...saved,reason:String(reason||'修改价格数据').slice(0,160)});done(saved);};});revision=result.revision;return result;},
+      history:()=>transaction(['history'],'readonly',(tx,done)=>{const items=[],req=tx.objectStore('history').openCursor(null,'prev');req.onsuccess=()=>{const cursor=req.result;if(cursor&&items.length<30){const {state,...summary}=cursor.value;items.push(summary);cursor.continue();}else done(items);};}),
+      snapshot:revision=>transaction(['history'],'readonly',(tx,done,fail)=>{const req=tx.objectStore('history').openCursor(null,'prev');req.onsuccess=()=>{const cursor=req.result;if(!cursor){fail(Error('未找到这个历史版本。'));return;}if(cursor.value.revision===revision)done(cursor.value);else cursor.continue();};})};
+  }
+  return{open};
+})();
+
+const INITIAL_STATE={"version":1,"baseRows":[],"page":"schedule","anchor":"2026-11-03","anchorAuto":true,"listPrice":239.99,"referenceScope":"actual","month":"2026-11","start":"2026-11-01","end":"2026-11-03","status":"all","view":"table","pageIndex":0,"scenario":"bd","editRules":false,"patches":{},"added":[],"overrides":{},"labels":{},"formulas":{},"density":"compact"};
+const storage=await PriceStorage.open(INITIAL_STATE,{mode:'browser',databaseName:'ad600s-price-pages-v1:'+location.pathname.replace(/\/index\.html$/,'/').replace(/\/$/,'')});
+const BOOTSTRAP=await storage.load();validateWorkspace(BOOTSTRAP.state);
+const TODAY = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const PROMO_TYPES = ['平销','7DD','直降','LD','BD','COUPON','PED','黑五BD','CODE'];
+const INPUTS = [
+  {id:'B',label:'日常有效参考价'}, {id:'C',label:'Was Price'},
+  {id:'D',label:'近30天最低价（含促销）'}, {id:'E',label:'近60天最低价（含促销）'},
+  {id:'F',label:'非Prime价格'}
+];
+const SCENARIOS = [
+  {id:'bd',name:'平日 BD',scope:'平日活动规则',out:'K',rules:[
+    {id:'H',label:'参考价打9折',formula:'B*0.9'},
+    {id:'I',label:'Was Price减0.01',formula:'C-0.01'},
+    {id:'J',label:'近30天最低价',formula:'D'}
+  ],result:'MIN(H:J)'},
+  {id:'ped',name:'平日 PED',scope:'平日会员价格折扣规则',out:'P',rules:[
+    {id:'M',label:'参考价打9.5折',formula:'B*0.95'},
+    {id:'N',label:'近30天最低价的95%',formula:'D*0.95'},
+    {id:'O',label:'非Prime价格的95%',formula:'F*0.95'}
+  ],result:'MIN(M:O)'},
+  {id:'prime-bd',name:'2026会员日 BD',scope:'附件中的2026会员日规则',out:'W',rules:[
+    {id:'R',label:'参考价打85折',formula:'B*0.85'},
+    {id:'S',label:'Was Price的95%',formula:'C*0.95'},
+    {id:'T',label:'近30天最低价的95%',formula:'D*0.95'},
+    {id:'U',label:'近60天最低价',formula:'E'},
+    {id:'V',label:'非Prime的95%或减15',formula:'IF(F*0.95<F-15,F*0.95,F-15)'}
+  ],result:'MIN(R:V)'},
+  {id:'prime-ped',name:'2026会员日 PED',scope:'附件中的2026会员日规则',out:'AD',rules:[
+    {id:'Y',label:'参考价打85折',formula:'B*0.85'},
+    {id:'Z',label:'近30天最低价的95%',formula:'D*0.95'},
+    {id:'AA',label:'Was Price的95%',formula:'C*0.95'},
+    {id:'AB',label:'近60天最低价',formula:'E'},
+    {id:'AC',label:'非Prime价格的8折',formula:'F*0.8'}
+  ],result:'MIN(Y:AC)'}
+];
+
+function parseMoney(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return null;
+  const cleaned = String(value).trim().replace(/[$,\s]/g,'');
+  if (!/^\d+(\.\d+)?$/.test(cleaned)) return null;
+  const amount = Number(cleaned);
+  return Number.isFinite(amount) && amount > 0 ? Math.round(amount*100)/100 : null;
+}
+function validDate(s) {
+  return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s)
+    && !Number.isNaN(Date.parse(s+'T00:00:00Z'))
+    && new Date(s+'T00:00:00Z').toISOString().slice(0,10) === s;
+}
+function addDays(s,n) {
+  if (!validDate(s)) return '';
+  return new Date(Date.parse(s+'T00:00:00Z')+n*86400000).toISOString().slice(0,10);
+}
+function daysBetween(a,b) { return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/86400000); }
+function recordStatus(row,today=TODAY) {
+  if (String(row.note||'').includes('计划')) return 'plan';
+  if (!validDate(row.date) || row.date > today) return 'pending';
+  return 'actual';
+}
+function isPromotion(row) {
+  return (String(row.type||'') !== '平销') || !!String(row.event||'').trim() || parseMoney(row.eventPrice)!==null;
+}
+function getStats(rows,settings={}) {
+  const today=settings.today||TODAY;
+  const listPrice=parseMoney(settings.listPrice);
+  const actual=rows.filter(r=>recordStatus(r,today)==='actual'&&validDate(r.date));
+  const anchor=validDate(settings.anchor)?settings.anchor:(actual.map(r=>r.date).sort().at(-1)||today);
+  const groups=new Map();
+  for (const r of actual) {
+    if (r.date>anchor || parseMoney(r.price)===null) continue;
+    if (!groups.has(r.date)) groups.set(r.date,[]);
+    groups.get(r.date).push(r);
+  }
+  const conflicts=[]; const daily=[];
+  for (const [date,items] of groups) {
+    const cents=[...new Set(items.map(r=>Math.round(parseMoney(r.price)*100)))];
+    if(cents.length!==1) { conflicts.push(date); continue; }
+    daily.push({...items[0],price:cents[0]/100,promotion:items.some(isPromotion),duplicateCount:items.length});
+  }
+  daily.sort((a,b)=>a.date.localeCompare(b.date));
+  const within=(n)=>daily.filter(r=>r.date>=addDays(anchor,1-n)&&r.date<=anchor);
+  const w90=within(90), w30=within(30), w60=within(60);
+  const ordered=w90.map(r=>Math.round(r.price*100)).sort((a,b)=>a-b);
+  const n=ordered.length;
+  const was=n?(n%2?ordered[(n-1)/2]:(ordered[n/2-1]+ordered[n/2])/2)/100:null;
+  const min=(arr)=>arr.length?Math.min(...arr.map(r=>r.price)):null;
+  return {anchor,listPrice,was,low30:min(w30),low60:min(w60),regular30:min(w30.filter(r=>!r.promotion)),
+    daily,w90,w30,w60,regularDays:w30.filter(r=>!r.promotion),
+    matches:w90.filter(r=>listPrice!==null&&Math.round(r.price*100)===Math.round(listPrice*100)),
+    conflicts:conflicts.filter(d=>d>=addDays(anchor,-89)&&d<=anchor).sort(),
+    planCount:rows.filter(r=>recordStatus(r,today)==='plan').length,
+    actualCount:actual.length,
+    pendingCount:rows.filter(r=>recordStatus(r,today)==='pending').length,
+    plannedInWindow:rows.filter(r=>recordStatus(r,today)==='plan'&&r.date>=addDays(anchor,-89)&&r.date<=anchor),
+    ordered
+  };
+}
+
+function getReferenceDetection(rows,settings={}) {
+  const actual=getStats(rows,settings),today=settings.today||TODAY;
+  const includePlans=settings.includePlans===true;
+  const start=addDays(actual.anchor,-89);
+  const within=row=>validDate(row.date)&&row.date>=start&&row.date<=actual.anchor;
+  const actualDates=new Set(rows.filter(row=>within(row)&&recordStatus(row,today)==='actual').map(row=>row.date));
+  const days=actual.w90.map(row=>({...row,status:'actual'}));
+  const conflicts=[...actual.conflicts];
+  if(includePlans){
+    const groups=new Map();
+    for(const row of rows){
+      if(!within(row)||recordStatus(row,today)!=='plan'||actualDates.has(row.date)||parseMoney(row.price)===null)continue;
+      if(!groups.has(row.date))groups.set(row.date,[]);
+      groups.get(row.date).push(row);
+    }
+    for(const [date,items] of groups){
+      const cents=[...new Set(items.map(row=>Math.round(parseMoney(row.price)*100)))];
+      if(cents.length!==1){conflicts.push(date);continue;}
+      days.push({...items[0],price:cents[0]/100,status:'plan',duplicateCount:items.length});
+    }
+  }
+  days.sort((a,b)=>a.date.localeCompare(b.date));
+  const matches=days.filter(row=>actual.listPrice!==null&&Math.round(row.price*100)===Math.round(actual.listPrice*100));
+  return {anchor:actual.anchor,listPrice:actual.listPrice,includePlans,days,matches,
+    actualDays:days.filter(row=>row.status==='actual'),planDays:days.filter(row=>row.status==='plan'),
+    actualMatches:matches.filter(row=>row.status==='actual'),planMatches:matches.filter(row=>row.status==='plan'),
+    conflicts:conflicts.sort()};
+}
+
+class FormulaError extends Error {
+  constructor(message,missing=[]) {super(message);this.missing=missing;}
+}
+function colNum(label) {return [...label].reduce((s,c)=>s*26+c.charCodeAt(0)-64,0);}
+function colName(num) {let s='';while(num){num--;s=String.fromCharCode(65+num%26)+s;num=Math.floor(num/26);}return s;}
+
+function evaluateFormula(expression,resolve) {
+  let source=String(expression||'').trim().replace(/^=/,'').toUpperCase();
+  if (!source || source.length>240) throw new FormulaError('请输入不超过240字符的公式');
+  const tokens=[]; let pos=0;
+  while(pos<source.length) {
+    if(/\s/.test(source[pos])){pos++;continue;}
+    const match=source.slice(pos).match(/^(\d+(?:\.\d*)?|\.\d+|[A-Z]+\d*|<=|>=|<>|!=|==|[()+\-*/,:<>=\%])/);
+    if(!match) throw new FormulaError('不支持的字符：'+source[pos]);
+    tokens.push(match[0]);pos+=match[0].length;
+  }
+  let at=0,depth=0;
+  const peek=()=>tokens[at];
+  function primary() {
+    if(++depth>50)throw new FormulaError('公式嵌套过深');
+    let node;const t=tokens[at++];
+    if(t==='('){node=comparison();if(tokens[at++]!==')')throw new FormulaError('缺少右括号');}
+    else if(t==='+'||t==='-'){node={kind:'unary',op:t,child:primary()};}
+    else if(t&&/^(\d|\.)/.test(t)){node={kind:'number',value:Number(t)};}
+    else if(t&&/^[A-Z]+\d*$/.test(t)) {
+      if(peek()==='(') {
+        if(!['MIN','MAX','IF','ROUND','SUM','AVERAGE'].includes(t))throw new FormulaError('不支持的函数：'+t);
+        at++;const args=[];
+        if(peek()!==')')do{args.push(comparison());if(peek()!==',')break;at++;}while(true);
+        if(tokens[at++]!==')')throw new FormulaError('函数缺少右括号');
+        node={kind:'call',name:t,args};
+      } else {
+        const name=t.replace(/\d+$/,'');
+        if(peek()===':') {
+          at++;const end=tokens[at++];
+          if(!end||!/^[A-Z]+\d*$/.test(end))throw new FormulaError('区间末尾应为列标识');
+          const endName=end.replace(/\d+$/,'');
+          if(colNum(endName)<colNum(name)||colNum(endName)-colNum(name)>40)throw new FormulaError('列区间不正确');
+          node={kind:'range',start:name,end:endName};
+        } else node={kind:'column',name};
+      }
+    }else throw new FormulaError('公式在此处不完整');
+    if(peek()==='%'){at++;node={kind:'binary',op:'/',left:node,right:{kind:'number',value:100}};}
+    depth--;return node;
+  }
+  function product(){let left=primary();while(peek()==='*'||peek()==='/'){const op=tokens[at++];left={kind:'binary',op,left,right:primary()};}return left;}
+  function sum(){let left=product();while(peek()==='+'||peek()==='-'){const op=tokens[at++];left={kind:'binary',op,left,right:product()};}return left;}
+  function comparison(){let left=sum();if(['<','>','<=','>=','=','==','!=','<>'].includes(peek())){const op=tokens[at++];left={kind:'binary',op,left,right:sum()};}return left;}
+  const ast=comparison();
+  if(at!==tokens.length)throw new FormulaError('公式存在多余内容：'+tokens[at]);
+  function run(node) {
+    if(node.kind==='number')return node.value;
+    if(node.kind==='column')return resolve(node.name);
+    if(node.kind==='range')return Array.from({length:colNum(node.end)-colNum(node.start)+1},(_,i)=>resolve(colName(colNum(node.start)+i)));
+    if(node.kind==='unary')return(node.op==='-'?-1:1)*run(node.child);
+    if(node.kind==='binary') {
+      const a=run(node.left),b=run(node.right);
+      switch(node.op){case '+':return a+b;case '-':return a-b;case '*':return a*b;case '/':if(b===0)throw new FormulaError('除数不能为0');return a/b;case '<':return a<b;case '>':return a>b;case '<=':return a<=b;case '>=':return a>=b;case '=':case '==':return a===b;case '<>':case '!=':return a!==b;}
+    }
+    if(node.kind==='call'){
+      if(node.name==='IF'){if(node.args.length!==3)throw new FormulaError('IF需要3个参数');return run(node.args[0])?run(node.args[1]):run(node.args[2]);}
+      const values=node.args.flatMap(x=>run(x));
+      if(!values.length)throw new FormulaError('函数参数不能为空');
+      if(node.name==='MIN')return Math.min(...values);
+      if(node.name==='MAX')return Math.max(...values);
+      if(node.name==='SUM')return values.reduce((a,b)=>a+b,0);
+      if(node.name==='AVERAGE')return values.reduce((a,b)=>a+b,0)/values.length;
+      if(node.name==='ROUND'){if(values.length!==2||Math.abs(values[1])>8)throw new FormulaError('ROUND需要数值及有效的小数位');const k=10**values[1];return Math.round((values[0]+Number.EPSILON)*k)/k;}
+    }
+    throw new FormulaError('公式无法计算');
+  }
+  const answer=run(ast);
+  if(typeof answer!=='number'||!Number.isFinite(answer))throw new FormulaError('公式必须返回有效数值');
+  return answer;
+}
+
+function calculateScenario(scenario,inputs,edits={}) {
+  const rules=scenario.rules.map(r=>({...r,...(edits[r.id]||{})}));
+  const formulas=Object.fromEntries(rules.map(r=>[r.id,r.formula]));
+  formulas[scenario.out]=edits[scenario.out]?.formula||scenario.result;
+  const cache={},active=new Set();
+  function resolve(id) {
+    if(active.has(id))throw new FormulaError('循环引用：'+id);
+    if(Object.hasOwn(cache,id))return cache[id];
+    if(INPUTS.some(r=>r.id===id)){
+      const amount=parseMoney(inputs[id]);
+      if(amount===null)throw new FormulaError('待补充 '+id,[id]);
+      return cache[id]=amount;
+    }
+    if(!Object.hasOwn(formulas,id))throw new FormulaError('未知列：'+id);
+    active.add(id);
+    try {return cache[id]=evaluateFormula(formulas[id],resolve);} finally {active.delete(id);}
+  }
+  const get=id=>{try{return{value:resolve(id),error:null,missing:[]};}catch(e){return{value:null,error:e.message,missing:e.missing||[]};}};
+  const results=rules.map(r=>({...r,...get(r.id)}));
+  const result=get(scenario.out);
+  const price=result.value!==null&&result.value>0?Math.floor((result.value+1e-9)*100)/100:null;
+  if(result.value!==null&&result.value<=0)result.error='结果不大于0，请检查公式';
+  return {rules:results,...result,price,resultFormula:formulas[scenario.out]};
+}
+
+
+const IMPORT_FIELDS=[
+  {key:'date',label:'日期',aliases:['日期','抓取时间','抓取日期','采集时间','date','timestamp'],required:true},
+  {key:'price',label:'成交价$',aliases:['成交价','成交价$','实际成交价','实际成交价$','成交价格','price','saleprice'],required:true},
+  {key:'list',label:'挂价$',aliases:['挂价','挂价$','实际挂价','实际挂价$','listingprice']},
+  {key:'event',label:'活动类型',aliases:['活动类型','促销类型','promotiontype']},
+  {key:'eventPrice',label:'活动价$',aliases:['活动价','活动价$','实际活动价','实际活动价$','promotionprice']},
+  {key:'type',label:'价格类型',aliases:['价格类型','pricetype']},
+  {key:'note',label:'备注',aliases:['备注','说明','note','notes']},
+  {key:'asin',label:'ASIN（校验）',aliases:['asin']},
+  {key:'site',label:'站点（校验）',aliases:['站点','国家','site','marketplace']}
+];
+const normalizeHeader=value=>String(value??'').trim().toLowerCase().replace(/[\s＄$＿_]/g,'');
+function detectImportMapping(headers){
+  return Object.fromEntries(IMPORT_FIELDS.map(field=>[field.key,headers.findIndex(h=>field.aliases.some(alias=>normalizeHeader(alias)===normalizeHeader(h)))]));
+}
+function parsePastedTable(text){
+  const source=String(text||'').replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n');
+  const separator=source.split('\n').find(line=>line.trim())?.includes('\t')?'\t':',';
+  const rows=[];let row=[],cell='',quoted=false;
+  for(let i=0;i<source.length;i++){
+    const char=source[i];
+    if(char==='"'&&(quoted||cell==='')){if(quoted&&source[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;}
+    else if(char===separator&&!quoted){row.push(cell);cell='';}
+    else if(char==='\n'&&!quoted){row.push(cell);if(row.some(v=>v.trim()))rows.push(row);row=[];cell='';}
+    else cell+=char;
+  }
+  if(quoted)throw Error('粘贴内容的引号未闭合，请重新复制完整表格。');
+  row.push(cell);if(row.some(v=>v.trim()))rows.push(row);
+  return rows;
+}
+function findImportHeader(matrix){
+  for(let i=0;i<Math.min(matrix.length,20);i++){
+    const mapping=detectImportMapping(matrix[i]);
+    if(mapping.date>=0&&mapping.price>=0)return{headers:matrix[i].map(v=>String(v??'')),rows:matrix.slice(i+1),mapping};
+  }
+  if(!matrix.length)throw Error('请先上传文件或粘贴包含列名的数据。');
+  return{headers:matrix[0].map(v=>String(v??'')),rows:matrix.slice(1),mapping:detectImportMapping(matrix[0])};
+}
+function normalizeImportDate(value,date1904=false){
+  if(typeof value==='number'||/^\d{5}(?:\.\d+)?$/.test(String(value).trim())){
+    const serial=Number(value);
+    if(serial<1||serial>100000)return null;
+    const iso=new Date(Date.parse(date1904?'1904-01-01T00:00:00Z':'1899-12-30T00:00:00Z')+Math.round(serial*86400000)).toISOString();
+    return{date:iso.slice(0,10),stamp:iso.slice(0,19),hasTime:Math.abs(serial-Math.floor(serial))>1e-8};
+  }
+  const match=String(value??'').trim().match(/^(\d{4})[-/年](\d{1,2})[-/月](\d{1,2})(?:日)?(?:[ T](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?$/);
+  if(!match)return null;
+  const [year,month,day]=match.slice(1,4),date=[year,month.padStart(2,'0'),day.padStart(2,'0')].join('-');
+  const time=match.slice(4,7).map(v=>(v||'0').padStart(2,'0')).join(':');
+  if(!validDate(date)||Number(match[4]||0)>23||Number(match[5]||0)>59||Number(match[6]||0)>59)return null;
+  return{date,stamp:date+'T'+time,hasTime:match[4]!==undefined};
+}
+function prepareImport(table,existing,options={}){
+  const mapping=options.mapping||table.mapping,today=options.today||TODAY;
+  const issues=[],skipped=[],groups=new Map();
+  if(mapping.date<0||mapping.price<0)return{changes:[],issues:[{line:1,message:'必须映射日期和成交价两列。'}],skipped,sourceCount:table.rows.length,collapsed:0};
+  const get=(row,key)=>mapping[key]>=0?row[mapping[key]]:undefined;
+  for(let i=0;i<table.rows.length;i++){
+    const cells=table.rows[i],line=i+2;
+    if(!cells.some(v=>String(v??'').trim()))continue;
+    const asin=String(get(cells,'asin')||'').trim().toUpperCase(),site=String(get(cells,'site')||'').trim().toUpperCase();
+    if((mapping.asin>=0&&asin!=='B0CTHJW813')||(mapping.site>=0&&!['US','美国','美国站','USA'].includes(site))){skipped.push({line,message:'不属于当前 AD600S / 美国站'});continue;}
+    const date=normalizeImportDate(get(cells,'date'),options.date1904);
+    const rawPrice=get(cells,'price'),price=parseMoney(rawPrice);
+    if(!date){issues.push({line,message:'日期或抓取时间无效'});continue;}
+    if(String(rawPrice??'').trim()===''){skipped.push({line,message:date.date+' 抓取价格为空，跳过且不补零'});continue;}
+    if(price===null){issues.push({line,message:'成交价须为大于0的数字'});continue;}
+    const patch={date:date.date,price,sourceTime:date.stamp};
+    let bad=false;
+    for(const field of ['list','eventPrice'])if(mapping[field]>=0){
+      const value=get(cells,field),blank=String(value??'').trim()==='';
+      if(blank||Number(value)===0){if(field==='eventPrice')patch.eventPrice=null;continue;}
+      const amount=parseMoney(value);if(amount===null){issues.push({line,message:(field==='list'?'挂价':'活动价')+'不是有效金额'});bad=true;break;}patch[field]=amount;
+    }
+    if(bad)continue;
+    if(mapping.event>=0)patch.event=String(get(cells,'event')??'').trim();
+    if(mapping.type>=0&&String(get(cells,'type')??'').trim())patch.type=String(get(cells,'type')).trim();
+    else if(mapping.event>=0)patch.type=patch.event||((patch.eventPrice??null)!==null?'促销':'平销');
+    const note=String(get(cells,'note')??'').trim();if(note)patch.note=note;
+    const status=recordStatus({...patch,note:note||''},today),key=date.date+'|'+status;
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push({patch,status,stamp:date.stamp,hasTime:date.hasTime,line});
+  }
+  const changes=[];let collapsed=0;
+  for(const entries of groups.values()){
+    collapsed+=entries.length-1;
+    entries.sort((a,b)=>a.stamp.localeCompare(b.stamp)||a.line-b.line);
+    const latest=entries.at(-1),ties=entries.filter(v=>v.stamp===latest.stamp);
+    const signatures=new Set(ties.map(v=>JSON.stringify([v.patch.price,v.patch.list??null,v.patch.event??null,v.patch.eventPrice??null,v.patch.type??null])));
+    if(signatures.size>1){issues.push({line:latest.line,message:latest.patch.date+' 同一时间有不同价格，需先处理冲突'});continue;}
+    const matches=existing.filter(row=>row.date===latest.patch.date&&recordStatus(row,today)===latest.status);
+    if(matches.length>1){issues.push({line:latest.line,message:latest.patch.date+' 已有重复的同类记录，请先核对'});continue;}
+    const before=matches[0]||null;
+    if(before?.sourceTime&&before.sourceTime>latest.stamp){skipped.push({line:latest.line,message:latest.patch.date+' 已保存更晚抓取记录'});continue;}
+    const after={...(before||{note:'',type:'平销',list:null,event:'',eventPrice:null}),...latest.patch};
+    const changed=!before||Object.keys(latest.patch).some(k=>k==='price'||k==='list'||k==='eventPrice'?parseMoney(before[k])!==parseMoney(after[k]):String(before[k]??'')!==String(after[k]??''));
+    changes.push({before,after,status:latest.status,action:!before?'add':changed?'update':'unchanged',line:latest.line});
+  }
+  changes.sort((a,b)=>a.after.date.localeCompare(b.after.date));
+  return{changes,issues,skipped,sourceCount:table.rows.length,collapsed};
+}
+
+function adviceAt(rows,settings,deadline){
+  const forecast=getReferenceDetection(rows,{...settings,anchor:deadline,includePlans:true}),today=settings.today||TODAY;
+  const needed=Math.max(0,9-forecast.matches.length),hits=new Set(forecast.matches.map(row=>row.date));
+  const blocked=new Set(forecast.conflicts),available=[],promotions=[];
+  for(let date=deadline;date>today&&date>=addDays(deadline,-89);date=addDays(date,-1)){
+    if(hits.has(date)||blocked.has(date))continue;
+    const sameDay=rows.filter(row=>row.date===date);
+    if(sameDay.some(row=>recordStatus(row,today)!=='plan'))continue;
+    if(sameDay.some(isPromotion)){promotions.push(date);continue;}
+    available.push(date);
+  }
+  const dates=available.slice(0,needed).sort();
+  const simulated=rows.map(row=>dates.includes(row.date)&&recordStatus(row,today)==='plan'?{...row,price:forecast.listPrice}:row);
+  for(const date of dates)if(!rows.some(row=>row.date===date))simulated.push({id:'advice-'+date,date,price:forecast.listPrice,type:'平销',note:'计划'});
+  const projected=getReferenceDetection(simulated,{...settings,anchor:deadline,includePlans:true});
+  return{deadline,forecast,needed,dates,promotions,projected:projected.matches.length,feasible:projected.matches.length>=9};
+}
+function getPriceAdvice(rows,settings={}){
+  const selected=getReferenceDetection(rows,settings),today=settings.today||TODAY;
+  const base={actualCount:selected.actualMatches.length,plannedCount:selected.planMatches.length,selectedCount:selected.matches.length,listPrice:selected.listPrice,anchor:selected.anchor};
+  if(selected.listPrice===null)return{...base,kind:'missing'};
+  if(selected.matches.length>=9)return{...base,kind:'sufficient'};
+  if(selected.anchor<today)return{...base,kind:'historical'};
+  let proposal=adviceAt(rows,settings,selected.anchor);
+  if(proposal.feasible)return{...base,...proposal,kind:proposal.needed?'recommend':'covered'};
+  if(selected.anchor===today){
+    for(let offset=1;offset<=90;offset++){
+      proposal=adviceAt(rows,settings,addDays(today,offset));
+      if(proposal.feasible)return{...base,...proposal,kind:proposal.needed?'recommend':'covered'};
+    }
+  }
+  return{...base,...proposal,kind:'insufficient'};
+}
+
+async function readPriceWorkbook(file){
+  if(file.size>20*1024*1024)throw Error('单个文件限20MB，请缩小导出区间。');
+  const bytes=new Uint8Array(await file.arrayBuffer()),view=new DataView(bytes.buffer),decoder=new TextDecoder('utf-8');
+  let footer=-1;
+  for(let i=bytes.length-22;i>=Math.max(0,bytes.length-65557);i--)if(view.getUint32(i,true)===0x06054b50){footer=i;break;}
+  if(footer<0)throw Error('无法识别这个Excel文件，请使用.xlsx格式。');
+  const entries=new Map();let offset=view.getUint32(footer+16,true);
+  const count=view.getUint16(footer+10,true);
+  if(count>5000)throw Error('文件包含过多工作簿资源，请另存为简洁的.xlsx。');
+  for(let i=0;i<count;i++){
+    if(offset+46>bytes.length||view.getUint32(offset,true)!==0x02014b50)throw Error('Excel压缩目录损坏。');
+    const nameLength=view.getUint16(offset+28,true),extraLength=view.getUint16(offset+30,true),commentLength=view.getUint16(offset+32,true);
+    const name=decoder.decode(bytes.subarray(offset+46,offset+46+nameLength));
+    entries.set(name,{method:view.getUint16(offset+10,true),flags:view.getUint16(offset+8,true),size:view.getUint32(offset+24,true),compressed:view.getUint32(offset+20,true),local:view.getUint32(offset+42,true)});
+    offset+=46+nameLength+extraLength+commentLength;
+  }
+  const xml=async(path,optional=false)=>{
+    const entry=entries.get(path);if(!entry){if(optional)return null;throw Error('Excel缺少工作表资源：'+path);}
+    if(entry.flags&1)throw Error('暂不支持加密工作簿，请先解除文件密码。');
+    if(entry.size>20*1024*1024||entry.local+30>bytes.length)throw Error('工作表过大或文件损坏。');
+    if(view.getUint32(entry.local,true)!==0x04034b50)throw Error('Excel资源头损坏。');
+    const start=entry.local+30+view.getUint16(entry.local+26,true)+view.getUint16(entry.local+28,true);
+    if(start+entry.compressed>bytes.length)throw Error('Excel资源内容不完整。');
+    let data=bytes.subarray(start,start+entry.compressed);
+    if(entry.method===8){
+      if(!globalThis.DecompressionStream)throw Error('当前浏览器不支持Excel解压，请使用粘贴或CSV方式。');
+      const reader=new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader();
+      const chunks=[];let size=0;
+      while(true){const part=await reader.read();if(part.done)break;size+=part.value.length;if(size>20*1024*1024){await reader.cancel();throw Error('工作表解压后过大。');}chunks.push(part.value);}
+      data=new Uint8Array(size);let at=0;for(const chunk of chunks){data.set(chunk,at);at+=chunk.length;}
+    }else if(entry.method!==0)throw Error('不支持这个Excel文件的压缩方式。');
+    const doc=new DOMParser().parseFromString(decoder.decode(data),'application/xml');
+    if(doc.getElementsByTagName('parsererror').length)throw Error('Excel表格内容无法解析。');
+    return doc;
+  };
+  const elements=(node,name)=>Array.from(node.getElementsByTagNameNS('*',name));
+  const workbook=await xml('xl/workbook.xml'),rels=await xml('xl/_rels/workbook.xml.rels');
+  const relationships=new Map(elements(rels,'Relationship').filter(r=>r.getAttribute('TargetMode')!=='External').map(r=>[r.getAttribute('Id'),r.getAttribute('Target')]));
+  const shared=await xml('xl/sharedStrings.xml',true);
+  const strings=shared?elements(shared,'si').map(si=>elements(si,'t').map(t=>t.textContent).join('')):[];
+  const date1904=['1','true'].includes(elements(workbook,'workbookPr')[0]?.getAttribute('date1904'));
+  const sheets=[];
+  for(const sheet of elements(workbook,'sheet').slice(0,20)){
+    const id=sheet.getAttribute('r:id')||sheet.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');
+    const target=relationships.get(id);if(!target)continue;
+    const segments=(target.startsWith('/')?target.slice(1):'xl/'+target).split('/'),path=[];
+    for(const segment of segments){if(segment==='..')path.pop();else if(segment&&segment!=='.')path.push(segment);}
+    const doc=await xml(path.join('/')),matrix=[];
+    for(const row of elements(doc,'row')){
+      if(matrix.length>=10000)throw Error('演示版每次最多导入10000行，请分段导入。');
+      const values=[];
+      for(const cell of elements(row,'c')){
+        const letters=cell.getAttribute('r')?.match(/^[A-Z]+/)?.[0];
+        const column=letters?[...letters].reduce((n,c)=>n*26+c.charCodeAt(0)-64,0)-1:values.length;
+        if(column>255)continue;
+        const type=cell.getAttribute('t'),raw=elements(cell,'v')[0]?.textContent??'';
+        let value=type==='s'?(strings[Number(raw)]??''):type==='inlineStr'?elements(cell,'t').map(t=>t.textContent).join(''):type==='e'?'':raw;
+        if((!type||type==='n')&&raw.trim()!==''&&Number.isFinite(Number(raw)))value=Number(raw);
+        values[column]=value;
+      }
+      if(values.some(v=>String(v??'').trim()))matrix.push(Array.from({length:values.length},(_,i)=>values[i]??''));
+    }
+    sheets.push({name:sheet.getAttribute('name')||'工作表',matrix});
+  }
+  if(!sheets.length)throw Error('文件中没有可读取的工作表。');
+  return{sheets,date1904};
+}
+
+const BASE_ROWS = [];
+const IMPORT_SAMPLE = [];
+const root=document.getElementById('ad600s-price-workspace');
+const $=id=>root.querySelector('#'+id);
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=(value,exact=false)=>value===null||value===undefined||!Number.isFinite(value)?'—':'$'+Number(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:exact?4:Math.abs(value*100-Math.round(value*100))>1e-6?3:2});
+const dateShort=s=>s.slice(5).replace('-','/');
+const dateText=s=>s.replaceAll('-','/');
+const statusLabels={actual:'实际',plan:'计划',pending:'待确认'};
+const defaults={version:1,page:'schedule',anchor:'2026-11-03',anchorAuto:true,listPrice:239.99,referenceScope:'actual',month:'2026-11',start:'2026-11-01',end:'2026-11-30',status:'all',view:'table',pageIndex:0,scenario:'bd',editRules:false,patches:{},added:[],overrides:{},labels:{},formulas:{},density:'compact'};
+function savedObject(snapshot){return snapshot||{};}
+function restore(snapshot){const saved=savedObject(snapshot);return saved.version===1?{...structuredClone(defaults),...saved}:structuredClone(defaults);}
+let state=restore(BOOTSTRAP.state);
+let currentStats,selectedMetric=null,selectedDay=null,editorId=null,saveTimer=null;
+function allRows(){return [...(state.baseRows||BASE_ROWS).map(r=>({...r,...(state.patches[r.id]||{})})),...state.added.map(r=>({...r,...(state.patches[r.id]||{})}))];}
+function freshStats(){const s=getStats(allRows(),{anchor:state.anchorAuto?undefined:state.anchor,listPrice:state.listPrice,today:TODAY});if(state.anchorAuto)state.anchor=s.anchor;return s;}
+function setSaveStatus(text){$('pw-save').innerHTML='<span class="pw-save-dot"></span>'+escapeHtml(text);}
+function updateRecord(id,key,value){state.patches[id]={...(state.patches[id]||{}),[key]:value};}
+function alertMessage(text){$('pw-alert').textContent=text;$('pw-alert').hidden=!text;}
+function renderMetrics(){
+  const s=currentStats;
+  const items=[
+    ['list','日常有效参考价（List Price）',s.listPrice,`${s.matches.length} / 9天 · ${s.matches.length>=9?'达到设置天数':'未达到设置天数'}`],
+    ['was','Was Price · 90天中间价',s.was,`${s.w90.length}个有效实际日期`],
+    ['low30','近30天最低价（含促销）',s.low30,`${dateShort(addDays(s.anchor,-29))}–${dateShort(s.anchor)}`],
+    ['low60','近60天最低价（含促销）',s.low60,`${dateShort(addDays(s.anchor,-59))}–${dateShort(s.anchor)}`],
+    ['regular30','近30天最低价（不含促销）',s.regular30,`${s.regularDays.length}个平销日期`]
+  ];
+  $('pw-metrics').innerHTML=items.map(([id,label,value,foot])=>`<button type="button" class="pw-metric" data-metric="${id}" aria-label="查看${escapeHtml(label)}取数"><span class="pw-metric-label">${label}</span><strong class="pw-metric-value" data-metric-value="${id}">${money(value)}</strong><span class="pw-metric-foot ${id==='list'&&s.matches.length>=9?'pw-good':''}">${foot}</span></button>`).join('');
+  renderMetricDetail();
+}
+function renderMetricDetail(){
+  const el=$('pw-metric-detail');el.hidden=!selectedMetric;if(!selectedMetric)return;
+  const s=currentStats;let title='',body='';
+  if(selectedMetric==='list'){title='参考价的实际匹配记录';body=`${dateText(addDays(s.anchor,-89))}–${dateText(s.anchor)}，实际成交价等于 ${money(s.listPrice)} 的日期共 ${s.matches.length} 天。${s.matches.map(r=>dateShort(r.date)).join('、')||'当前没有匹配日期'}。`;}
+  else if(selectedMetric==='was'){const n=s.ordered.length;title='Was Price 取数';body=`${dateText(addDays(s.anchor,-89))}–${dateText(s.anchor)}，${n}个有效实际日价格按数值排序。`;if(n)body+=n%2?`第${(n+1)/2}项为 ${money(s.was)}。`:`第${n/2}项 ${money(s.ordered[n/2-1]/100)} 与第${n/2+1}项 ${money(s.ordered[n/2]/100)} 的平均值为 ${money(s.was)}。`;if(n<90)body+='未记录日期不补零。';}
+  else{const source=selectedMetric==='low30'?s.w30:selectedMetric==='low60'?s.w60:s.regularDays;const value=s[selectedMetric];title=selectedMetric==='regular30'?'不含促销的最低价来源':'含促销的最低价来源';const hits=source.filter(r=>r.price===value);body=value===null?'该窗口没有有效实际价格。':`${money(value)}，来自 ${hits.slice(0,12).map(r=>dateShort(r.date)+' '+r.type).join('、')}${hits.length>12?`等${hits.length}天`:''}。`;
+  }
+  el.innerHTML=`<div class="pw-detail-head"><strong>${title}</strong><button type="button" class="pw-quiet-button" data-action="close-detail">收起</button></div><div>${escapeHtml(body)}</div>`;
+}
+function currentRange(){if(state.month==='custom')return{start:state.start,end:state.end};return{start:state.month+'-01',end:addDays(addDays(state.month+'-01',32).slice(0,7)+'-01',-1)};}
+function filteredRows(){const range=currentRange();if(!validDate(range.start)||!validDate(range.end)||range.start>range.end)return[];return allRows().filter(r=>r.date>=range.start&&r.date<=range.end&&(state.status==='all'||recordStatus(r)===state.status)).sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id));}
+function renderFilters(){
+  const months=[...new Set((allRows().length?allRows():[{date:state.month==='custom'?TODAY:state.month+'-01'}]).map(r=>r.date.slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)))].sort();
+  $('pw-month').innerHTML=months.map(m=>`<option value="${m}">${m.slice(0,4)}年${Number(m.slice(5))}月</option>`).join('')+'<option value="custom">自定义区间</option>';
+  $('pw-month').value=state.month;$('pw-start').value=state.start;$('pw-end').value=state.end;$('pw-status').value=state.status;$('pw-range').hidden=state.month!=='custom';
+  root.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('is-active',b.dataset.view===state.view);b.setAttribute('aria-pressed',String(b.dataset.view===state.view));});
+}
+function renderRecords(){
+  const list=filteredRows(),size=7,pages=Math.max(1,Math.ceil(list.length/size));state.pageIndex=Math.max(0,Math.min(state.pageIndex,pages-1));
+  const range=currentRange();$('pw-filter-count').textContent=`${list.length}条`;
+  const calendar=state.view==='calendar'&&state.month!=='custom';
+  if(!list.length)$('pw-records').innerHTML='<div class="pw-empty">当前范围没有记录，可新增日期或切换筛选。</div>';
+  else if(calendar){
+    const monthDays=Number(range.end.slice(-2));const offset=(new Date(range.start+'T00:00:00Z').getUTCDay()+6)%7;
+    const map=new Map();for(const r of list){if(!map.has(r.date)||recordStatus(r)==='actual')map.set(r.date,r);}
+    let html=['一','二','三','四','五','六','日'].map(v=>`<div class="pw-calendar-weekday">周${v}</div>`).join('');
+    html+='<div class="pw-calendar-empty"></div>'.repeat(offset);
+    for(let i=1;i<=monthDays;i++){const date=state.month+'-'+String(i).padStart(2,'0'),r=map.get(date);if(r){const status=recordStatus(r);html+=`<button type="button" class="pw-calendar-day ${status} ${r.type==='黑五BD'?'pw-blackfriday':''}" data-edit="${r.id}" aria-label="${date} ${statusLabels[status]} ${money(parseMoney(r.price))} ${escapeHtml(r.type)}"><span class="pw-calendar-meta"><span>${i}</span><span>${statusLabels[status]}</span></span><strong>${money(parseMoney(r.price))}</strong><span>${escapeHtml(r.type)}</span></button>`;}else html+=`<div class="pw-calendar-empty"><span class="pw-calendar-weekday">${i}</span></div>`;}
+    $('pw-records').innerHTML='<div class="pw-month-grid">'+html+'</div>';
+  }else{
+    const visible=list.slice(state.pageIndex*size,(state.pageIndex+1)*size);
+    const weekday=['日','一','二','三','四','五','六'];
+    $('pw-records').innerHTML=`<table class="pw-record-table"><thead><tr><th>日期</th><th>记录</th><th class="pw-money-cell">成交价 $</th><th class="pw-money-cell">挂价 $</th><th>价格类型</th><th class="pw-money-cell">活动价 $</th><th>备注</th><th></th></tr></thead><tbody>${visible.map(r=>{const status=recordStatus(r);return`<tr data-record="${r.id}"><td>${dateShort(r.date)}<span class="pw-weekday">周${weekday[new Date(r.date+'T00:00:00Z').getUTCDay()]}</span></td><td><span class="pw-status-pill ${status}">${statusLabels[status]}</span></td><td class="pw-money-cell"><input class="pw-cell-input" type="number" min="0.01" step="0.01" value="${escapeHtml(r.price??'')}" data-record-id="${r.id}" data-record-field="price" aria-label="${r.date} 成交价" placeholder="—"></td><td class="pw-money-cell"><input class="pw-cell-input" type="number" min="0.01" step="0.01" value="${escapeHtml(r.list??'')}" data-record-id="${r.id}" data-record-field="list" aria-label="${r.date} 挂价" placeholder="—"></td><td><span class="pw-type ${r.type==='黑五BD'?'pw-blackfriday':''}">${escapeHtml(r.type)}</span></td><td class="pw-money-cell"><input class="pw-cell-input" type="number" min="0.01" step="0.01" value="${escapeHtml(r.eventPrice??'')}" data-record-id="${r.id}" data-record-field="eventPrice" aria-label="${r.date} 活动价" placeholder="—"></td><td><input type="text" class="pw-note-input" value="${escapeHtml(r.note)}" data-record-id="${r.id}" data-record-field="note" aria-label="${r.date} 备注" placeholder="添加备注" maxlength="200"></td><td><button type="button" class="pw-edit-button" data-edit="${r.id}">编辑</button></td></tr>`;}).join('')}</tbody></table>`;
+  }
+  $('pw-pager').hidden=calendar;
+  $('pw-pager').innerHTML=`<span>备注含“计划”即归入计划；到期后仍需确认实际。</span><div><button type="button" data-pager="-1" ${state.pageIndex===0?'disabled':''} aria-label="上一页">‹</button><span>${list.length?state.pageIndex+1:0} / ${list.length?pages:0}</span><button type="button" data-pager="1" ${state.pageIndex>=pages-1?'disabled':''} aria-label="下一页">›</button></div>`;
+  $('pw-chart-period').textContent=`${dateText(range.start)}–${dateText(range.end)} · 成交价（USD）`;
+}
+function renderChart(){
+  if(state.page!=='schedule')return;
+  const chart=$('pw-chart'),range=currentRange(),rows=filteredRows();
+  const width=Math.max(250,chart.clientWidth-24),height=160,left=49,right=15,top=12,bottom=27;
+  const source=rows.filter(r=>parseMoney(r.price)!==null),prices=source.map(r=>parseMoney(r.price));
+  if(currentStats.listPrice!==null)prices.push(currentStats.listPrice);
+  if(!prices.length||!validDate(range.start)||!validDate(range.end)){chart.innerHTML='<div class="pw-empty">暂无可绘制的有效价格</div>';return;}
+  const min=Math.floor((Math.min(...prices)-12)/10)*10,max=Math.ceil((Math.max(...prices)+12)/10)*10;
+  const daySpan=daysBetween(range.start,range.end),span=Math.max(1,daySpan);
+  const x=d=>daySpan===0?(left+width-right)/2:left+daysBetween(range.start,d)/span*(width-left-right),y=p=>top+(max-p)/(max-min)*(height-top-bottom);
+  let markup='';
+  for(let i=0;i<=3;i++){const value=min+(max-min)*i/3,yy=y(value);markup+=`<line class="pw-grid-line" x1="${left}" x2="${width-right}" y1="${yy}" y2="${yy}"></line><text x="${left-8}" y="${yy+4}" text-anchor="end">${Math.round(value)}</text>`;}
+  const ticks=daySpan===0?1:width<460?3:5;for(let i=0;i<ticks;i++){const date=addDays(range.start,Math.round(daySpan*i/Math.max(1,ticks-1)));markup+=`<text x="${x(date)}" y="${height-6}" text-anchor="${ticks===1?'middle':i===0?'start':i===ticks-1?'end':'middle'}">${dateShort(date)}</text>`;}
+  if(currentStats.listPrice!==null)markup+=`<line class="pw-chart-reference" x1="${left}" x2="${width-right}" y1="${y(currentStats.listPrice)}" y2="${y(currentStats.listPrice)}"></line>`;
+  for(const status of ['actual','plan']){
+    const values=source.filter(r=>recordStatus(r)===status);let path='',prior=null;
+    for(const r of values){const separate=prior===null||daysBetween(prior.date,r.date)>1;path+=(separate?'M':'L')+x(r.date).toFixed(2)+','+y(parseMoney(r.price)).toFixed(2)+' ';prior=r;}
+    if(status==='actual'&&values.length>1&&values.every((r,i)=>i===0||daysBetween(values[i-1].date,r.date)===1))markup+=`<path class="pw-chart-area" d="${path}L${x(values.at(-1).date)},${height-bottom}L${x(values[0].date)},${height-bottom}Z"></path>`;
+    markup+=`<path class="pw-chart-${status}" d="${path}"></path>`;
+    for(const r of values)markup+=`<circle class="pw-dot-${status}" cx="${x(r.date)}" cy="${y(parseMoney(r.price))}" r="2.6"></circle><circle fill="transparent" cx="${x(r.date)}" cy="${y(parseMoney(r.price))}" r="12" data-edit="${r.id}" data-tooltip="${r.date} ${statusLabels[status]} ${money(parseMoney(r.price))} ${escapeHtml(r.type)}" aria-label="${r.date} ${statusLabels[status]} ${money(parseMoney(r.price))}"></circle>`;
+  }
+  chart.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${dateText(range.start)}至${dateText(range.end)}实际与计划成交价走势，单位美元"><text x="${width-right}" y="10" text-anchor="end">USD</text>${markup}</svg>`;
+}
+function referenceDetection(){return getReferenceDetection(allRows(),{anchor:currentStats.anchor,listPrice:state.listPrice,today:TODAY,includePlans:state.referenceScope==='with-plans'});}
+function renderReference(){
+  const s=referenceDetection(),forecast=s.includePlans;
+  $('pw-reference-scope').value=forecast?'with-plans':'actual';
+  if(document.activeElement!==$('pw-list-price'))$('pw-list-price').value=state.listPrice;
+  $('pw-reference-window').textContent=dateText(addDays(s.anchor,-89))+' – '+dateText(s.anchor);
+  $('pw-reference-count-rule').innerHTML=(forecast?'实际或计划价格等于设置价':'实际成交价等于设置价')+'<br>同一日期只计一次';
+  const reached=s.matches.length>=9;
+  const resultStatus=forecast?(reached?'按计划预测可达到设置天数':`按计划预测还差 ${9-s.matches.length} 天`):(reached?'已达到设置天数':`还差 ${9-s.matches.length} 天`);
+  $('pw-reference-result').innerHTML=`<strong class="pw-days-value">${s.matches.length}</strong><span class="pw-days-unit">天 / 目标9天${forecast?' · 预测':''}</span><span class="pw-day-status ${!forecast&&reached?'pw-good':'pw-warn'}">${resultStatus}</span>${forecast?`<span class="pw-small pw-reference-breakdown">实际匹配 ${s.actualMatches.length} 天 ＋ 计划匹配 ${s.planMatches.length} 天</span>`:''}`;
+  $('pw-reference-progress').style.width=Math.min(100,s.matches.length/9*100)+'%';
+  $('pw-reference-progress').classList.toggle('forecast',forecast);
+  $('pw-reference-note').textContent=forecast?'含计划结果用于预测；同日有实际记录时优先实际，计划仍需落实。':'按实际价格记录与设置规则检测，平台认可状态需另行确认。';
+  $('pw-coverage').textContent=forecast?`实际 ${s.actualDays.length} 天 ＋ 计划 ${s.planDays.length} 天 · 合计 ${s.days.length}/90天`:`实际有效 ${s.actualDays.length}/90天 · 计划不计入`;
+  $('pw-reference-legend').innerHTML=forecast?'<span><b class="pw-window-key pw-hit-key"></b>实际匹配</span><span><b class="pw-window-key pw-plan-hit-key"></b>计划匹配</span><span><b class="pw-window-key pw-actual-key"></b>其他实际价</span><span><b class="pw-window-key pw-plan-key-fill"></b>其他计划价</span><span><b class="pw-window-key pw-missing-key"></b>无有效记录</span>':'<span><b class="pw-window-key pw-hit-key"></b>匹配设置价</span><span><b class="pw-window-key pw-actual-key"></b>其他实际价</span><span><b class="pw-window-key pw-missing-key"></b>无有效实际记录</span>';
+  $('pw-reference-conflicts').hidden=!s.conflicts.length;
+  $('pw-reference-conflicts').textContent=s.conflicts.length?'同日价格冲突，暂不计入：'+s.conflicts.map(dateShort).join('、'):'';
+  const byDate=new Map(s.days.map(r=>[r.date,r]));const hits=new Set(s.matches.map(r=>r.date));
+  $('pw-day-grid').innerHTML=Array.from({length:90},(_,i)=>{const d=addDays(s.anchor,-89+i),r=byDate.get(d),description=r?statusLabels[r.status]+' '+money(r.price)+' '+r.type:forecast?'无有效实际或计划记录':'无有效实际记录';return`<button type="button" class="pw-day-tile cursor-interaction ${r?.status==='plan'?'plan ':''}${hits.has(d)?'hit':r?'':'missing'} ${selectedDay===d?'selected':''}" data-day="${d}" data-tooltip="${d} ${escapeHtml(description)}" aria-label="${d} ${hits.has(d)?'匹配设置价 ':''}${escapeHtml(description)}">${d.slice(-2)}</button>`;}).join('');
+  if(selectedDay){const r=byDate.get(selectedDay);$('pw-day-selection').textContent=`${dateText(selectedDay)} · ${r?statusLabels[r.status]+' '+money(r.price)+' · '+r.type+(hits.has(selectedDay)?' · 匹配设置价':'')+(r.status==='plan'?' · 尚未落实':''):forecast?'无有效实际或计划记录':'无有效实际记录，计划不计入当前范围'}`;}
+  else $('pw-day-selection').textContent=`${dateText(addDays(s.anchor,-89))} 开始，按日期从左到右排列；点击查看记录。`;
+  $('pw-match-count').textContent=forecast?`共 ${s.matches.length} 天 · 实际 ${s.actualMatches.length} 天 / 计划 ${s.planMatches.length} 天`:`共 ${s.matches.length} 个实际日期，已按日期去重`;
+  $('pw-matches').innerHTML=s.matches.length?`<div class="pw-matches">${s.matches.map(r=>`<button type="button" class="pw-match cursor-interaction ${r.status==='plan'?'plan':''}" data-day="${r.date}">${dateText(r.date)} <span>${statusLabels[r.status]} · ${escapeHtml(r.type)}</span></button>`).join('')}</div>`:`<div class="pw-empty">此窗口没有匹配设置价的${forecast?'实际或计划':'实际'}记录。</div>`;
+  renderPriceAdvice();
+}
+function calculatorInputs(){const s=currentStats;const from={B:s.listPrice,C:s.was,D:s.low30,E:s.low60,F:null};return Object.fromEntries(INPUTS.map(f=>[f.id,Object.hasOwn(state.overrides,f.id)?state.overrides[f.id]:from[f.id]]));}
+function renderBasis(){
+  const values=calculatorInputs();
+  $('pw-basis').innerHTML=INPUTS.map(f=>`<div class="pw-basis-item"><label class="pw-basis-label" for="pw-base-${f.id}"><span class="pw-col-id">${f.id}</span>${state.editRules?`<input class="pw-label-edit" type="text" data-label-id="${f.id}" aria-label="${f.id} 列名" value="${escapeHtml(state.labels[f.id]||f.label)}" maxlength="40">`:`<span>${escapeHtml(state.labels[f.id]||f.label)}</span>`}</label><input type="number" class="pw-basis-input" id="pw-base-${f.id}" data-basis-id="${f.id}" aria-label="${f.id} ${escapeHtml(state.labels[f.id]||f.label)}" value="${values[f.id]??''}" min="0.01" step="0.01" placeholder="待输入"><span data-basis-source="${f.id}">${f.id==='F'?'附件未提供AD600S数值，需手填':Object.hasOwn(state.overrides,f.id)?'手动试算':'来自实际看板'}</span></div>`).join('');
+}
+function scenarioEdits(){return Object.fromEntries(Object.keys(state.formulas).map(k=>[k,{formula:state.formulas[k]}]));}
+function activeScenario(){return SCENARIOS.find(s=>s.id===state.scenario)||SCENARIOS[0];}
+function renderCalculator(){
+  renderBasis();const scenario=activeScenario();
+  $('pw-scenario-title').textContent=scenario.name+' 价格计算';$('pw-scenario-scope').textContent=scenario.scope+' · 规则取自附件，可编辑';
+  $('pw-formula-toggle').textContent=state.editRules?'完成规则编辑':'编辑列名与公式';$('pw-formula-help').hidden=!state.editRules;
+  const rules=[...scenario.rules,{id:scenario.out,label:'推荐价格上限',formula:scenario.result}];
+  $('pw-rules').innerHTML=`<table class="pw-rule-table"><thead><tr><th>列</th><th>列名</th><th>公式</th><th class="pw-rule-value">计算值（USD）</th></tr></thead><tbody>${rules.map(r=>`<tr><td><span class="pw-col-id">${r.id}</span></td><td>${state.editRules?`<input type="text" data-label-id="${r.id}" aria-label="${r.id} 列名" value="${escapeHtml(state.labels[r.id]||r.label)}" maxlength="40">`:escapeHtml(state.labels[r.id]||r.label)}</td><td>${state.editRules?`<input type="text" data-formula-id="${r.id}" aria-label="${r.id} 公式" value="${escapeHtml(state.formulas[r.id]||r.formula)}" maxlength="240" spellcheck="false">`:`<code>${escapeHtml(state.formulas[r.id]||r.formula)}</code>`}</td><td class="pw-rule-value" data-rule-value="${r.id}"></td></tr>`).join('')}</tbody></table>`;
+  renderCalculatorResults();
+}
+function renderCalculatorResults(){
+  const inputs=calculatorInputs(),edits=scenarioEdits(),s=activeScenario();
+  const results=SCENARIOS.map(v=>({scenario:v,result:calculateScenario(v,inputs,edits)}));
+  $('pw-scenario-tabs').innerHTML=results.map(({scenario,result})=>`<button type="button" class="pw-scenario-tab ${scenario.id===s.id?'is-active':''}" data-scenario="${scenario.id}" aria-pressed="${scenario.id===s.id}">${scenario.name}<span style="display:block;margin-top:3px;color:var(--pw-ink)">${result.price!==null?money(result.price):result.missing.length?'待输入 '+result.missing.join('、'):'公式有误'}</span></button>`).join('');
+  const result=results.find(v=>v.scenario.id===s.id).result;
+  for(const r of [...result.rules,{id:s.out,value:result.value,error:result.error,missing:result.missing}]){
+    const el=root.querySelector(`[data-rule-value="${r.id}"]`);if(!el)continue;
+    el.textContent=r.error?r.error:money(r.value,true);el.classList.toggle('is-error',!!r.error);
+  }
+  const error=result.price===null;
+  const label=error?(result.missing.length?'待补充输入':'请检查公式'):'可填价格上限';
+  const value=error?(result.missing.length?result.missing.map(id=>(state.labels[id]||INPUTS.find(v=>v.id===id)?.label||id)).join('、'):'—'):money(result.price);
+  $('pw-calculation-result').innerHTML=`<div><div class="pw-result-label">${label}</div><strong class="pw-result-price" style="${error?'font-size:21px':''}" data-result-price>${escapeHtml(value)}</strong></div><div class="pw-result-note"><span>${error?'填写缺失输入或修正公式后立即重算。':'原始计算上限 '+money(result.value,true)+' · 向下保留2位小数'}</span><span>按当前输入及所选活动规则计算，实际提报价仍以后台门槛为准。</span></div>`;
+}
+function updateCalculatorLinkedValues(){
+  const inputs=calculatorInputs();for(const f of INPUTS){const el=$('pw-base-'+f.id);if(el&&document.activeElement!==el)el.value=inputs[f.id]??'';const text=root.querySelector(`[data-basis-source="${f.id}"]`);if(text)text.textContent=f.id==='F'?'附件未提供AD600S数值，需手填':Object.hasOwn(state.overrides,f.id)?'手动试算':'来自实际看板';}
+  renderCalculatorResults();
+}
+function renderCommon(){
+  currentStats=freshStats();
+  if(document.activeElement!==$('pw-anchor'))$('pw-anchor').value=state.anchor;
+  $('pw-anchor').nextElementSibling.textContent=state.anchorAuto?'默认跟随最新实际日期':'当前为手动设置锚点';
+  const titles={schedule:'价格排期',reference:'参考价检测',calculator:'价格计算器'};
+  const subtitles={schedule:'记录每天的价格，独立管理已发生与未来安排。',reference:'选择实际核对或含计划预测，查看90天内的匹配日期。',calculator:'用实际价格取数，也可手动调整输入、列名与公式。'};
+  $('pw-page-title').textContent=titles[state.page];$('pw-page-subtitle').textContent=subtitles[state.page];
+  root.dataset.density=state.density;
+  root.querySelectorAll('[data-page]').forEach(b=>{const active=b.dataset.page===state.page;b.classList.toggle('is-active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  ['schedule','reference','calculator'].forEach(p=>$('pw-'+p).hidden=p!==state.page);
+  const s=currentStats;
+  $('pw-source-info').textContent=`导入排期 ${state.baseRows.length} 条 · 当前实际 ${s.actualCount} 条 / 计划 ${s.planCount} 条${s.pendingCount?' / 待确认 '+s.pendingCount+' 条':''} · 金额 USD`;
+  const warnings=[];if(s.conflicts.length)warnings.push(`同日实际价格冲突：${s.conflicts.join('、')}，这些日期暂不计入统计`);
+  if(s.pendingCount)warnings.push(`${s.pendingCount}条未来记录未标计划，暂列待确认`);
+  if(!allRows().length)warnings.push('首次使用：点顶部“恢复备份”导入现有价格记录，或使用“批量导入 / 粘贴”。');alertMessage(warnings.join('；'));
+}
+function refreshValues(){renderCommon();renderMetrics();renderReference();updateCalculatorLinkedValues();renderChart();}
+function renderAll(){renderCommon();renderMetrics();renderFilters();renderRecords();renderReference();renderCalculator();renderChart();if(globalThis.lucide)lucide.createIcons({attrs:{width:15,height:15}});}
+function openEditor(id){
+  editorId=id;const existing=id?allRows().find(r=>r.id===id):null;
+  const r=existing||{date:state.anchor>=TODAY?addDays(TODAY,1):state.anchor,price:'',list:'',eventPrice:'',type:'平销',event:'',note:'计划'};
+  $('pw-editor').hidden=false;
+  $('pw-editor').innerHTML=`<div class="pw-detail-head"><h3>${id?'编辑价格记录':'新增价格记录'}</h3><button type="button" class="pw-quiet-button" data-action="close-editor">收起</button></div><div class="pw-editor-fields"><label>日期<input type="date" id="pw-edit-date" value="${r.date}" aria-label="编辑记录日期" ${id?'disabled':''}></label><label>成交价 $<input type="number" id="pw-edit-price" value="${escapeHtml(r.price??'')}" step="0.01" min="0.01" aria-label="编辑记录成交价"></label><label>挂价 $<input type="number" id="pw-edit-list" value="${escapeHtml(r.list??'')}" step="0.01" min="0.01"></label><label>活动价 $<input type="number" id="pw-edit-eventPrice" value="${escapeHtml(r.eventPrice??'')}" step="0.01" min="0.01"></label><label>价格类型<select id="pw-edit-type">${PROMO_TYPES.map(t=>`<option ${r.type===t?'selected':''}>${t}</option>`).join('')}</select></label><label>活动类型<input type="text" id="pw-edit-event" value="${escapeHtml(r.event)}" maxlength="60"></label><label class="pw-span2">备注（含“计划”即归入计划）<input type="text" id="pw-edit-note" value="${escapeHtml(r.note)}" maxlength="200" aria-label="编辑记录备注"></label></div><div class="pw-editor-actions"><span>未来价格安排请保留“计划”备注</span><button type="button" class="pw-button" data-action="close-editor">取消</button><button type="button" class="pw-button pw-primary" data-action="save-editor">${id?'应用修改':'添加记录'}</button></div>`;
+}
+function applyEditor(){
+  const date=$('pw-edit-date').value,price=$('pw-edit-price').value;
+  if(!validDate(date)||parseMoney(price)===null){alertMessage('请填写有效日期和大于0的成交价。');return;}
+  const row={date,price,month:date.slice(0,7),list:$('pw-edit-list').value||null,eventPrice:$('pw-edit-eventPrice').value||null,type:$('pw-edit-type').value,event:$('pw-edit-event').value,note:$('pw-edit-note').value};
+  const badOptional=['list','eventPrice'].some(k=>row[k]!==null&&parseMoney(row[k])===null);
+  if(badOptional){alertMessage('挂价和活动价可留空，填写时需为大于0的数字。');return;}
+  if(editorId)state.patches[editorId]={...(state.patches[editorId]||{}),...row};
+  else{const duplicate=allRows().some(r=>r.date===date&&recordStatus(r)===recordStatus(row));if(duplicate){alertMessage('这一天已有相同记录类型，请直接编辑原记录。');return;}row.id='manual-'+crypto.randomUUID();state.added.push(row);state.month=date.slice(0,7);state.pageIndex=0;}
+  $('pw-editor').hidden=true;editorId=null;renderAll();persist();
+}
+
+root.addEventListener('click',event=>{
+  const target=event.target.closest('button,[data-edit]');if(!target||!root.contains(target))return;
+  if(target.dataset.page){state.page=target.dataset.page;renderAll();persist();return;}
+  if(target.dataset.metric){selectedMetric=selectedMetric===target.dataset.metric?null:target.dataset.metric;renderMetricDetail();return;}
+  if(target.dataset.view){state.view=target.dataset.view;renderFilters();renderRecords();persist();return;}
+  if(target.dataset.pager){state.pageIndex+=Number(target.dataset.pager);renderRecords();return;}
+  if(target.dataset.edit){if(state.page!=='schedule'){state.page='schedule';renderAll();}openEditor(target.dataset.edit);return;}
+  if(target.dataset.day){selectedDay=target.dataset.day;renderReference();return;}
+  if(target.dataset.scenario){state.scenario=target.dataset.scenario;renderCalculator();persist();return;}
+  const action=target.dataset.action;
+  if(action==='add')openEditor(null);
+  if(action==='close-editor'){$('pw-editor').hidden=true;editorId=null;}
+  if(action==='save-editor')applyEditor();
+  if(action==='close-detail'){selectedMetric=null;renderMetricDetail();}
+  if(action==='show-scope')$('pw-scope').hidden=!$('pw-scope').hidden;
+  if(action==='toggle-formulas'){state.editRules=!state.editRules;renderCalculator();persist();}
+  if(action==='relink'){for(const key of ['B','C','D','E'])delete state.overrides[key];renderCalculator();persist();}
+});
+root.addEventListener('input',event=>{
+  const el=event.target;
+  if(el.dataset.recordId){updateRecord(el.dataset.recordId,el.dataset.recordField,el.value);refreshValues();const badge=el.closest('tr')?.querySelector('.pw-status-pill');if(badge){const status=recordStatus(allRows().find(r=>r.id===el.dataset.recordId));badge.className='pw-status-pill '+status;badge.textContent=statusLabels[status];}persist();return;}
+  if(el.dataset.basisId){state.overrides[el.dataset.basisId]=el.value;updateCalculatorLinkedValues();persist();return;}
+  if(el.dataset.labelId){state.labels[el.dataset.labelId]=el.value;renderCalculatorResults();persist();return;}
+  if(el.dataset.formulaId){state.formulas[el.dataset.formulaId]=el.value;renderCalculatorResults();persist();return;}
+  if(el.id==='pw-list-price'){state.listPrice=el.value;refreshValues();persist();}
+});
+root.addEventListener('change',event=>{
+  const el=event.target;
+  if(el.id==='pw-reference-scope'){state.referenceScope=el.value==='with-plans'?'with-plans':'actual';renderReference();persist();return;}
+  if(el.id==='pw-anchor'){if(validDate(el.value)){state.anchor=el.value;state.anchorAuto=false;refreshValues();persist();}return;}
+  if(el.id==='pw-month'){state.month=el.value;state.pageIndex=0;renderFilters();renderRecords();renderChart();persist();return;}
+  if(el.id==='pw-status'){state.status=el.value;state.pageIndex=0;renderRecords();renderChart();persist();return;}
+  if(el.id==='pw-start'||el.id==='pw-end'){state[el.id==='pw-start'?'start':'end']=el.value;state.pageIndex=0;renderRecords();renderChart();if(state.start>state.end)alertMessage('开始日期不能晚于结束日期。');else renderCommon();persist();return;}
+});
+
+let importSession=null,importPreview=null,importUndo=null;
+
+function compactDateRanges(dates){
+  if(!dates?.length)return'—';const groups=[];let start=dates[0],end=start;
+  for(const date of dates.slice(1)){if(addDays(end,1)===date)end=date;else{groups.push(start===end?dateText(start):dateText(start)+'–'+dateText(end));start=end=date;}}
+  groups.push(start===end?dateText(start):dateText(start)+'–'+dateText(end));return groups.join('、');
+}
+function renderPriceAdvice(){
+  const proposal=getPriceAdvice(allRows(),{anchor:currentStats.anchor,listPrice:state.listPrice,today:TODAY,includePlans:state.referenceScope==='with-plans'});
+  const panel=$('pw-price-advice');panel.hidden=proposal.kind==='sufficient';
+  if(panel.hidden)return;
+  let body='';
+  if(proposal.kind==='missing')body='<p>请先填写有效的 List Price。</p>';
+  else if(proposal.kind==='historical')body='<p>这个锚点已经过去，无法补齐历史记录。请将锚点设为未来日期，再查看可安排的价格日期。</p>';
+  else{
+    const f=proposal.forecast;
+    body=`<div class="pw-advice-facts"><span>评估截止 <strong>${dateText(proposal.deadline)}</strong></span><span>实际匹配 <strong>${f.actualMatches.length} 天</strong></span><span>已排计划 <strong>${f.planMatches.length} 天</strong></span><span>待新增 <strong>${proposal.needed} 天</strong></span></div>`;
+    if(proposal.kind==='covered')body+=`<p>现有计划落实后，预计已有 ${f.matches.length} 个匹配日期。按已有安排 <strong>${compactDateRanges(f.planMatches.map(row=>row.date))}</strong> 维持 <strong>${money(proposal.listPrice)}</strong>，当前无需新增价格日期。</p>`;
+    else if(proposal.kind==='recommend')body+=`<p class="pw-advice-main">建议在 <strong>${compactDateRanges(proposal.dates)}</strong> 将价格安排为 <strong>${money(proposal.listPrice)}</strong>，共 <strong>${proposal.dates.length} 天</strong>。</p><p class="pw-small">按上述安排，截止 ${dateText(proposal.deadline)} 的90天窗口预计可匹配 ${proposal.projected} 天。${proposal.promotions.length?'已避开窗口内现有促销日期。':''}</p>`;
+    else body+=`<p>目标窗口还需 ${proposal.needed} 天，可用的未来平销日期只有 ${proposal.dates.length} 天，预计仍差 ${Math.max(0,9-proposal.projected)} 天。${proposal.dates.length?'可先考虑 '+compactDateRanges(proposal.dates)+'。':''}请调整锚点或促销排期后再计算。</p>`;
+    body+='<p class="pw-small pw-advice-foot">已按截止日期重新计算90天滚动窗口；建议仅供排期，实际匹配天数随后续记录更新。</p>';
+  }
+  $('pw-price-advice-body').innerHTML=body;
+}
+function setImportMessage(message,error=false){$('pw-import-message').textContent=message;$('pw-import-message').classList.toggle('pw-warn',error);}
+function openBatchImport(){
+  $('pw-import-panel').hidden=false;$('pw-import-panel').scrollIntoView({behavior:'auto',block:'nearest'});
+}
+function loadImportMatrix(matrix,label,date1904=false){
+  const table=findImportHeader(matrix);importSession={...table,label,date1904};
+  $('pw-import-preview').hidden=false;
+  $('pw-import-mapping').innerHTML=IMPORT_FIELDS.map(field=>`<label>${field.label}${field.required?' *':''}<select data-import-map="${field.key}" aria-label="导入映射 ${field.label}"><option value="-1">${field.required?'请选择来源列':'不导入'}</option>${table.headers.map((header,index)=>`<option value="${index}" ${table.mapping[field.key]===index?'selected':''}>${escapeHtml(header||'第'+(index+1)+'列')}</option>`).join('')}</select></label>`).join('');
+  refreshImportPreview();
+}
+function refreshImportPreview(){
+  if(!importSession)return;
+  importPreview=prepareImport(importSession,allRows(),{mapping:importSession.mapping,date1904:importSession.date1904,today:TODAY});
+  const {changes,issues,skipped,collapsed,sourceCount}=importPreview;
+  const added=changes.filter(c=>c.action==='add').length,updated=changes.filter(c=>c.action==='update').length,unchanged=changes.length-added-updated;
+  $('pw-import-summary').textContent=`${importSession.label} · ${sourceCount} 条来源记录 → ${changes.length} 条每日记录 · 新增 ${added} / 更新 ${updated} / 不变 ${unchanged} · 合并同日抓取 ${collapsed} 条 / 跳过 ${skipped.length} 条`;
+  $('pw-import-issues').hidden=!issues.length&&!skipped.length;
+  $('pw-import-issues').innerHTML=[...issues.map(item=>'第'+item.line+'行：'+item.message),...skipped.map(item=>'跳过第'+item.line+'行：'+item.message)].slice(0,8).map(message=>`<div>${escapeHtml(message)}</div>`).join('')+(issues.length+skipped.length>8?'<div>另有 '+(issues.length+skipped.length-8)+' 条提示。</div>':'');
+  const labels={add:'新增',update:'更新',unchanged:'不变'};
+  $('pw-import-preview-table').innerHTML=`<table class="pw-import-table"><thead><tr><th>日期 / 采用抓取时间</th><th>操作</th><th>记录</th><th class="pw-money-cell">原成交价</th><th class="pw-money-cell">新成交价</th><th class="pw-money-cell">新挂价</th><th>价格类型</th></tr></thead><tbody>${changes.slice(0,8).map(change=>`<tr><td>${dateText(change.after.date)}<span class="pw-import-stamp">${change.after.sourceTime.slice(11)}</span></td><td>${labels[change.action]}</td><td>${statusLabels[change.status]}</td><td class="pw-money-cell">${money(parseMoney(change.before?.price))}</td><td class="pw-money-cell">${money(parseMoney(change.after.price))}</td><td class="pw-money-cell">${money(parseMoney(change.after.list))}</td><td>${escapeHtml(change.after.type)}</td></tr>`).join('')}</tbody></table>`;
+  $('pw-import-apply').disabled=!!issues.length||!(added+updated);
+  setImportMessage(issues.length?'有无效数据或冲突，请修正后重新预览。':`预览前${Math.min(8,changes.length)}条；确认后更新全部有效每日记录。`);
+}
+function applyBatchImport(){
+  if(!importSession)return;
+  refreshImportPreview();if(importPreview.issues.length)return;
+  const changes=importPreview.changes.filter(change=>change.action!=='unchanged');if(!changes.length)return;
+  importUndo=[];
+  for(const change of changes){
+    if(change.before){
+      const previous=structuredClone(state.patches[change.before.id]||{}),patch={...previous},keys=[];
+      for(const [key,value] of Object.entries(change.after))if(key!=='id'&&JSON.stringify(value)!==JSON.stringify(change.before[key])){patch[key]=value;keys.push(key);}
+      state.patches[change.before.id]=patch;importUndo.push({id:change.before.id,keys,previous,after:structuredClone(patch)});
+    }else{const row={...change.after,id:'import-'+change.after.date+'-'+change.status+'-'+Date.now()};state.added.push(row);importUndo.push({id:row.id,newRow:structuredClone(row)});}
+  }
+  state.page='schedule';state.month=changes[0].after.date.slice(0,7);state.pageIndex=0;state.status='all';state.view='table';
+  renderAll();persist();$('pw-import-undo').hidden=false;
+  setImportMessage('已更新 '+changes.length+' 条每日记录；价格看板与参考价检测已重算。');
+  $('pw-import-apply').disabled=true;
+}
+root.addEventListener('click',event=>{
+  const action=event.target.closest('button')?.dataset.action;
+  if(action==='open-import')openBatchImport();
+  if(action==='close-import')$('pw-import-panel').hidden=true;
+  if(action==='preview-paste'){try{loadImportMatrix(parsePastedTable($('pw-import-text').value),'粘贴数据');}catch(error){importSession=null;importPreview=null;$('pw-import-preview').hidden=true;setImportMessage(error.message,true);}}
+  if(action==='import-example'){
+    $('pw-import-text').value=IMPORT_SAMPLE.map(row=>row.map(cell=>String(cell??'')).join('\t')).join('\n');
+    loadImportMatrix(IMPORT_SAMPLE,'附件示例（仅预览）');
+  }
+  if(action==='apply-import')applyBatchImport();
+  if(action==='undo-import'&&importUndo){
+    let preserved=false;
+    for(const entry of importUndo){
+      if(entry.newRow){
+        const row=state.added.find(item=>item.id===entry.id),patch=state.patches[entry.id];
+        if(row&&JSON.stringify({...row,...patch})===JSON.stringify(entry.newRow)){state.added=state.added.filter(item=>item.id!==entry.id);delete state.patches[entry.id];}else preserved=true;
+      }else{
+        const patch=state.patches[entry.id]||{};
+        for(const key of entry.keys){if(JSON.stringify(patch[key])===JSON.stringify(entry.after[key])){if(Object.hasOwn(entry.previous,key))patch[key]=entry.previous[key];else delete patch[key];}else preserved=true;}
+        if(!Object.keys(patch).length)delete state.patches[entry.id];
+      }
+    }
+    importUndo=null;renderAll();persist();$('pw-import-undo').hidden=true;refreshImportPreview();setImportMessage('已撤销本次导入，后续手动修改已保留。'+(preserved?'部分记录已在导入后更改，保留了这些内容。':''));
+  }
+});
+root.addEventListener('change',async event=>{
+  const target=event.target;
+  if(target.dataset.importMap&&importSession){importSession.mapping[target.dataset.importMap]=Number(target.value);refreshImportPreview();}
+  if(target.id==='pw-import-sheet'&&importSession?.workbook){const workbook=importSession.workbook;loadImportMatrix(workbook.sheets[Number(target.value)].matrix,workbook.label,date1904FromWorkbook(workbook));importSession.workbook=workbook;}
+  if(target.id==='pw-import-file'&&target.files?.[0]){
+    const file=target.files[0];importSession=null;importPreview=null;$('pw-import-preview').hidden=true;setImportMessage('正在读取文件…');
+    try{
+      if(/\.xlsx$/i.test(file.name)){
+        const workbook=await readPriceWorkbook(file);workbook.label=file.name;
+        $('pw-import-sheet-label').hidden=workbook.sheets.length<2;
+        $('pw-import-sheet').innerHTML=workbook.sheets.map((sheet,index)=>`<option value="${index}">${escapeHtml(sheet.name)}</option>`).join('');
+        loadImportMatrix(workbook.sheets[0].matrix,file.name,workbook.date1904);importSession.workbook=workbook;
+      }else if(/\.(csv|tsv|txt)$/i.test(file.name)){$('pw-import-sheet-label').hidden=true;loadImportMatrix(parsePastedTable(await file.text()),file.name);}
+      else throw Error('请选择.xlsx、CSV或TSV文件；也可以从Excel复制包含表头的数据。');
+    }catch(error){importSession=null;importPreview=null;$('pw-import-preview').hidden=true;setImportMessage(error.message,true);}
+    finally{target.value='';}
+  }
+});
+function date1904FromWorkbook(workbook){return workbook.date1904===true;}
+
+let editEpoch=0,savedEpoch=0,saving=false,saveError=null,lastSavedState=structuredClone(BOOTSTRAP.state),lastSavedAt=BOOTSTRAP.savedAt,explicitReason='';
+const timeLabel=value=>value?new Date(value).toLocaleString('zh-CN',{hour12:false}):'首次载入';
+function describeChanges(before,after){
+  const lines=[],beforeRows=new Map([...before.baseRows,...before.added].map(r=>[r.id,{...r,...before.patches[r.id]}]));
+  const labels={price:'成交价',list:'挂价',eventPrice:'活动价',note:'备注',event:'活动类型',type:'价格类型'};
+  for(const row of [...after.baseRows,...after.added]){const next={...row,...after.patches[row.id]},old=beforeRows.get(row.id);if(!old){lines.push('新增 '+row.date);continue;}for(const [key,label] of Object.entries(labels))if(JSON.stringify(old[key]??'')!==JSON.stringify(next[key]??''))lines.push(row.date+' '+label+' '+(old[key]??'空')+' → '+(next[key]??'空'));beforeRows.delete(row.id);}
+  if(beforeRows.size)lines.push('移除 '+beforeRows.size+' 条记录');
+  for(const [key,label] of Object.entries({listPrice:'参考价',anchor:'锚点',referenceScope:'检测范围',overrides:'试算输入',labels:'计算器列名',formulas:'计算器公式'}))if(JSON.stringify(before[key])!==JSON.stringify(after[key]))lines.push(label+'已修改');
+  return lines.slice(0,3).join('；')+(lines.length>3?'；共'+lines.length+'项':'')||'保存界面设置';
+}
+function saveNotice(message,failed=false){
+  setSaveStatus(message);$('pw-save').classList.toggle('pw-warn',failed);
+  $('pw-storage-error').hidden=!failed;$('pw-storage-error-text').textContent=failed?message:'';
+}
+function persist(reason){
+  editEpoch++;saveError=null;if(typeof reason==='string')explicitReason=reason;
+  clearTimeout(saveTimer);saveNotice('待保存 · '+storage.label);saveTimer=setTimeout(flushSave,400);
+}
+async function flushSave(){
+  clearTimeout(saveTimer);if(saving||savedEpoch===editEpoch)return;
+  saving=true;
+  try{
+    while(savedEpoch<editEpoch){
+      const epoch=editEpoch,snapshot=structuredClone(state),reason=explicitReason||describeChanges(lastSavedState,snapshot);explicitReason='';
+      validateWorkspace(snapshot);saveNotice('正在保存 · '+storage.label);
+      const result=await storage.save(snapshot,reason);savedEpoch=epoch;lastSavedState=snapshot;lastSavedAt=result.savedAt;saveError=null;
+      saveNotice(result.backupWarning||'已保存 · '+storage.label+' · '+timeLabel(lastSavedAt),!!result.backupWarning);
+    }
+  }catch(error){saveError=error;saveNotice('尚未保存：'+error.message,true);}
+  finally{saving=false;}
+}
+function downloadBackup(filenamePrefix='AD600S价格备份'){
+  const envelope={format:'ad600s-price-platform',version:1,exportedAt:new Date().toISOString(),state:structuredClone(state)};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=filenamePrefix+'_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),20000);
+}
+async function replaceWorkspace(next,reason){
+  validateWorkspace(next);
+  if(saveError?.conflict)throw Error('其他窗口已更新，请先备份当前修改并重新载入后，再恢复。');
+  if(saving){await new Promise(resolve=>{const check=()=>saving?setTimeout(check,50):resolve();check();});}
+  if(!confirm('将恢复完整记录、备注和计算器设置。当前内容会先下载备份，再替换，是否继续？'))return;
+  downloadBackup('恢复前_AD600S价格备份');
+  state=restore(next);importSession=null;importPreview=null;importUndo=null;editorId=null;selectedDay=null;selectedMetric=null;
+  $('pw-editor').hidden=true;$('pw-import-panel').hidden=true;$('pw-import-preview').hidden=true;$('pw-import-undo').hidden=true;
+  renderAll();persist(reason);await flushSave();
+}
+async function renderHistory(){
+  const panel=$('pw-history');panel.hidden=false;
+  try{const items=await storage.history();$('pw-history-list').innerHTML=items.length?items.map(item=>`<div class="pw-history-row"><div><strong>${escapeHtml(timeLabel(item.savedAt))}</strong><p>${escapeHtml(item.reason)}</p></div><button class="pw-button" type="button" data-history-restore="${item.revision}">恢复此版本</button></div>`).join(''):'暂无价格修改历史。';}
+  catch(error){$('pw-history-list').textContent='读取历史失败：'+error.message;}
+}
+root.addEventListener('click',async event=>{
+  const button=event.target.closest('button');if(!button)return;
+  try{
+    if(button.dataset.action==='backup')downloadBackup();
+    if(button.dataset.action==='restore')$('pw-restore-file').click();
+    if(button.dataset.action==='retry-save')await flushSave();
+    if(button.dataset.action==='reload-saved'){
+      if(editEpoch!==savedEpoch&&!confirm('当前有未保存修改。请先下载备份；重新载入将放弃本页未保存内容，是否继续？'))return;
+      clearTimeout(saveTimer);if(saving)await new Promise(resolve=>{const check=()=>saving?setTimeout(check,50):resolve();check();});const loaded=await storage.load();validateWorkspace(loaded.state);state=restore(loaded.state);lastSavedState=structuredClone(state);lastSavedAt=loaded.savedAt;savedEpoch=editEpoch;saveError=null;importSession=null;importPreview=null;importUndo=null;$('pw-import-panel').hidden=true;$('pw-import-preview').hidden=true;$('pw-editor').hidden=true;renderAll();saveNotice('已载入 · '+storage.label+' · '+timeLabel(lastSavedAt));
+    }
+    if(button.dataset.action==='history')await renderHistory();
+    if(button.dataset.action==='close-history')$('pw-history').hidden=true;
+    if(button.dataset.action==='auto-anchor'){state.anchorAuto=true;renderAll();persist('锚点跟随最新实际日期');}
+    if(button.dataset.historyRestore!==undefined){const envelope=await storage.snapshot(Number(button.dataset.historyRestore));await replaceWorkspace(envelope.state,'恢复历史版本 '+button.dataset.historyRestore);await renderHistory();}
+  }catch(error){saveNotice(error.message,true);}
+});
+$('pw-restore-file').addEventListener('change',async event=>{
+  const file=event.target.files[0];if(!file)return;
+  try{if(file.size>2*1024*1024+4096)throw Error('备份超过2MB。');const backup=JSON.parse(await file.text());if(backup.format!=='ad600s-price-platform'||backup.version!==1)throw Error('请选择本平台导出的JSON备份。');await replaceWorkspace(backup.state,'从JSON备份恢复');}
+  catch(error){saveNotice('恢复未完成：'+error.message,true);}
+  finally{event.target.value='';}
+});
+window.addEventListener('beforeunload',event=>{if(editEpoch!==savedEpoch){event.preventDefault();event.returnValue='';}});
+window.addEventListener('online',()=>{if(editEpoch!==savedEpoch&&!saveError?.conflict)flushSave();});
+renderAll();root.hidden=false;document.getElementById('pw-boot').hidden=true;
+$('pw-storage-mode').textContent=storage.label;$('pw-storage-description').textContent=storage.mode==='server'?'自动保存到平台文件夹的 data 目录；修改历史可恢复，自动备份同步更新。':'数据保存在当前浏览器。更换浏览器或设备前，请下载备份；各设备和浏览器分别保存，网页不会将价格数据提交到GitHub。';
+saveNotice('已载入 · '+storage.label+' · '+timeLabel(lastSavedAt));
+if(globalThis.ResizeObserver){let lastWidth=0;new ResizeObserver(entries=>{const w=entries[0].contentRect.width;if(Math.abs(w-lastWidth)>1){lastWidth=w;renderChart();}}).observe($('pw-chart'));}
+
+})().catch(error=>{const boot=document.getElementById('pw-boot');boot.hidden=false;boot.textContent='平台未能载入：'+error.message+' 请允许浏览器保存网站数据，或使用常规浏览窗口重新打开。';});
+</script>
+<style>html{color-scheme:light dark}body{margin:0;background:light-dark(#f4f6fa,#10131a);font-family:Inter,'Microsoft YaHei',system-ui,sans-serif}#ad600s-price-workspace{max-width:1440px;margin:20px auto}#pw-boot{padding:40px;text-align:center}#ad600s-price-workspace button{cursor:pointer}#ad600s-price-workspace .pw-save{margin-right:0;flex-wrap:wrap}#ad600s-price-workspace .pw-storage-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 28px;background:var(--pw-surface);font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor-auto{grid-column:2;justify-self:start;margin-top:3px;color:var(--pw-blue)}#ad600s-price-workspace .pw-storage-error{padding:14px 28px;background:var(--pw-amber-soft);font-size:12px;color:var(--pw-amber);overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-error .pw-row{margin-top:8px}#ad600s-price-workspace .pw-history-row{padding:13px 18px;border-top:1px solid var(--pw-line);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px}#ad600s-price-workspace .pw-history-row>div{min-width:0;overflow-wrap:anywhere}#ad600s-price-workspace .pw-history-row p{font-size:11px;color:var(--pw-muted);margin-top:5px}@media(max-width:620px){#ad600s-price-workspace{margin:0 auto}#ad600s-price-workspace .pw-storage-bar{padding:10px 14px}#ad600s-price-workspace .pw-anchor-auto{grid-column:1/-1}#ad600s-price-workspace .pw-header{padding:16px 14px 12px}#ad600s-price-workspace .pw-history-row{flex-wrap:wrap}}</style></body></html>
