@@ -1,0 +1,15 @@
+{
+  "settings": {
+    "overrides": {
+      "D": "189.99",
+      "F": "239.99"
+    },
+    "labels": {},
+    "formulas": {},
+    "anchorAuto": false,
+    "listPrice": 239.99,
+    "anchor": "2026-12-06",
+    "referenceScope": "actual"
+  },
+  "version": 1
+}

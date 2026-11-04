@@ -1,9 +1,13 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AD600S · 价格排期平台</title></head><body><div id="pw-boot" role="status">正在载入已保存的价格数据…</div><div id="ad600s-price-workspace" aria-label="AD600S 价格工作台" hidden>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AD600S · CSV同步价格平台副本</title></head><body><div id="pw-boot" role="status">正在读取共享CSV数据…</div><div id="ad600s-price-workspace" aria-label="AD600S CSV同步价格工作台" hidden>
   <header class="pw-header">
-    <div class="pw-brand"><span class="pw-brand-mark">T</span><div><strong>TOPDON</strong><span>价格工作台</span></div><span class="pw-demo-tag">网页平台</span></div>
+    <div class="pw-brand"><span class="pw-brand-mark">T</span><div><strong>TOPDON</strong><span>价格工作台</span></div><span class="pw-demo-tag">CSV 同步副本</span></div>
     <div class="pw-save" id="pw-save" role="status" aria-live="polite"><span class="pw-save-dot"></span>源数据已载入</div>
   </header>
-  <div class="pw-storage-bar"><span>保存位置：<b id="pw-storage-mode"></b></span><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="backup">下载备份</button><button type="button" class="pw-button" data-action="restore">恢复备份</button><button type="button" class="pw-button" data-action="history">修改历史</button><input id="pw-restore-file" type="file" accept=".json" aria-label="恢复价格备份" hidden></div></div><div id="pw-storage-error" class="pw-storage-error" role="alert" hidden><span id="pw-storage-error-text"></span><div class="pw-row pw-wrap"><button class="pw-button" type="button" data-action="retry-save">重试保存</button><button class="pw-button" type="button" data-action="backup">备份本次修改</button><button class="pw-button" type="button" data-action="reload-saved">重新载入已保存数据</button></div></div><nav class="pw-nav" aria-label="工作台页面">
+  <div class="pw-storage-bar"><div><span class="pw-demo-tag" id="pw-mode">只读查看</span><span id="pw-sync-status" role="status" aria-live="polite">正在读取共享数据…</span></div><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="refresh-online">刷新线上数据</button><button type="button" class="pw-button" data-action="download-csv">下载CSV</button><button type="button" class="pw-button" data-action="settings">维护 / 发布设置</button><button type="button" class="pw-button pw-primary" id="pw-publish" data-action="publish" disabled>发布到线上</button><button type="button" class="pw-button" id="pw-exit-maint" data-action="exit-maint" hidden>退出维护</button></div></div>
+<div class="pw-sync-note">共享数据以发布结果为准 · 每60秒检查更新 · Pages部署可能需要几分钟 <a id="pw-last-commit" target="_blank" rel="noopener" hidden>查看本次提交</a></div>
+<div class="pw-storage-error" id="pw-storage-error" hidden role="alert"><span id="pw-storage-error-text"></span><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="retry-save">重试保存草稿</button><button type="button" class="pw-button" data-action="backup">下载草稿备份</button></div></div>
+<div class="pw-draft-note" id="pw-draft-resume" hidden><span>本浏览器保留了尚未发布的草稿或部署中的提交。</span><button type="button" class="pw-button" data-action="resume-draft">恢复本机草稿</button><button type="button" class="pw-button" data-action="discard-reload">读取线上并放弃草稿</button></div>
+<section class="pw-publish-settings" id="pw-publish-settings" hidden><div class="pw-detail-head"><h3>维护与发布设置</h3><button type="button" class="pw-quiet-button" data-action="close-settings">收起</button></div><div class="pw-config-grid"><label>GitHub 用户名<input id="pw-config-owner" autocomplete="off"></label><label>仓库名<input id="pw-config-repo" autocomplete="off"></label><label>发布分支<input id="pw-config-branch" autocomplete="off"></label><label class="pw-token-label">GitHub Token<input id="pw-token" type="password" autocomplete="off" spellcheck="false" aria-label="GitHub Token" placeholder="只在你的浏览器中输入"></label></div><label class="pw-remember"><input type="checkbox" id="pw-remember-token">在此浏览器记住Token（默认仅保留到本次浏览会话）</label><div class="pw-row pw-wrap"><button type="button" class="pw-button pw-primary" data-action="authorize">验证并开启维护</button><button type="button" class="pw-button" data-action="authorize-resume">验证并恢复草稿</button><button type="button" class="pw-button" data-action="forget-token">清除Token</button><button type="button" id="pw-local-maint" class="pw-button" data-action="local-maint" hidden>本机预览维护</button></div><p id="pw-publish-message" role="status">请生成只授权本仓库、Contents读写权限的Fine-grained Token。Token不写入网页、价格数据和备份。</p></section><nav class="pw-nav" aria-label="工作台页面">
     <button type="button" class="pw-nav-button is-active" data-page="schedule" aria-current="page">价格排期</button>
     <button type="button" class="pw-nav-button" data-page="reference">参考价检测</button>
     <button type="button" class="pw-nav-button" data-page="calculator">价格计算器</button>
@@ -14,7 +18,7 @@
       <label class="pw-anchor">统计锚点<input type="date" id="pw-anchor" aria-label="统计锚点" value="2026-11-03"><span>默认跟随最新实际日期</span><button type="button" class="pw-quiet-button pw-anchor-auto" data-action="auto-anchor">跟随最新实际日期</button></label>
     </div>
     <div id="pw-alert" class="pw-alert" role="alert" hidden></div>
-    <section id="pw-schedule" aria-label="价格排期页面">
+    <section class="pw-detail" id="pw-full-preview" hidden><div class="pw-detail-head"><h3>全量CSV预览</h3><button type="button" class="pw-quiet-button" data-action="close-full">取消</button></div><p id="pw-full-summary"></p><button type="button" class="pw-button pw-primary" data-action="apply-full">确认全量替换草稿</button></section><section id="pw-schedule" aria-label="价格排期页面">
       <div class="pw-metrics" id="pw-metrics"></div>
       <div id="pw-metric-detail" class="pw-detail" hidden></div>
       <section class="pw-panel pw-chart-panel" aria-label="实际与计划价格走势">
@@ -22,7 +26,7 @@
         <div id="pw-chart" class="pw-chart"></div>
       </section>
       <section class="pw-panel pw-record-panel" aria-label="可编辑价格明细">
-        <div class="pw-panel-head pw-wrap"><div class="pw-record-title"><h2>每日价格记录</h2><span class="pw-count" id="pw-filter-count"></span></div><div class="pw-row pw-wrap"><div class="pw-segment" aria-label="展示方式"><button type="button" data-view="table" class="is-active">表格</button><button type="button" data-view="calendar">月历</button></div><button type="button" class="pw-button" data-action="open-import">批量导入 / 粘贴</button><button type="button" class="pw-button pw-primary" data-action="add">新增记录</button></div></div>
+        <div class="pw-panel-head pw-wrap"><div class="pw-record-title"><h2>每日价格记录</h2><span class="pw-count" id="pw-filter-count"></span></div><div class="pw-row pw-wrap"><div class="pw-segment" aria-label="展示方式"><button type="button" data-view="table" class="is-active">表格</button><button type="button" data-view="calendar">月历</button></div><button type="button" class="pw-button" data-action="full-csv">上传全量CSV</button><input id="pw-full-file" type="file" accept=".csv" aria-label="上传全量CSV" hidden><button type="button" class="pw-button" data-action="open-import">批量导入 / 粘贴</button><button type="button" class="pw-button pw-primary" data-action="add">新增记录</button></div></div>
         <section class="pw-import-panel" id="pw-import-panel" aria-label="批量导入每日价格" hidden>
           <div class="pw-detail-head"><h3>批量更新每日价格</h3><button type="button" class="pw-quiet-button" data-action="close-import">收起</button></div>
           <div class="pw-import-controls"><label class="pw-import-file-label">上传价格文件<input type="file" id="pw-import-file" accept=".xlsx,.csv,.tsv,.txt" aria-label="上传价格文件"></label><label id="pw-import-sheet-label" hidden>工作表<select id="pw-import-sheet" aria-label="导入工作表"></select></label></div>
@@ -61,8 +65,8 @@
       <div class="pw-scenario-tabs" id="pw-scenario-tabs" aria-label="活动计算规则"></div>
       <section class="pw-panel pw-calculation-panel"><div class="pw-panel-head pw-wrap"><div><h2 id="pw-scenario-title"></h2><span class="pw-small" id="pw-scenario-scope"></span></div><button type="button" class="pw-button" data-action="toggle-formulas" id="pw-formula-toggle">编辑列名与公式</button></div><div id="pw-formula-help" class="pw-formula-help" hidden>用列标识引用数值，如 B*0.9、MIN(H:J)。支持 MIN、MAX、IF、ROUND、SUM、AVERAGE 与四则运算。</div><div class="pw-table-wrap" id="pw-rules"></div><div id="pw-calculation-result" class="pw-calculation-result" aria-live="polite"></div></section>
     </section>
-    <section class="pw-panel" id="pw-history" hidden><div class="pw-panel-head"><h2>修改历史 · 最近30次</h2><button type="button" class="pw-quiet-button" data-action="close-history">收起</button></div><div id="pw-history-list"></div></section><footer class="pw-footer"><span id="pw-source-info"></span><button type="button" data-action="show-scope">保存与统计口径</button></footer>
-    <section class="pw-scope" id="pw-scope" hidden><h3>保存与统计口径</h3><p id="pw-storage-description"></p><p>实际／计划由备注中的“计划”区分，未来未标计划的记录列为待确认。促销价统计采用“成交价$”；不含促销仅保留平销、无活动类型且无活动价的记录。COUPON记录按表内成交价计入，未额外推算券后金额。</p><p>Was Price按90天窗口内有效实际日价格排序取数值中位数；缺失日期不补零。日常参考价展示设定值与匹配天数。同日不同实际价格先排除并提示冲突。2026会员日计算规则仅用于该模板场景。</p></section>
+    <section class="pw-panel" id="pw-history" hidden><div class="pw-panel-head"><h2>本机草稿历史 · 最近30次</h2><button type="button" class="pw-quiet-button" data-action="close-history">收起</button></div><div id="pw-history-list"></div></section><div class="pw-local-tools"><span>保存位置：<b id="pw-storage-mode"></b></span><button type="button" class="pw-button" data-action="backup">下载备份</button><button type="button" class="pw-button" data-action="restore">恢复备份为草稿</button><button type="button" class="pw-button" data-action="history">本机修改历史</button><input type="file" id="pw-restore-file" accept=".json" hidden></div><footer class="pw-footer"><span id="pw-source-info"></span><button type="button" data-action="show-scope">保存与统计口径</button></footer>
+    <section class="pw-scope" id="pw-scope" hidden><h3>共享与统计口径</h3><p id="pw-storage-description"></p><p>实际／计划由备注中的“计划”区分，未来未标计划的记录列为待确认。促销价统计采用“成交价$”；不含促销仅保留平销、无活动类型且无活动价的记录。COUPON记录按表内成交价计入，未额外推算券后金额。</p><p>Was Price按90天窗口内有效实际日价格排序取数值中位数；缺失日期不补零。日常参考价展示设定值与匹配天数。同日不同实际价格先排除并提示冲突。2026会员日计算规则仅用于该模板场景。</p></section>
   </main>
 </div>
 <style>
@@ -108,69 +112,6 @@
 </style>
 <script>
 (async () => {
-function validateWorkspace(state){
-  if(!state||typeof state!=='object'||Array.isArray(state)||state.version!==1)throw Error('备份或工作区版本不正确。');
-  const serialized=JSON.stringify(state);
-  if(new TextEncoder().encode(serialized).length>2*1024*1024)throw Error('本次工作区超过2MB，请缩小单次导入范围。');
-  const visit=value=>{if(value&&typeof value==='object')for(const key of Object.keys(value)){if(['__proto__','constructor','prototype'].includes(key))throw Error('数据含不支持的字段。');visit(value[key]);}};
-  visit(state);
-  const dateValid=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T00:00:00Z'))&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;
-  const amountValid=value=>value===null||value===undefined||String(value).trim()===''||(/^\d+(\.\d+)?$/.test(String(value).replace(/[$,\s]/g,''))&&Number.isFinite(Number(String(value).replace(/[$,\s]/g,'')))&&Number(String(value).replace(/[$,\s]/g,''))>0);
-  if(!Array.isArray(state.baseRows)||!Array.isArray(state.added)||state.baseRows.length+state.added.length>20000)throw Error('记录列表不正确或超过20000条。');
-  const ids=new Set();
-  for(const row of [...state.baseRows,...state.added]){
-    if(!row||typeof row.id!=='string'||!/^[-a-zA-Z0-9_]{1,160}$/.test(row.id)||ids.has(row.id)||!dateValid(row.date))throw Error('记录日期或唯一标识无效，请检查重复记录。');
-    ids.add(row.id);
-    for(const key of ['price','list','eventPrice'])if(!amountValid(row[key]))throw Error(row.date+' 的价格必须大于0，或留空。');
-  }
-  if(!state.patches||typeof state.patches!=='object'||Array.isArray(state.patches))throw Error('记录修改内容不正确。');
-  for(const [id,patch] of Object.entries(state.patches)){
-    if(!ids.has(id)||!patch||typeof patch!=='object'||Array.isArray(patch))throw Error('修改内容引用了不存在的记录。');
-    if(patch.date!==undefined&&!dateValid(patch.date))throw Error('修改后的日期无效。');
-    for(const key of ['price','list','eventPrice'])if(!amountValid(patch[key]))throw Error('价格必须大于0，或留空。');
-  }
-  if(state.anchor!==undefined&&!dateValid(state.anchor))throw Error('统计锚点不是有效日期。');
-  if(!amountValid(state.listPrice))throw Error('List Price必须大于0，或留空。');
-  for(const key of ['overrides','labels','formulas'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key]))throw Error('计算器设置不正确。');
-  for(const value of Object.values(state.formulas))if(typeof value!=='string'||value.length>240)throw Error('每项公式最多240字符。');
-  for(const value of Object.values(state.labels))if(typeof value!=='string'||value.length>40)throw Error('列名最多40字符。');
-  for(const value of Object.values(state.overrides))if(!amountValid(value))throw Error('计算器输入必须大于0，或留空。');
-  for(const key of ['overrides','labels','formulas'])for(const id of Object.keys(state[key]))if(!/^[A-Z]{1,2}$/.test(id))throw Error('计算器列标识无效。');
-  for(const [key,allowed] of Object.entries({page:['schedule','reference','calculator'],referenceScope:['actual','with-plans'],status:['all','actual','plan','pending'],view:['table','calendar'],scenario:['bd','ped','prime-bd','prime-ped'],density:['compact','roomy']}))if(!allowed.includes(state[key]))throw Error('界面设置无效：'+key);
-  if(state.month!=='custom'&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(state.month))throw Error('月份设置无效。');
-  if(!dateValid(state.start)||!dateValid(state.end)||!Number.isInteger(state.pageIndex)||state.pageIndex<0||typeof state.anchorAuto!=='boolean')throw Error('日期区间或页码设置无效。');
-  return state;
-}
-function businessFingerprint(state){
-  return JSON.stringify(Object.fromEntries(['baseRows','patches','added','listPrice','anchor','anchorAuto','referenceScope','overrides','labels','formulas'].map(key=>[key,state[key]??null])));
-}
-
-const PriceStorage=(()=>{
-  const conflict=()=>Object.assign(Error('其他窗口已更新数据，本次修改尚未保存。请先备份本次修改，再重新载入。'),{conflict:true});
-  async function open(initial,options={}){
-    if(options.mode!=='browser'&&(location.protocol==='http:'||location.protocol==='https:')){
-      const request=async(url,options)=>{const response=await fetch(url,{cache:'no-store',...options});let body;try{body=await response.json();}catch{throw Error('无法读取价格服务，请使用“启动价格平台”入口。');}if(!response.ok){if(response.status===409)throw conflict();throw Error(body.error||'本地数据服务请求失败。');}return body;};
-      let revision;
-      return{mode:'server',label:'本机数据库',load:async()=>{const envelope=await request('/api/workspace');revision=envelope.revision;return envelope;},save:async(state,reason)=>{validateWorkspace(state);const result=await request('/api/workspace',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({baseRevision:revision,state,reason})});revision=result.revision;return result;},history:async()=>(await request('/api/history')).items,snapshot:revision=>request('/api/history/'+revision)};
-    }
-    let db;
-    try{
-      db=await new Promise((resolve,reject)=>{const req=indexedDB.open(options.databaseName||'ad600s-price-platform-v1',1);req.onupgradeneeded=()=>{req.result.createObjectStore('workspace');req.result.createObjectStore('history',{autoIncrement:true});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
-    }catch(error){throw Error(options.mode==='browser'?'浏览器未允许保存网站数据，请使用常规浏览窗口并允许网站保存数据。'+error.message:'浏览器未允许本地保存。请使用“启动价格平台”入口打开。'+error.message);}
-    let revision;
-    const transaction=(stores,mode,work)=>new Promise((resolve,reject)=>{const tx=db.transaction(stores,mode);let value,problem;tx.oncomplete=()=>resolve(value);tx.onerror=()=>reject(problem||tx.error||Error('浏览器保存失败。'));tx.onabort=()=>reject(problem||tx.error||Error('浏览器保存失败。'));work(tx,result=>{value=result;},error=>{problem=error;tx.abort();});});
-    return{mode:'browser',label:'本浏览器',
-      load:async()=>{const envelope=await transaction(['workspace','history'],'readwrite',(tx,done)=>{const store=tx.objectStore('workspace'),req=store.get('main');req.onsuccess=()=>{const saved=req.result||{revision:0,state:structuredClone(initial),savedAt:null};if(!req.result){store.put(saved,'main');tx.objectStore('history').add({...saved,reason:'初始数据'});}done(saved);};});revision=envelope.revision;return envelope;},
-      save:async(state,reason)=>{validateWorkspace(state);const result=await transaction(['workspace','history'],'readwrite',(tx,done,fail)=>{const store=tx.objectStore('workspace'),req=store.get('main');req.onsuccess=()=>{const previous=req.result;if(previous.revision!==revision){fail(conflict());return;}const saved={revision:revision+1,state:structuredClone(state),savedAt:new Date().toISOString()};store.put(saved,'main');if(businessFingerprint(previous.state)!==businessFingerprint(state))tx.objectStore('history').add({...saved,reason:String(reason||'修改价格数据').slice(0,160)});done(saved);};});revision=result.revision;return result;},
-      history:()=>transaction(['history'],'readonly',(tx,done)=>{const items=[],req=tx.objectStore('history').openCursor(null,'prev');req.onsuccess=()=>{const cursor=req.result;if(cursor&&items.length<30){const {state,...summary}=cursor.value;items.push(summary);cursor.continue();}else done(items);};}),
-      snapshot:revision=>transaction(['history'],'readonly',(tx,done,fail)=>{const req=tx.objectStore('history').openCursor(null,'prev');req.onsuccess=()=>{const cursor=req.result;if(!cursor){fail(Error('未找到这个历史版本。'));return;}if(cursor.value.revision===revision)done(cursor.value);else cursor.continue();};})};
-  }
-  return{open};
-})();
-
-const INITIAL_STATE={"version":1,"baseRows":[],"page":"schedule","anchor":"2026-11-03","anchorAuto":true,"listPrice":239.99,"referenceScope":"actual","month":"2026-11","start":"2026-11-01","end":"2026-11-03","status":"all","view":"table","pageIndex":0,"scenario":"bd","editRules":false,"patches":{},"added":[],"overrides":{},"labels":{},"formulas":{},"density":"compact"};
-const storage=await PriceStorage.open(INITIAL_STATE,{mode:'browser',databaseName:'ad600s-price-pages-v1:'+location.pathname.replace(/\/index\.html$/,'/').replace(/\/$/,'')});
-const BOOTSTRAP=await storage.load();validateWorkspace(BOOTSTRAP.state);
 const TODAY = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const PROMO_TYPES = ['平销','7DD','直降','LD','BD','COUPON','PED','黑五BD','CODE'];
 const INPUTS = [
@@ -601,6 +542,190 @@ async function readPriceWorkbook(file){
   return{sheets,date1904};
 }
 
+function validateWorkspace(state){
+  if(!state||typeof state!=='object'||Array.isArray(state)||state.version!==1)throw Error('备份或工作区版本不正确。');
+  const serialized=JSON.stringify(state);
+  if(new TextEncoder().encode(serialized).length>2*1024*1024)throw Error('本次工作区超过2MB，请缩小单次导入范围。');
+  const visit=value=>{if(value&&typeof value==='object')for(const key of Object.keys(value)){if(['__proto__','constructor','prototype'].includes(key))throw Error('数据含不支持的字段。');visit(value[key]);}};
+  visit(state);
+  const dateValid=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T00:00:00Z'))&&new Date(value+'T00:00:00Z').toISOString().slice(0,10)===value;
+  const amountValid=value=>value===null||value===undefined||String(value).trim()===''||(/^\d+(\.\d+)?$/.test(String(value).replace(/[$,\s]/g,''))&&Number.isFinite(Number(String(value).replace(/[$,\s]/g,'')))&&Number(String(value).replace(/[$,\s]/g,''))>0);
+  if(!Array.isArray(state.baseRows)||!Array.isArray(state.added)||state.baseRows.length+state.added.length>20000)throw Error('记录列表不正确或超过20000条。');
+  const ids=new Set();
+  for(const row of [...state.baseRows,...state.added]){
+    if(!row||typeof row.id!=='string'||!/^[-a-zA-Z0-9_]{1,160}$/.test(row.id)||ids.has(row.id)||!dateValid(row.date))throw Error('记录日期或唯一标识无效，请检查重复记录。');
+    ids.add(row.id);
+    for(const key of ['price','list','eventPrice'])if(!amountValid(row[key]))throw Error(row.date+' 的价格必须大于0，或留空。');
+  }
+  if(!state.patches||typeof state.patches!=='object'||Array.isArray(state.patches))throw Error('记录修改内容不正确。');
+  for(const [id,patch] of Object.entries(state.patches)){
+    if(!ids.has(id)||!patch||typeof patch!=='object'||Array.isArray(patch))throw Error('修改内容引用了不存在的记录。');
+    if(patch.date!==undefined&&!dateValid(patch.date))throw Error('修改后的日期无效。');
+    for(const key of ['price','list','eventPrice'])if(!amountValid(patch[key]))throw Error('价格必须大于0，或留空。');
+  }
+  if(state.anchor!==undefined&&!dateValid(state.anchor))throw Error('统计锚点不是有效日期。');
+  if(!amountValid(state.listPrice))throw Error('List Price必须大于0，或留空。');
+  for(const key of ['overrides','labels','formulas'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key]))throw Error('计算器设置不正确。');
+  for(const value of Object.values(state.formulas))if(typeof value!=='string'||value.length>240)throw Error('每项公式最多240字符。');
+  for(const value of Object.values(state.labels))if(typeof value!=='string'||value.length>40)throw Error('列名最多40字符。');
+  for(const value of Object.values(state.overrides))if(!amountValid(value))throw Error('计算器输入必须大于0，或留空。');
+  for(const key of ['overrides','labels','formulas'])for(const id of Object.keys(state[key]))if(!/^[A-Z]{1,2}$/.test(id))throw Error('计算器列标识无效。');
+  for(const [key,allowed] of Object.entries({page:['schedule','reference','calculator'],referenceScope:['actual','with-plans'],status:['all','actual','plan','pending'],view:['table','calendar'],scenario:['bd','ped','prime-bd','prime-ped'],density:['compact','roomy']}))if(!allowed.includes(state[key]))throw Error('界面设置无效：'+key);
+  if(state.month!=='custom'&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(state.month))throw Error('月份设置无效。');
+  if(!dateValid(state.start)||!dateValid(state.end)||!Number.isInteger(state.pageIndex)||state.pageIndex<0||typeof state.anchorAuto!=='boolean')throw Error('日期区间或页码设置无效。');
+  return state;
+}
+function businessFingerprint(state){
+  return JSON.stringify(Object.fromEntries(['baseRows','patches','added','listPrice','anchor','anchorAuto','referenceScope','overrides','labels','formulas'].map(key=>[key,state[key]??null])));
+}
+
+
+const SHARED_KEYS=['listPrice','anchor','anchorAuto','referenceScope','overrides','labels','formulas'];
+function defaultWorkspace(){const now=TODAY;return{version:1,baseRows:[],added:[],patches:{},page:'schedule',anchor:now,anchorAuto:true,listPrice:239.99,referenceScope:'actual',month:now.slice(0,7),start:now.slice(0,7)+'-01',end:now,status:'all',view:'table',pageIndex:0,scenario:'bd',editRules:false,overrides:{},labels:{},formulas:{},density:'compact'};}
+function decodeCsvBytes(input){
+  const bytes=input instanceof Uint8Array?input:new Uint8Array(input);if(bytes.length>2*1024*1024)throw Error('CSV超过2MB，请缩小数据范围。');
+  try{return{text:new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes),encoding:'UTF-8'};}
+  catch{try{return{text:new TextDecoder('gb18030',{fatal:true}).decode(bytes),encoding:'GBK / GB18030'};}catch{throw Error('无法识别CSV编码，请另存为CSV UTF-8。');}}
+}
+function csvMatrix(text){
+  const source=String(text).replace(/^\uFEFF/,'');const rows=[];let row=[],field='',quoted=false,ended=false;
+  for(let i=0;i<source.length;i++){
+    const c=source[i];
+    if(quoted){if(c==='"'){if(source[i+1]==='"'){field+='"';i++;}else{quoted=false;ended=true;}}else field+=c;continue;}
+    if(c==='"'){if(field||ended)throw Error('CSV引号格式错误。');quoted=true;continue;}
+    if(c===','){row.push(field);field='';ended=false;continue;}
+    if(c==='\n'||c==='\r'){if(c==='\r'&&source[i+1]==='\n')i++;row.push(field);if(row.some(v=>v.trim()))rows.push(row);row=[];field='';ended=false;continue;}
+    if(ended&&!/\s/.test(c))throw Error('CSV引号后有不支持的内容。');
+    if(!ended)field+=c;
+  }
+  if(quoted)throw Error('CSV引号未闭合。');row.push(field);if(row.some(v=>v.trim()))rows.push(row);
+  return rows;
+}
+const cleanHeader=s=>String(s).trim().replace(/[\s_$＄]/g,'').toLowerCase();
+function parseScheduleCsv(text){
+  const matrix=csvMatrix(text);if(matrix.length<2)throw Error('CSV没有价格记录。');
+  const headers=matrix[0],mapping=detectImportMapping(headers);if(mapping.date<0||mapping.price<0)throw Error('CSV需包含“日期”和“成交价$”列。');
+  if(matrix.length>20001)throw Error('CSV超过20000条记录。');
+  const timeColumn=headers.findIndex(h=>['抓取时间','采集时间'].includes(String(h).trim()));
+  const rows=matrix.slice(1).map((cells,index)=>{
+    if(cells.length>headers.length)throw Error('CSV第'+(index+2)+'行多于表头列数，请检查逗号和引号。');
+    const get=key=>mapping[key]>=0?String(cells[mapping[key]]??''):'';
+    const date=normalizeImportDate(get('date'));if(!date)throw Error('CSV第'+(index+2)+'行日期无效。');
+    const amount=(key,optional)=>{const value=get(key);if(!value.trim()||(optional&&Number(value)===0))return null;if(parseMoney(value)===null)throw Error('CSV第'+(index+2)+'行'+key+'价格无效。');return value;};
+    const row={id:'csv-'+(index+2),_csvLine:index+1,date:date.date,month:date.date.slice(0,7),price:amount('price',false),list:amount('list',true),eventPrice:amount('eventPrice',true),type:get('type')||get('event')||'平销',event:get('event'),note:get('note')};
+    if(timeColumn>=0&&String(cells[timeColumn]||'').trim()){const stamp=normalizeImportDate(cells[timeColumn]);if(!stamp)throw Error('CSV抓取时间无效。');row.sourceTime=stamp.stamp;}
+    return row;
+  });
+  return{headers,matrix,mapping,rows,text};
+}
+function sharedSettings(state){return Object.fromEntries(SHARED_KEYS.map(key=>[key,structuredClone(state[key])]));}
+function parseSettings(text){
+  if(!text)return sharedSettings(defaultWorkspace());let envelope;try{envelope=JSON.parse(text.replace(/^\uFEFF/,''));}catch{throw Error('settings.json不是有效JSON。');}
+  if(envelope.version!==1||!envelope.settings||typeof envelope.settings!=='object')throw Error('settings.json版本或结构无效。');
+  const result=sharedSettings(defaultWorkspace());for(const key of SHARED_KEYS)if(Object.hasOwn(envelope.settings,key))result[key]=envelope.settings[key];return result;
+}
+function workspaceFromCsv(text,settings){const parsed=parseScheduleCsv(text);return{...defaultWorkspace(),...settings,baseRows:parsed.rows,_csvText:text};}
+function effectiveRows(state){return[...state.baseRows,...state.added].map(row=>({...row,...state.patches[row.id]}));}
+const recordFields=['date','price','list','eventPrice','type','event','note','sourceTime'];
+const recordSignature=row=>JSON.stringify(recordFields.map(key=>String(row[key]??'')));
+function workspaceCsv(state){
+  const parsed=state._csvText?parseScheduleCsv(state._csvText):null,rows=effectiveRows(state);
+  if(!rows.length)throw Error('至少保留一条排期记录。');
+  if(parsed&&rows.length===parsed.rows.length&&rows.every((row,i)=>recordSignature(row)===recordSignature(parsed.rows[i])))return state._csvText;
+  const headers=parsed?[...parsed.headers]:['月','日期','星期','星期','价格类型','成交价$','挂价$','活动类型','活动价$','备注'];
+  const mapping=detectImportMapping(headers);
+  for(const [key,label] of Object.entries({type:'价格类型',list:'挂价$',event:'活动类型',eventPrice:'活动价$',note:'备注'}))if(mapping[key]<0){mapping[key]=headers.length;headers.push(label);}
+  let timeColumn=headers.findIndex(h=>['抓取时间','采集时间'].includes(String(h).trim()));
+  if(rows.some(row=>row.sourceTime)&&timeColumn<0){timeColumn=headers.length;headers.push('抓取时间');}
+  const output=[headers];
+  for(const row of rows){
+    const original=parsed?.rows.find(r=>r._csvLine===row._csvLine),cells=original?[...(parsed.matrix[original._csvLine]||[])]:[];
+    while(cells.length<headers.length)cells.push('');
+    for(const key of ['date','price','list','eventPrice','type','event','note'])if(mapping[key]>=0&&(!original||String(original[key]??'')!==String(row[key]??'')))cells[mapping[key]]=row[key]??'';
+    if(timeColumn>=0&&(!original||row.sourceTime!==original.sourceTime))cells[timeColumn]=row.sourceTime||'';
+    if(!original||original.date!==row.date){const week=new Date(row.date+'T00:00:00Z').getUTCDay();headers.forEach((header,index)=>{const name=cleanHeader(header);if(['月','月份','month'].includes(name))cells[index]=row.date.slice(0,7);if(['星期','周几','weekday'].includes(name)){const numeric=/^\d+$/.test(String(cells[index]))||(index===2&&cleanHeader(headers[3])==='星期');cells[index]=numeric?String(week||7):'周'+['日','一','二','三','四','五','六'][week];}});}
+    output.push(cells);
+  }
+  const escape=value=>{const s=String(value??'');return/[",\r\n]/.test(s)?'"'+s.replaceAll('"','""')+'"':s;};
+  const newline=state._csvText?.includes('\r\n')?'\r\n':'\n';return'\uFEFF'+output.map(row=>row.map(escape).join(',')).join(newline)+newline;
+}
+function settingsText(state){return JSON.stringify({version:1,settings:sharedSettings(state)},null,2)+'\n';}
+function contentFingerprint(state){return JSON.stringify([workspaceCsv(state),sharedSettings(state)]);}
+async function gitBlobSha(input){const bytes=typeof input==='string'?new TextEncoder().encode(input):input,prefix=new TextEncoder().encode('blob '+bytes.length+'\0'),joined=new Uint8Array(prefix.length+bytes.length);joined.set(prefix);joined.set(bytes,prefix.length);const hash=await crypto.subtle.digest('SHA-1',joined);return Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');}
+function csvUtf8(text){return'\uFEFF'+text.replace(/^\uFEFF/,'');}
+
+function utf8Base64(text){const bytes=new TextEncoder().encode(text);let result='';for(let i=0;i<bytes.length;i+=0x8000)result+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(result);}
+function validateRepoConfig(config){
+  if(!/^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/.test(config.owner)||!/^[-\w.]{1,100}$/.test(config.repo)||['.','..'].includes(config.repo))throw Error('GitHub用户名或仓库名无效。');
+  if(!config.branch||config.branch.length>200||/[\s~^:?*\[\\]/.test(config.branch)||config.branch.includes('..')||config.branch.includes('@{'))throw Error('分支名无效。');return config;
+}
+async function githubRequest(config,token,endpoint,options={},request=fetch){
+  validateRepoConfig(config);if(!token)throw Error('请在发布设置中输入GitHub Token。');
+  const response=await request('https://api.github.com/repos/'+encodeURIComponent(config.owner)+'/'+encodeURIComponent(config.repo)+endpoint,{...options,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28',...(options.body?{'Content-Type':'application/json'}:{}),...options.headers},cache:'no-store'});
+  const body=await response.json().catch(()=>({}));
+  if(!response.ok){const messages={401:'Token无效或已过期，请重新输入。',403:'GitHub拒绝访问，请检查Token的仓库授权、Contents写入权限或请求额度。',404:'未找到仓库、分支或文件，或Token没有访问权限。',409:'线上分支已更新，本次未覆盖。请先保留草稿并重新读取线上版本。',422:'GitHub未接受提交，可能是分支保护或线上版本发生变化。本次未覆盖。'};throw Object.assign(Error(messages[response.status]||'GitHub请求失败（HTTP '+response.status+'）。'),{status:response.status});}
+  return body;
+}
+async function verifyPublisher(config,token,request=fetch){const repo=await githubRequest(config,token,'',{},request);if(repo.permissions?.push!==true)throw Error('该Token对应的账号没有仓库写入权限。');return repo;}
+async function publishFiles(config,token,files,baseHashes,request=fetch){
+  const ref='heads/'+config.branch.split('/').map(encodeURIComponent).join('/');
+  const call=(endpoint,options)=>githubRequest(config,token,endpoint,options,request);
+  const head=await call('/git/ref/'+ref),headSha=head.object.sha,commit=await call('/git/commits/'+headSha);
+  for(const file of files){
+    let remoteSha=null;try{remoteSha=(await call('/contents/'+file.path+'?ref='+encodeURIComponent(headSha))).sha;}catch(error){if(error.status!==404)throw error;}
+    if(remoteSha!==(baseHashes[file.path]??null))throw Object.assign(Error(file.path+' 已在线上更新。本次未覆盖，请下载草稿并重新读取线上数据后再修改。'),{conflict:true});
+  }
+  const tree=[];
+  for(const file of files){const blob=await call('/git/blobs',{method:'POST',body:JSON.stringify({content:utf8Base64(file.text),encoding:'base64'})});tree.push({path:file.path,mode:'100644',type:'blob',sha:blob.sha});}
+  const nextTree=await call('/git/trees',{method:'POST',body:JSON.stringify({base_tree:commit.tree.sha,tree})});
+  const nextCommit=await call('/git/commits',{method:'POST',body:JSON.stringify({message:'Update AD600S price data '+new Date().toISOString(),tree:nextTree.sha,parents:[headSha]})});
+  await call('/git/refs/'+ref,{method:'PATCH',body:JSON.stringify({sha:nextCommit.sha,force:false})});
+  return{commit:nextCommit.sha,url:'https://github.com/'+config.owner+'/'+config.repo+'/commit/'+nextCommit.sha};
+}
+
+async function openCopyStore(){
+  const name='ad600s-csv-sync-v1:'+location.pathname.replace(/\/index\.html$/,'/').replace(/\/$/,'');
+  const db=await new Promise((resolve,reject)=>{const req=indexedDB.open(name,1);req.onupgradeneeded=()=>{req.result.createObjectStore('cache');req.result.createObjectStore('history',{autoIncrement:true});};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(Error('无法保存本机草稿，请允许浏览器保存网站数据。'));});
+  const txRun=(names,mode,work)=>new Promise((resolve,reject)=>{const tx=db.transaction(names,mode);let value,problem;tx.oncomplete=()=>resolve(value);tx.onerror=()=>reject(problem||tx.error);tx.onabort=()=>reject(problem||tx.error);work(tx,result=>{value=result;},error=>{problem=error;tx.abort();});});
+  const get=key=>txRun(['cache'],'readonly',(tx,done)=>{const req=tx.objectStore('cache').get(key);req.onsuccess=()=>done(req.result);});
+  const put=(key,value)=>txRun(['cache'],'readwrite',(tx,done)=>{tx.objectStore('cache').put(structuredClone(value),key);done(value);});
+  let revision=0;
+  return{getOnline:()=>get('online'),saveOnline:online=>put('online',online),getPreferences:()=>get('preferences'),savePreferences:prefs=>put('preferences',prefs),
+    loadDraft:async()=>{const draft=await get('draft');revision=draft?.revision||0;return draft;},
+    saveDraft:async(envelope,reason)=>{const saved=await txRun(['cache','history'],'readwrite',(tx,done,fail)=>{const store=tx.objectStore('cache'),req=store.get('draft');req.onsuccess=()=>{if((req.result?.revision||0)!==revision){fail(Object.assign(Error('另一个维护窗口已保存草稿。本次修改尚未保存，请先下载备份。'),{conflict:true}));return;}const next={...structuredClone(envelope),revision:revision+1,savedAt:new Date().toISOString()};store.put(next,'draft');if(reason)tx.objectStore('history').add({revision:next.revision,state:next.state,savedAt:next.savedAt,reason:String(reason).slice(0,160)});done(next);};});revision=saved.revision;return saved;},
+    clearDraft:async()=>{await txRun(['cache'],'readwrite',(tx,done)=>{tx.objectStore('cache').delete('draft');done();});revision=0;},
+    history:()=>txRun(['history'],'readonly',(tx,done)=>{const items=[],req=tx.objectStore('history').openCursor(null,'prev');req.onsuccess=()=>{const cursor=req.result;if(cursor&&items.length<30){const {state,...summary}=cursor.value;items.push(summary);cursor.continue();}else done(items);};}),
+    snapshot:revision=>txRun(['history'],'readonly',(tx,done,fail)=>{const req=tx.objectStore('history').openCursor(null,'prev');req.onsuccess=()=>{const cursor=req.result;if(!cursor){fail(Error('没有找到这个本机草稿版本。'));return;}if(cursor.value.revision===revision)done(cursor.value);else cursor.continue();};})};
+}
+
+const DEFAULT_CONFIG={"owner":"jiarongxu494-dotcom","repo":"ad600s-price-platform","branch":"main"};
+const UI_KEYS=['page','month','start','end','status','view','pageIndex','scenario','editRules','density'];
+const repoConfigKey='ad600s-csv-repo:'+location.pathname.replace(/\/index\.html$/,'/');
+let config={...DEFAULT_CONFIG};
+try{const saved=JSON.parse(localStorage.getItem(repoConfigKey)||'null');if(saved)config=validateRepoConfig({...config,owner:saved.owner,repo:saved.repo,branch:saved.branch});}catch{}
+const tokenKey=()=>['ad600s-csv-token',config.owner,config.repo].join(':');
+const readToken=()=>{try{return sessionStorage.getItem(tokenKey())||localStorage.getItem(tokenKey())||'';}catch{return'';}};
+const clearToken=()=>{try{sessionStorage.removeItem(tokenKey());localStorage.removeItem(tokenKey());}catch{}};
+async function requestSharedFiles(){
+  const stamp=Date.now(),read=async(name,optional=false)=>{const response=await fetch(new URL(name+'?v='+stamp,location.href),{cache:'no-store',signal:AbortSignal.timeout(15000)});if(optional&&response.status===404)return null;if(!response.ok)throw Error(name+'读取失败（HTTP '+response.status+'）。');return new Uint8Array(await response.arrayBuffer());};
+  const [csvBytes,settingsBytes]=await Promise.all([read('data.csv'),read('settings.json',true)]);
+  const decoded=decodeCsvBytes(csvBytes),settingsSource=settingsBytes?new TextDecoder('utf-8',{fatal:true}).decode(settingsBytes):null;
+  const nextState=workspaceFromCsv(decoded.text,parseSettings(settingsSource));validateWorkspace(nextState);
+  return{state:nextState,hashes:{'data.csv':await gitBlobSha(csvBytes),'settings.json':settingsBytes?await gitBlobSha(settingsBytes):null},checkedAt:new Date().toISOString(),encoding:decoded.encoding,settingsText:settingsSource,mode:'online'};
+}
+async function openSharedWorkspace(){
+  if(location.protocol==='file:')throw Error('CSV同步版需要通过网址打开。请双击“启动预览.cmd”，或部署到GitHub Pages。');
+  let store=null;try{store=await openCopyStore();}catch{}
+  let online;
+  try{online=await requestSharedFiles();if(store)await store.saveOnline(online).catch(()=>{});}
+  catch(error){online=store?await store.getOnline():null;if(!online)throw Error(error.message+' 请确认 index.html、data.csv 和 settings.json 在同一目录。');validateWorkspace(online.state);online={...online,mode:'offline',error:error.message};}
+  const draft=store?await store.loadDraft():null,prefs=store?await store.getPreferences():null;
+  const working=structuredClone(online.state);if(prefs)for(const key of UI_KEYS)if(Object.hasOwn(prefs,key))working[key]=prefs[key];
+  try{validateWorkspace(working);}catch{Object.assign(working,Object.fromEntries(UI_KEYS.map(key=>[key,defaultWorkspace()[key]])));}
+  return{store,online,draft,state:working,savedAt:online.checkedAt};
+}
+
+const BOOTSTRAP=await openSharedWorkspace();
 const BASE_ROWS = [];
 const IMPORT_SAMPLE = [];
 const root=document.getElementById('ad600s-price-workspace');
@@ -765,7 +890,7 @@ function renderCommon(){
   $('pw-source-info').textContent=`导入排期 ${state.baseRows.length} 条 · 当前实际 ${s.actualCount} 条 / 计划 ${s.planCount} 条${s.pendingCount?' / 待确认 '+s.pendingCount+' 条':''} · 金额 USD`;
   const warnings=[];if(s.conflicts.length)warnings.push(`同日实际价格冲突：${s.conflicts.join('、')}，这些日期暂不计入统计`);
   if(s.pendingCount)warnings.push(`${s.pendingCount}条未来记录未标计划，暂列待确认`);
-  if(!allRows().length)warnings.push('首次使用：点顶部“恢复备份”导入现有价格记录，或使用“批量导入 / 粘贴”。');alertMessage(warnings.join('；'));
+  alertMessage(warnings.join('；'));
 }
 function refreshValues(){renderCommon();renderMetrics();renderReference();updateCalculatorLinkedValues();renderChart();}
 function renderAll(){renderCommon();renderMetrics();renderFilters();renderRecords();renderReference();renderCalculator();renderChart();if(globalThis.lucide)lucide.createIcons({attrs:{width:15,height:15}});}
@@ -922,7 +1047,7 @@ root.addEventListener('change',async event=>{
         $('pw-import-sheet-label').hidden=workbook.sheets.length<2;
         $('pw-import-sheet').innerHTML=workbook.sheets.map((sheet,index)=>`<option value="${index}">${escapeHtml(sheet.name)}</option>`).join('');
         loadImportMatrix(workbook.sheets[0].matrix,file.name,workbook.date1904);importSession.workbook=workbook;
-      }else if(/\.(csv|tsv|txt)$/i.test(file.name)){$('pw-import-sheet-label').hidden=true;loadImportMatrix(parsePastedTable(await file.text()),file.name);}
+      }else if(/\.(csv|tsv|txt)$/i.test(file.name)){$('pw-import-sheet-label').hidden=true;loadImportMatrix(parsePastedTable(decodeCsvBytes(await file.arrayBuffer()).text),file.name);}
       else throw Error('请选择.xlsx、CSV或TSV文件；也可以从Excel复制包含表头的数据。');
     }catch(error){importSession=null;importPreview=null;$('pw-import-preview').hidden=true;setImportMessage(error.message,true);}
     finally{target.value='';}
@@ -930,85 +1055,166 @@ root.addEventListener('change',async event=>{
 });
 function date1904FromWorkbook(workbook){return workbook.date1904===true;}
 
-let editEpoch=0,savedEpoch=0,saving=false,saveError=null,lastSavedState=structuredClone(BOOTSTRAP.state),lastSavedAt=BOOTSTRAP.savedAt,explicitReason='';
-const timeLabel=value=>value?new Date(value).toLocaleString('zh-CN',{hour12:false}):'首次载入';
-function describeChanges(before,after){
-  const lines=[],beforeRows=new Map([...before.baseRows,...before.added].map(r=>[r.id,{...r,...before.patches[r.id]}]));
-  const labels={price:'成交价',list:'挂价',eventPrice:'活动价',note:'备注',event:'活动类型',type:'价格类型'};
-  for(const row of [...after.baseRows,...after.added]){const next={...row,...after.patches[row.id]},old=beforeRows.get(row.id);if(!old){lines.push('新增 '+row.date);continue;}for(const [key,label] of Object.entries(labels))if(JSON.stringify(old[key]??'')!==JSON.stringify(next[key]??''))lines.push(row.date+' '+label+' '+(old[key]??'空')+' → '+(next[key]??'空'));beforeRows.delete(row.id);}
-  if(beforeRows.size)lines.push('移除 '+beforeRows.size+' 条记录');
-  for(const [key,label] of Object.entries({listPrice:'参考价',anchor:'锚点',referenceScope:'检测范围',overrides:'试算输入',labels:'计算器列名',formulas:'计算器公式'}))if(JSON.stringify(before[key])!==JSON.stringify(after[key]))lines.push(label+'已修改');
-  return lines.slice(0,3).join('；')+(lines.length>3?'；共'+lines.length+'项':'')||'保存界面设置';
+const store=BOOTSTRAP.store;
+let online=BOOTSTRAP.online,baseHashes={...online.hashes},baseline=contentFingerprint(online.state),maintenance=false,publishing=false,polling=false,dirty=false,remoteConflict=false,pending=null,fullPreview=null;
+let editEpoch=0,savedEpoch=0,saving=false,saveError=null,explicitReason='',draft=BOOTSTRAP.draft;
+const clone=structuredClone;
+const timeLabel=value=>new Date(value).toLocaleString('zh-CN',{hour12:false,timeZone:'Asia/Shanghai'});
+const sameHashes=(a,b)=>a&&b&&a['data.csv']===b['data.csv']&&a['settings.json']===b['settings.json'];
+const mutationActions=new Set(['add','save-editor','open-import','apply-import','undo-import','toggle-formulas','relink','auto-anchor','full-csv','apply-full','restore','restore-history']);
+const settingsMessage=(message,error=false)=>{$('pw-publish-message').textContent=message;$('pw-publish-message').classList.toggle('pw-warn',error);};
+function renderSyncStatus(message,error=false){
+  if(!message)message=remoteConflict?'线上已有新版本，请先备份草稿再读取线上数据':pending?'已提交GitHub，等待Pages部署更新':dirty?'本地草稿 · 尚未发布':online.mode==='offline'?'离线缓存 · '+timeLabel(online.checkedAt):'线上数据 · '+allRows().length+' 条 · 检查于 '+timeLabel(online.checkedAt);
+  $('pw-sync-status').textContent=message;$('pw-sync-status').classList.toggle('pw-warn',error||remoteConflict||online.mode==='offline');
+  $('pw-publish').disabled=!maintenance||publishing||!dirty||remoteConflict;
+  $('pw-draft-resume').hidden=!draft?.dirty&&!draft?.pending;
+  $('pw-mode').textContent=maintenance?'维护模式':'只读查看';
+  $('pw-exit-maint').hidden=!maintenance;
+  $('pw-storage-mode').textContent=maintenance?'本机草稿，发布后共享':'仓库共享CSV';
 }
-function saveNotice(message,failed=false){
-  setSaveStatus(message);$('pw-save').classList.toggle('pw-warn',failed);
-  $('pw-storage-error').hidden=!failed;$('pw-storage-error-text').textContent=failed?message:'';
+function applyAccess(){
+  const editable=maintenance&&!publishing;
+  root.querySelectorAll('[data-record-id],[data-basis-id],[data-label-id],[data-formula-id],#pw-list-price').forEach(el=>el.readOnly=!editable);
+  root.querySelectorAll('#pw-edit-date,#pw-edit-price,#pw-edit-list,#pw-edit-eventPrice,#pw-edit-type,#pw-edit-event,#pw-edit-note,#pw-anchor').forEach(el=>el.disabled=!editable||(el.id==='pw-edit-date'&&editorId));
+  root.querySelectorAll('[data-action]').forEach(el=>{if(mutationActions.has(el.dataset.action))el.hidden=!maintenance;});
+  root.querySelectorAll('button[data-edit]').forEach(el=>{if(el.classList.contains('pw-edit-button'))el.textContent=maintenance?'编辑':'查看';});
+  root.querySelectorAll('[data-action="restore"],[data-history-restore]').forEach(el=>el.hidden=!editable);
+  root.querySelectorAll('#pw-config-owner,#pw-config-repo,#pw-config-branch,#pw-token,#pw-remember-token').forEach(el=>el.disabled=publishing);
+  $('pw-publish').disabled=!editable||!dirty||remoteConflict;
 }
+const oldRenderAll=renderAll;renderAll=function(){oldRenderAll();applyAccess();};
+const oldOpenEditor=openEditor;openEditor=function(...args){oldOpenEditor(...args);applyAccess();};
+const oldRenderRecords=renderRecords;renderRecords=function(){oldRenderRecords();applyAccess();};
+const oldRenderCalculator=renderCalculator;renderCalculator=function(){oldRenderCalculator();applyAccess();};
+const oldRenderReference=renderReference;renderReference=function(){oldRenderReference();applyAccess();};
+root.addEventListener('click',event=>{const button=event.target.closest('button');if(!button)return;if((!maintenance||publishing)&&(mutationActions.has(button.dataset.action)||button.dataset.historyRestore!==undefined)){event.preventDefault();event.stopImmediatePropagation();}},true);
+root.addEventListener('input',event=>{const el=event.target;if((!maintenance||publishing)&&(el.dataset.recordId||el.dataset.basisId||el.dataset.labelId||el.dataset.formulaId||el.id==='pw-list-price')){event.preventDefault();event.stopImmediatePropagation();renderAll();}},true);
+function updateDirty(){try{dirty=contentFingerprint(state)!==baseline;}catch{dirty=true;}renderSyncStatus();}
 function persist(reason){
   editEpoch++;saveError=null;if(typeof reason==='string')explicitReason=reason;
-  clearTimeout(saveTimer);saveNotice('待保存 · '+storage.label);saveTimer=setTimeout(flushSave,400);
+  if(maintenance)updateDirty();clearTimeout(saveTimer);setSaveStatus(maintenance?'正在保存本机草稿…':'查看设置已更新');saveTimer=setTimeout(flushSave,350);
 }
 async function flushSave(){
-  clearTimeout(saveTimer);if(saving||savedEpoch===editEpoch)return;
-  saving=true;
+  clearTimeout(saveTimer);if(saving||savedEpoch===editEpoch)return;saving=true;
   try{
-    while(savedEpoch<editEpoch){
-      const epoch=editEpoch,snapshot=structuredClone(state),reason=explicitReason||describeChanges(lastSavedState,snapshot);explicitReason='';
-      validateWorkspace(snapshot);saveNotice('正在保存 · '+storage.label);
-      const result=await storage.save(snapshot,reason);savedEpoch=epoch;lastSavedState=snapshot;lastSavedAt=result.savedAt;saveError=null;
-      saveNotice(result.backupWarning||'已保存 · '+storage.label+' · '+timeLabel(lastSavedAt),!!result.backupWarning);
+    if(!store)throw Error('浏览器不允许保存草稿。请先下载备份，再允许网站保存数据。');
+    while(savedEpoch<editEpoch){const epoch=editEpoch;await store.savePreferences(Object.fromEntries(UI_KEYS.map(key=>[key,state[key]])));
+      if(maintenance){validateWorkspace(state);draft=await store.saveDraft({state:clone(state),baseHashes,baseline,dirty,pending},explicitReason||'修改本机草稿');explicitReason='';}
+      savedEpoch=epoch;setSaveStatus(maintenance?(dirty?'草稿已保存在本机 · 尚未发布':pending?'提交已保存 · 等待部署':'本机草稿已保存'):'查看设置已保存在本机');
     }
-  }catch(error){saveError=error;saveNotice('尚未保存：'+error.message,true);}
-  finally{saving=false;}
+    $('pw-storage-error').hidden=true;saveError=null;
+  }catch(error){saveError=error;setSaveStatus('尚未保存：'+error.message);$('pw-storage-error').hidden=false;$('pw-storage-error-text').textContent=error.message;}
+  finally{saving=false;renderSyncStatus();}
 }
-function downloadBackup(filenamePrefix='AD600S价格备份'){
-  const envelope={format:'ad600s-price-platform',version:1,exportedAt:new Date().toISOString(),state:structuredClone(state)};
-  const url=URL.createObjectURL(new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=filenamePrefix+'_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),20000);
+function downloadText(text,name,type){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),15000);}
+function downloadBackup(prefix='AD600S价格备份'){downloadText(JSON.stringify({format:'ad600s-price-platform',version:1,exportedAt:new Date().toISOString(),state:clone(state)},null,2),prefix+'_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json','application/json');}
+function enterMaintenance(nextDraft){
+  if(nextDraft){validateWorkspace(nextDraft.state);const prefs=Object.fromEntries(UI_KEYS.map(key=>[key,state[key]]));state=restore(nextDraft.state);Object.assign(state,prefs);baseHashes=nextDraft.baseHashes||online.hashes;baseline=nextDraft.baseline||contentFingerprint(online.state);pending=nextDraft.pending||null;remoteConflict=!pending&&!sameHashes(baseHashes,online.hashes);}
+  else{baseHashes={...online.hashes};baseline=contentFingerprint(online.state);pending=null;remoteConflict=false;}
+  maintenance=true;updateDirty();renderAll();$('pw-publish-settings').hidden=true;setSaveStatus('维护模式 · 修改先保存为本机草稿');
 }
-async function replaceWorkspace(next,reason){
-  validateWorkspace(next);
-  if(saveError?.conflict)throw Error('其他窗口已更新，请先备份当前修改并重新载入后，再恢复。');
-  if(saving){await new Promise(resolve=>{const check=()=>saving?setTimeout(check,50):resolve();check();});}
-  if(!confirm('将恢复完整记录、备注和计算器设置。当前内容会先下载备份，再替换，是否继续？'))return;
-  downloadBackup('恢复前_AD600S价格备份');
-  state=restore(next);importSession=null;importPreview=null;importUndo=null;editorId=null;selectedDay=null;selectedMetric=null;
-  $('pw-editor').hidden=true;$('pw-import-panel').hidden=true;$('pw-import-preview').hidden=true;$('pw-import-undo').hidden=true;
-  renderAll();persist(reason);await flushSave();
+async function authorizeMaintenance(resume=false){
+  const next={owner:$('pw-config-owner').value.trim(),repo:$('pw-config-repo').value.trim(),branch:$('pw-config-branch').value.trim()};validateRepoConfig(next);
+  const token=$('pw-token').value.trim()||readToken();if(!token)throw Error('请填入仅授权本仓库、Contents读写权限的GitHub Token。');
+  settingsMessage('正在核对仓库权限…');await verifyPublisher(next,token);config=next;
+  localStorage.setItem(repoConfigKey,JSON.stringify(config));clearToken();
+  ($('pw-remember-token').checked?localStorage:sessionStorage).setItem(tokenKey(),token);$('pw-token').value='';
+  if(store)draft=await store.loadDraft();enterMaintenance(resume&&draft?draft:null);settingsMessage('已开启维护模式。');
+}
+function applyOnline(next){
+  const prefs=Object.fromEntries(UI_KEYS.map(key=>[key,state[key]]));state=restore(next.state);Object.assign(state,prefs);online=next;baseHashes={...next.hashes};baseline=contentFingerprint(next.state);dirty=false;remoteConflict=false;
+  selectedDay=null;selectedMetric=null;editorId=null;$('pw-editor').hidden=true;$('pw-import-panel').hidden=true;importSession=null;importPreview=null;importUndo=null;
+  renderAll();renderSyncStatus();
+}
+async function refreshShared(force=false){
+  if(polling||publishing)return;polling=true;
+  try{
+    const next=await requestSharedFiles();
+    if(pending){
+      if(sameHashes(next.hashes,pending.hashes)){pending=null;online=next;if(!dirty)applyOnline(next);if(store){await store.saveOnline(next);if(maintenance){persist('确认Pages已更新');await flushSave();}}}
+      else if(!sameHashes(next.hashes,pending.previousHashes)){remoteConflict=true;renderSyncStatus('发现与本次提交不同的线上版本，已保留本机草稿。',true);return;}
+      else{renderSyncStatus('GitHub已接收提交，Pages仍在部署，稍后自动检查。');return;}
+    }else if(!sameHashes(next.hashes,online.hashes)){
+      if(maintenance&&dirty&&!force){remoteConflict=true;renderSyncStatus('线上已有新版本，已保留本机草稿，请备份后重新读取。',true);return;}
+      applyOnline(next);if(store)await store.saveOnline(next);
+    }else{online={...next};if(store)await store.saveOnline(next);}
+    renderSyncStatus();setSaveStatus(maintenance?(dirty?'本机草稿尚未发布':'已读取最新线上数据'):'共享数据已读取');
+  }catch(error){online.mode='offline';renderSyncStatus('线上读取失败，保留上次数据：'+error.message,true);}
+  finally{polling=false;}
+}
+async function publishWorkspace(){
+  if(!maintenance||publishing||!dirty||remoteConflict)return;
+  await flushSave();if(saveError)throw saveError;
+  const token=readToken();if(!token){$('pw-publish-settings').hidden=false;throw Error('请先验证GitHub Token，再发布。');}
+  const snapshot=clone(state);validateWorkspace(snapshot);const files=[{path:'data.csv',text:csvUtf8(workspaceCsv(snapshot))},{path:'settings.json',text:settingsText(snapshot)}];
+  publishing=true;applyAccess();renderSyncStatus('正在提交GitHub…');
+  try{
+    const result=await publishFiles(config,token,files,baseHashes);
+    const hashes=Object.fromEntries(await Promise.all(files.map(async file=>[file.path,await gitBlobSha(file.text)])));
+    pending={hashes,previousHashes:{...online.hashes},commit:result.commit,url:result.url,queuedAt:new Date().toISOString()};baseHashes=hashes;baseline=contentFingerprint(snapshot);updateDirty();
+    $('pw-last-commit').href=result.url;$('pw-last-commit').hidden=false;explicitReason='已提交GitHub，等待Pages部署';
+    persist(explicitReason);await flushSave();renderSyncStatus('已提交GitHub · 等待Pages部署；每60秒检查更新。');
+  }catch(error){if(error.status===401)clearToken();if(error.conflict||error.status===409)remoteConflict=true;renderSyncStatus('发布未完成：'+error.message,true);}
+  finally{publishing=false;applyAccess();}
+}
+async function discardAndReload(){
+  if((maintenance&&dirty)||draft?.dirty){if(!confirm('将放弃本机草稿并读取线上数据，当前内容会先下载备份。是否继续？'))return;downloadBackup('读取线上前_备份');}
+  const next=await requestSharedFiles();if(store){await store.clearDraft();await store.saveOnline(next);}draft=null;pending=null;applyOnline(next);setSaveStatus('已读取线上数据');
 }
 async function renderHistory(){
-  const panel=$('pw-history');panel.hidden=false;
-  try{const items=await storage.history();$('pw-history-list').innerHTML=items.length?items.map(item=>`<div class="pw-history-row"><div><strong>${escapeHtml(timeLabel(item.savedAt))}</strong><p>${escapeHtml(item.reason)}</p></div><button class="pw-button" type="button" data-history-restore="${item.revision}">恢复此版本</button></div>`).join(''):'暂无价格修改历史。';}
-  catch(error){$('pw-history-list').textContent='读取历史失败：'+error.message;}
+  $('pw-history').hidden=false;
+  if(!store){$('pw-history-list').textContent='浏览器未允许本机历史保存。';return;}
+  const items=await store.history();$('pw-history-list').innerHTML=items.length?items.map(item=>`<div class="pw-history-row"><div><strong>${escapeHtml(timeLabel(item.savedAt))}</strong><p>${escapeHtml(item.reason)}</p></div><button type="button" class="pw-button" data-history-restore="${item.revision}">恢复为草稿</button></div>`).join(''):'暂无本机草稿修改记录。线上发布版本可在GitHub提交记录中查看。';applyAccess();
+}
+async function replaceWorkspace(next,reason){
+  if(!maintenance||publishing)return;validateWorkspace(next);
+  if(!confirm('将替换当前草稿的全部记录和计算器设置，当前内容会先下载备份。是否继续？'))return;downloadBackup('恢复前_备份');
+  state=restore(next);if(!state._csvText)state._csvText=workspaceCsv(state);
+  fullPreview=null;$('pw-full-preview').hidden=true;renderAll();persist(reason);await flushSave();
 }
 root.addEventListener('click',async event=>{
-  const button=event.target.closest('button');if(!button)return;
+  const target=event.target.closest('button');if(!target)return;const action=target.dataset.action;
   try{
-    if(button.dataset.action==='backup')downloadBackup();
-    if(button.dataset.action==='restore')$('pw-restore-file').click();
-    if(button.dataset.action==='retry-save')await flushSave();
-    if(button.dataset.action==='reload-saved'){
-      if(editEpoch!==savedEpoch&&!confirm('当前有未保存修改。请先下载备份；重新载入将放弃本页未保存内容，是否继续？'))return;
-      clearTimeout(saveTimer);if(saving)await new Promise(resolve=>{const check=()=>saving?setTimeout(check,50):resolve();check();});const loaded=await storage.load();validateWorkspace(loaded.state);state=restore(loaded.state);lastSavedState=structuredClone(state);lastSavedAt=loaded.savedAt;savedEpoch=editEpoch;saveError=null;importSession=null;importPreview=null;importUndo=null;$('pw-import-panel').hidden=true;$('pw-import-preview').hidden=true;$('pw-editor').hidden=true;renderAll();saveNotice('已载入 · '+storage.label+' · '+timeLabel(lastSavedAt));
-    }
-    if(button.dataset.action==='history')await renderHistory();
-    if(button.dataset.action==='close-history')$('pw-history').hidden=true;
-    if(button.dataset.action==='auto-anchor'){state.anchorAuto=true;renderAll();persist('锚点跟随最新实际日期');}
-    if(button.dataset.historyRestore!==undefined){const envelope=await storage.snapshot(Number(button.dataset.historyRestore));await replaceWorkspace(envelope.state,'恢复历史版本 '+button.dataset.historyRestore);await renderHistory();}
-  }catch(error){saveNotice(error.message,true);}
+    if(action==='settings'){$('pw-publish-settings').hidden=!$('pw-publish-settings').hidden;settingsMessage('Token仅保留在你的浏览器，不写入网页、CSV或备份。');}
+    if(action==='close-settings')$('pw-publish-settings').hidden=true;
+    if(action==='authorize')await authorizeMaintenance(false);
+    if(action==='resume-draft'){if(!maintenance){$('pw-publish-settings').hidden=false;settingsMessage('输入Token后点“验证并恢复草稿”，或在本机使用预览维护。');}else{draft=await store.loadDraft();if(draft)enterMaintenance(draft);}}
+    if(action==='authorize-resume')await authorizeMaintenance(true);
+    if(action==='local-maint'){if(!['localhost','127.0.0.1'].includes(location.hostname))throw Error('本机预览入口仅限本机使用。');if(store)draft=await store.loadDraft();enterMaintenance(draft?.dirty||draft?.pending?draft:null);}
+    if(action==='exit-maint'){await flushSave();if(saveError)throw saveError;maintenance=false;const next=clone(online);applyOnline(next);setSaveStatus('已退出维护，本机草稿已保留');}
+    if(action==='forget-token'){clearToken();$('pw-token').value='';if(maintenance){await flushSave();maintenance=false;applyOnline(online);}settingsMessage('已清除本仓库Token。');}
+    if(action==='refresh-online')await refreshShared();
+    if(action==='discard-reload')await discardAndReload();
+    if(action==='publish')await publishWorkspace();
+    if(action==='backup')downloadBackup();
+    if(action==='download-csv')downloadText(csvUtf8(workspaceCsv(state)),'data.csv','text/csv;charset=utf-8');
+    if(action==='restore')$('pw-restore-file').click();
+    if(action==='retry-save')await flushSave();
+    if(action==='history')await renderHistory();
+    if(action==='close-history')$('pw-history').hidden=true;
+    if(target.dataset.historyRestore!==undefined){const snapshot=await store.snapshot(Number(target.dataset.historyRestore));await replaceWorkspace(snapshot.state,'恢复本机历史为草稿');}
+    if(action==='auto-anchor'){state.anchorAuto=true;renderAll();persist('锚点跟随最新实际日期');}
+    if(action==='full-csv')$('pw-full-file').click();
+    if(action==='close-full')$('pw-full-preview').hidden=true;
+    if(action==='apply-full'&&fullPreview){if(dirty){downloadBackup('全量替换前_备份');}state={...state,baseRows:fullPreview.rows,patches:{},added:[],_csvText:fullPreview.text,page:'schedule',pageIndex:0};validateWorkspace(state);$('pw-full-preview').hidden=true;fullPreview=null;renderAll();persist('全量CSV替换为本机草稿');}
+  }catch(error){if(error.status===401)clearToken();settingsMessage(error.message,true);renderSyncStatus(error.message,true);}
 });
-$('pw-restore-file').addEventListener('change',async event=>{
-  const file=event.target.files[0];if(!file)return;
-  try{if(file.size>2*1024*1024+4096)throw Error('备份超过2MB。');const backup=JSON.parse(await file.text());if(backup.format!=='ad600s-price-platform'||backup.version!==1)throw Error('请选择本平台导出的JSON备份。');await replaceWorkspace(backup.state,'从JSON备份恢复');}
-  catch(error){saveNotice('恢复未完成：'+error.message,true);}
+$('pw-full-file').addEventListener('change',async event=>{
+  const file=event.target.files[0];if(!file||!maintenance)return;
+  try{const decoded=decodeCsvBytes(await file.arrayBuffer()),text=csvUtf8(decoded.text),parsed=parseScheduleCsv(text);validateWorkspace({...state,baseRows:parsed.rows,patches:{},added:[],_csvText:text});fullPreview={...parsed,text};$('pw-full-preview').hidden=false;const actual=parsed.rows.filter(row=>recordStatus(row)==='actual').length,plan=parsed.rows.filter(row=>recordStatus(row)==='plan').length;$('pw-full-summary').textContent=file.name+' · '+decoded.encoding+' · '+parsed.rows.length+' 条（实际 '+actual+' / 计划 '+plan+' / 待确认 '+(parsed.rows.length-actual-plan)+'）。确认后全量替换当前价格草稿，计算器设置保留；未编辑时发布保留原CSV列顺序和内容。';}
+  catch(error){fullPreview=null;$('pw-full-preview').hidden=true;renderSyncStatus('全量CSV未导入：'+error.message,true);}
   finally{event.target.value='';}
 });
-window.addEventListener('beforeunload',event=>{if(editEpoch!==savedEpoch){event.preventDefault();event.returnValue='';}});
-window.addEventListener('online',()=>{if(editEpoch!==savedEpoch&&!saveError?.conflict)flushSave();});
-renderAll();root.hidden=false;document.getElementById('pw-boot').hidden=true;
-$('pw-storage-mode').textContent=storage.label;$('pw-storage-description').textContent=storage.mode==='server'?'自动保存到平台文件夹的 data 目录；修改历史可恢复，自动备份同步更新。':'数据保存在当前浏览器。更换浏览器或设备前，请下载备份；各设备和浏览器分别保存，网页不会将价格数据提交到GitHub。';
-saveNotice('已载入 · '+storage.label+' · '+timeLabel(lastSavedAt));
-if(globalThis.ResizeObserver){let lastWidth=0;new ResizeObserver(entries=>{const w=entries[0].contentRect.width;if(Math.abs(w-lastWidth)>1){lastWidth=w;renderChart();}}).observe($('pw-chart'));}
+$('pw-restore-file').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{if(file.size>2*1024*1024)throw Error('备份超过2MB。');const backup=JSON.parse(await file.text());if(backup.format!=='ad600s-price-platform'||backup.version!==1)throw Error('请选择本平台JSON备份。');await replaceWorkspace(backup.state,'从备份恢复为草稿');}catch(error){renderSyncStatus(error.message,true);}finally{event.target.value='';}});
+$('pw-config-owner').value=config.owner;$('pw-config-repo').value=config.repo;$('pw-config-branch').value=config.branch;
+$('pw-local-maint').hidden=!['localhost','127.0.0.1'].includes(location.hostname);
+$('pw-storage-description').textContent='打开时读取仓库 data.csv，每60秒检查更新。维护修改先保存在本机草稿；点击“发布到线上”后提交GitHub，并等待Pages部署。参考价和计算器设置通过 settings.json 共享。公开仓库中的数据可被任何拿到链接的人读取，持有仓库写入Token才能发布。';
+renderAll();root.hidden=false;document.getElementById('pw-boot').hidden=true;renderSyncStatus();setSaveStatus(online.mode==='offline'?'离线缓存数据':'共享CSV已载入');
+if(globalThis.ResizeObserver){let last=0;new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(Math.abs(width-last)>1){last=width;renderChart();}}).observe($('pw-chart'));}
+setInterval(()=>{if(!document.hidden)refreshShared();},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshShared();});
+window.addEventListener('beforeunload',event=>{if(maintenance&&editEpoch!==savedEpoch){event.preventDefault();event.returnValue='';}});
 
-})().catch(error=>{const boot=document.getElementById('pw-boot');boot.hidden=false;boot.textContent='平台未能载入：'+error.message+' 请允许浏览器保存网站数据，或使用常规浏览窗口重新打开。';});
+})().catch(error=>{const boot=document.getElementById('pw-boot');boot.hidden=false;boot.textContent='同步副本未能载入：'+error.message;});
 </script>
-<style>html{color-scheme:light dark}body{margin:0;background:light-dark(#f4f6fa,#10131a);font-family:Inter,'Microsoft YaHei',system-ui,sans-serif}#ad600s-price-workspace{max-width:1440px;margin:20px auto}#pw-boot{padding:40px;text-align:center}#ad600s-price-workspace button{cursor:pointer}#ad600s-price-workspace .pw-save{margin-right:0;flex-wrap:wrap}#ad600s-price-workspace .pw-storage-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 28px;background:var(--pw-surface);font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor-auto{grid-column:2;justify-self:start;margin-top:3px;color:var(--pw-blue)}#ad600s-price-workspace .pw-storage-error{padding:14px 28px;background:var(--pw-amber-soft);font-size:12px;color:var(--pw-amber);overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-error .pw-row{margin-top:8px}#ad600s-price-workspace .pw-history-row{padding:13px 18px;border-top:1px solid var(--pw-line);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px}#ad600s-price-workspace .pw-history-row>div{min-width:0;overflow-wrap:anywhere}#ad600s-price-workspace .pw-history-row p{font-size:11px;color:var(--pw-muted);margin-top:5px}@media(max-width:620px){#ad600s-price-workspace{margin:0 auto}#ad600s-price-workspace .pw-storage-bar{padding:10px 14px}#ad600s-price-workspace .pw-anchor-auto{grid-column:1/-1}#ad600s-price-workspace .pw-header{padding:16px 14px 12px}#ad600s-price-workspace .pw-history-row{flex-wrap:wrap}}</style></body></html>
+<style>html{color-scheme:light dark}body{margin:0;background:light-dark(#f4f6fa,#10131a);font-family:Inter,'Microsoft YaHei',system-ui,sans-serif}#ad600s-price-workspace{max-width:1440px;margin:16px auto}#pw-boot{padding:40px;text-align:center}#ad600s-price-workspace button{cursor:pointer}#ad600s-price-workspace .pw-save{margin-right:0;max-width:46%;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-bar{padding:12px 26px 8px;background:var(--pw-surface);display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;font-size:11px}#ad600s-price-workspace .pw-storage-bar>div:first-child{display:flex;gap:9px;align-items:center;min-width:0;flex-wrap:wrap}#ad600s-price-workspace .pw-sync-note{padding:0 26px 12px;font-size:11px;color:var(--pw-muted);background:var(--pw-surface)}#ad600s-price-workspace .pw-sync-note a{color:var(--pw-blue);margin-left:10px}#ad600s-price-workspace .pw-publish-settings{padding:16px 26px;background:var(--pw-blue-soft);font-size:12px}#ad600s-price-workspace .pw-config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}#ad600s-price-workspace .pw-config-grid label{display:grid;gap:5px;font-size:11px}#ad600s-price-workspace .pw-config-grid input{width:100%}#ad600s-price-workspace .pw-token-label{grid-column:1/-1}#ad600s-price-workspace .pw-remember{display:flex;align-items:center;gap:6px;font-size:11px;margin:10px 0}#ad600s-price-workspace .pw-publish-settings p{font-size:11px;margin-top:10px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-error,#ad600s-price-workspace .pw-draft-note{padding:12px 26px;background:var(--pw-amber-soft);font-size:12px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-draft-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-local-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--pw-muted);padding-top:16px}#ad600s-price-workspace .pw-history-row{padding:12px 18px;border-top:1px solid var(--pw-line);display:flex;justify-content:space-between;gap:10px;font-size:12px;flex-wrap:wrap}#ad600s-price-workspace .pw-history-row p{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor-auto{grid-column:2;justify-self:start;color:var(--pw-blue)}#ad600s-price-workspace input[readonly]{cursor:default}#ad600s-price-workspace button:disabled{cursor:default}@media(max-width:620px){#ad600s-price-workspace{margin:0}#ad600s-price-workspace .pw-save{max-width:100%}#ad600s-price-workspace .pw-storage-bar,#ad600s-price-workspace .pw-publish-settings{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-sync-note{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-config-grid{grid-template-columns:1fr}#ad600s-price-workspace .pw-anchor-auto{grid-column:1/-1}}</style></body></html>

@@ -1,43 +1,83 @@
-# GitHub Pages 部署步骤
+# AD600S 价格平台：CSV同步副本
 
-本包已适配 GitHub Pages。只上传本包文件，不上传本机平台完整包、data 文件夹或价格备份。
+本副本根据提供的《网页数据同步方案_20261104.md》改造，保留原有价格排期、参考价检测及价格计算器。原本机平台、原GitHub部署包、源CSV和线上仓库均未改动。
 
-## 1. 创建仓库
+## 已配置的仓库
 
-登录 GitHub，点右上角 `+` → `New repository`，仓库名例如 `ad600s-price-platform`，选择 `Public`，勾选 `Add a README file`，点 `Create repository`。
+- 仓库：https://github.com/jiarongxu494-dotcom/ad600s-price-platform
+- 分支：`main`
+- 预计网站地址：https://jiarongxu494-dotcom.github.io/ad600s-price-platform/
+- 价格来源：同目录 `data.csv`
+- 参考价与计算器设置：同目录 `settings.json`
 
-GitHub Free 使用公开仓库发布 Pages。此包是空数据模板，不包含你的价格排期、备注或抓取示例。
+已核对现有仓库为公开仓库，默认分支main，目前只有原index.html和README.md。以下步骤由你确认后在GitHub操作，本次只生成副本。
 
-## 2. 上传网页
+## 先在本机查看
 
-进入仓库，点 `Add file` → `Upload files`，上传本包解压后的 `index.html` 和 `.nojekyll`，点 `Commit changes`。若系统隐藏 `.nojekyll`，可在仓库用 `Add file` → `Create new file` 创建同名空文件；本项目不依赖它也能显示网页。
+双击 **启动预览.cmd**。本机预览不会修改GitHub数据；进入“维护 / 发布设置”后点“本机预览维护”，即可在副本里试改价格和导入CSV。要实际发布，仍须验证仓库Token。
 
-文件应直接放在仓库根目录，确保能在仓库首页看到 `index.html`。不要上传ZIP，也不要把整个文件夹再包一层。
+同步版需要通过网址打开，直接双击site/index.html会提示使用预览入口。
 
-## 3. 启用 Pages
+## 第一次部署
 
-打开仓库 `Settings` → 左侧 `Pages`：
+1. 解压另外提供的“CSV同步副本_部署包.zip”。
+2. 打开上述GitHub仓库，点 **Add file → Upload files**。
+3. 上传包内 `index.html`、`data.csv`、`settings.json`、`.nojekyll` 到仓库根目录。index.html会替换旧网页，请先下载保存旧版；本地原版已保留。
+4. 点 **Commit changes**，等待Pages发布。仓库 **Settings → Pages** 应为 **Deploy from a branch → main → / (root)**。
+5. 用无痕窗口或手机打开网站，确认直接显示170条排期，而无需手动上传文件。
 
-- `Source` 选择 `Deploy from a branch`
-- `Branch` 选择 `main`
-- 文件夹选择 `/ (root)`
-- 点击 `Save`
+部署包含本次提供的完整价格排期，包括未来计划。这个仓库是Public，data.csv和settings.json会公开可读。此方案通过GitHub写入权限控制发布，不提供“只有指定同事能看”的登录限制。
 
-等待发布完成，可在 `Actions` 看 `pages build and deployment` 的执行结果，再回到 `Settings` → `Pages` 点 `Visit site`。一般几分钟，最长可能约10分钟。
+## 只有你能发布：设置Token
 
-地址形如 `https://你的GitHub用户名.github.io/ad600s-price-platform/`，以 Pages 显示的地址为准。
+在GitHub个人头像菜单进入 **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**：
 
-## 4. 恢复价格记录
+- Repository access：Only select repositories，只勾 `ad600s-price-platform`。
+- Repository permissions → Contents：Read and write。
+- 设置合适的到期日，其余权限保持默认。
 
-在新网站点 **恢复备份**，选择从本机平台“下载备份”导出的JSON，确认后等待顶部显示 **已保存 · 本浏览器**。同目录之外另外提供的迁移备份也可用于恢复。
+在网页“维护 / 发布设置”中输入Token，点 **验证并开启维护**。默认只记到本次浏览会话结束；勾选“在此浏览器记住”才写入本地长期存储。Token不进入CSV、settings.json、网页源码和数据备份，不要发给同事或粘贴到聊天里。
 
-不要把JSON备份上传到GitHub。公开Pages网页可被他人打开，价格数据通过浏览器导入并保存在该浏览器，不会发送到GitHub，也不会自动同步给他人或另一台设备。
+更换设备时，在新浏览器重新验证Token。同事打开同一网站默认只读；没有仓库写入凭据不能发布共享数据。
 
-## 以后使用和更新
+## 日常使用
 
-- 日常改价、改备注：在网页操作即可，自动保存到当前浏览器，不必重新上传网页。
-- 换设备或浏览器：先“下载备份”，再到新设备“恢复备份”。清理网站数据前也应备份。
-- 更新页面功能：只替换仓库的 `index.html`，等待重新发布。更新前先下载备份，保留同一仓库地址。
-- GitHub Pages不运行本平台的Node/SQLite服务。多人实时共用一套数据，需要额外数据库和登录权限。
+### 维护价格
 
-官方说明：https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+1. 验证Token开启维护。
+2. 修改价格或备注，也可“上传全量CSV”或“批量导入 / 粘贴”。
+3. 顶部显示“草稿已保存在本机 · 尚未发布”。此时同事看到的仍是线上旧数据。
+4. 检查无误，点 **发布到线上**。
+5. 等待状态从“已提交GitHub，等待Pages部署”更新为“线上数据”。其他在线设备每60秒检查新版本；重新打开网站也会读最新部署数据。
+
+GitHub Pages需要部署时间，通常几分钟，可能更久。网页不会把“GitHub已接收提交”当成“所有设备已更新”。时间戳和no-store减少缓存影响，但不能跳过Pages部署。
+
+### 全量CSV与增量导入
+
+- **上传全量CSV**：替换当前草稿的全部价格记录，先预览再确认。支持UTF-8/BOM及GBK/GB18030。未改单元格时保留解码后的原始CSV文本、列顺序、数字格式、引号、换行和额外列，仅统一为UTF-8编码。
+- **批量导入 / 粘贴**：保留原有字段映射和按天更新流程；PriceReport同日取最后一次有效抓取，空价不补零，原备注保留，实际与计划分别处理。
+- 修改网页单元格后需重新生成CSV，原有额外列及两个星期列会保留；需要时增加“抓取时间”列，避免下次旧抓取覆盖新记录。
+- 维护中的参考价、锚点、计算器输入/列名/公式一起写入settings.json，与CSV在同一次Git提交中发布。页面切换、月份和记录筛选属于各设备本地设置。
+
+### 草稿与冲突
+
+刷新网站默认读取共享数据，不会把本机旧草稿伪装成线上结果。未发布草稿可在验证后用“验证并恢复草稿”恢复。
+
+如果其他设备已发布新版，旧草稿发布会被拦截；先下载备份，再“读取线上并放弃草稿”，基于新版重新修改。发布时使用非强制分支更新，避免覆盖其他设备刚提交的修改。
+
+“本机修改历史”只能恢复为本机草稿，恢复后仍需发布。同事已看到的线上版本可在仓库Commits中查看，通过GitHub还原相关文件或正常提交旧版数据来回退。
+
+### 手动更新备用方式
+
+可直接在GitHub上传完整UTF-8 data.csv覆盖旧文件并提交，等待Pages部署。没有修改参数时，不必改settings.json。若同时需要更新参考价或计算器规则，请在网页中修改并发布，或同步上传对应settings.json。
+
+## 本次数据与口径
+
+- CSV来自Desktop/亚马逊链接—价格排期（2027.01）.csv，原编码GBK/GB18030，170条，2026-08-01至2027-01-17。
+- 实际95条、计划75条；备注含“计划”仍归计划，不随到期自动改成实际。
+- 保留原表10列，包括两个“星期”列。Was Price仍为近90天有效实际每日成交价的数值中位数。
+- settings.json沿用原平台最近设置：参考价239.99、手动锚点2026-12-06、试算D=189.99/F=239.99。若希望看最新实际日期，在维护模式点“跟随最新实际日期”并发布。未来锚点下没有实际记录的30天窗口会留空。
+
+## 验证范围
+
+已使用真实GBK CSV验证字段、170条记录及价格指标；在模拟HTTPS页面和模拟GitHub写入下验证多设备轮询、原文发布、配置共享、旧版本拦截、Token失效、草稿恢复和移动端布局。实际GitHub发布、Pages部署及手机公网打开，需要完成首次部署后检查。本次未向远端仓库写入任何内容。
