@@ -4,7 +4,7 @@
     "listPrice": 239.99,
     "anchor": "2026-11-03",
     "anchorAuto": true,
-    "referenceScope": "actual",
+    "referenceScope": "with-plans",
     "overrides": {
       "D": "189.99",
       "F": "239.99"
