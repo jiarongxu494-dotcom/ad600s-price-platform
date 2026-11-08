@@ -22,7 +22,7 @@
       <div class="pw-metrics" id="pw-metrics"></div>
       <div id="pw-metric-detail" class="pw-detail" hidden></div>
       <section class="pw-panel pw-chart-panel" aria-label="实际与计划价格走势">
-        <div class="pw-panel-head"><div><h2>实际与计划</h2><span class="pw-small" id="pw-chart-period"></span></div><div class="pw-legend"><span><b class="pw-line-key"></b>实际</span><span><b class="pw-line-key pw-plan-key"></b>计划</span><span><b class="pw-line-key pw-ref-key"></b>List Price</span></div></div>
+        <div class="pw-panel-head"><div><h2>价格排期走势</h2><span class="pw-small" id="pw-chart-period"></span></div><div class="pw-legend"><span><b class="pw-line-key"></b>实际</span><span><b class="pw-line-key pw-plan-key"></b>计划</span><span><b class="pw-line-key pw-ref-key"></b>List Price</span></div></div>
         <div id="pw-chart" class="pw-chart"></div>
       </section>
       <section class="pw-panel pw-record-panel" aria-label="可编辑价格明细">
@@ -41,6 +41,7 @@
           <label>记录范围<select id="pw-status" aria-label="记录范围"><option value="all">实际 + 计划</option><option value="actual">仅实际</option><option value="plan">仅计划</option><option value="pending">待确认</option></select></label>
           <span class="pw-filter-help">明细筛选不改变看板的回看窗口</span>
         </div>
+        <div id="pw-activity-legend" class="pw-activity-legend" aria-label="活动颜色"></div>
         <div id="pw-editor" class="pw-editor" hidden></div>
         <div class="pw-table-wrap" id="pw-records"></div>
         <div class="pw-pager" id="pw-pager"></div>
@@ -113,7 +114,19 @@
 <script>
 (async () => {
 const TODAY = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-const PROMO_TYPES = ['平销','7DD','直降','LD','BD','COUPON','PED','黑五BD','CODE'];
+const PROMO_TYPES = ['平销','7DD','直降','LD','BD','COUPON','PED','黑五BD','黑五PED','黑五LD','CODE'];
+function activityKey(row){
+  const text=String(row.type||'平销')+' '+String(row.event||'');
+  if(/黑五|BLACK\s*FRIDAY|BFCM/i.test(text))return /PED/i.test(text)?'bf-ped':/LD/i.test(text)?'bf-ld':'bf-bd';
+  if(/COUPON|优惠券/i.test(text))return'coupon';
+  if(/PED|会员专享/i.test(text))return'ped';
+  if(/LD|闪购/i.test(text))return'ld';
+  if(/7DD/i.test(text))return'deal7';
+  if(/BD/i.test(text))return'bd';
+  if(/CODE|促销码/i.test(text))return'code';
+  if(/直降|降价|SALE/i.test(text))return'sale';
+  return'regular';
+}
 const INPUTS = [
   {id:'B',label:'日常有效参考价'}, {id:'C',label:'Was Price'},
   {id:'D',label:'近30天最低价（含促销）'}, {id:'E',label:'近60天最低价（含促销）'},
@@ -143,7 +156,17 @@ const SCENARIOS = [
     {id:'AA',label:'Was Price的95%',formula:'C*0.95'},
     {id:'AB',label:'近60天最低价',formula:'E'},
     {id:'AC',label:'非Prime价格的8折',formula:'F*0.8'}
-  ],result:'MIN(Y:AC)'}
+  ],result:'MIN(Y:AC)'},
+  {id:'bf-bd',name:'黑五 BD',scope:'ONE 定价策略表 · 黑五BD（AB5:AE5）',out:'AH',rules:[
+    {id:'AE',label:'参考价的85%',formula:'B*0.85'},
+    {id:'AF',label:'近30天最低价（含促销）的95%',formula:'D*0.95'},
+    {id:'AG',label:'近60天最低价（含促销）',formula:'E'}
+  ],result:'MIN(AE:AG)'},
+  {id:'bf-ped',name:'黑五 PED',scope:'ONE 定价策略表 · 黑五PED（AF5:AI5）',out:'AL',rules:[
+    {id:'AI',label:'参考价的85%',formula:'B*0.85'},
+    {id:'AJ',label:'近30天最低价（含促销）的95%',formula:'D*0.95'},
+    {id:'AK',label:'近60天最低价（含促销）',formula:'E'}
+  ],result:'MIN(AI:AK)'}
 ];
 
 function parseMoney(value) {
@@ -579,7 +602,7 @@ function validateWorkspace(state){
   for(const value of Object.values(state.labels))if(typeof value!=='string'||value.length>40)throw Error('列名最多40字符。');
   for(const value of Object.values(state.overrides))if(!amountValid(value))throw Error('计算器输入必须大于0，或留空。');
   for(const key of ['overrides','labels','formulas'])for(const id of Object.keys(state[key]))if(!/^[A-Z]{1,2}$/.test(id))throw Error('计算器列标识无效。');
-  for(const [key,allowed] of Object.entries({page:['schedule','reference','calculator'],referenceScope:['actual','with-plans'],status:['all','actual','plan','pending'],view:['table','calendar'],scenario:['bd','ped','prime-bd','prime-ped'],density:['compact','roomy']}))if(!allowed.includes(state[key]))throw Error('界面设置无效：'+key);
+  for(const [key,allowed] of Object.entries({page:['schedule','reference','calculator'],referenceScope:['actual','with-plans'],status:['all','actual','plan','pending'],view:['table','calendar'],scenario:['bd','ped','prime-bd','prime-ped','bf-bd','bf-ped'],density:['compact','roomy']}))if(!allowed.includes(state[key]))throw Error('界面设置无效：'+key);
   if(state.month!=='custom'&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(state.month))throw Error('月份设置无效。');
   if(!dateValid(state.start)||!dateValid(state.end)||!Number.isInteger(state.pageIndex)||state.pageIndex<0||typeof state.anchorAuto!=='boolean')throw Error('日期区间或页码设置无效。');
   return state;
@@ -739,6 +762,82 @@ async function openSharedWorkspace(){
 const BOOTSTRAP=await openSharedWorkspace();
 const BASE_ROWS = [];
 const IMPORT_SAMPLE = [];
+let priceChartPoints=[],priceChartGeometry=null,priceChartActive=null;
+function hidePriceChartTooltip(){
+  const chart=$('pw-chart');chart.querySelector('#pw-chart-tooltip')?.setAttribute('hidden','');
+  chart.querySelectorAll('[data-chart-guide]').forEach(el=>el.setAttribute('visibility','hidden'));priceChartActive=null;
+}
+function nearestPriceChartPoint(chart,event){
+  const svg=chart.querySelector('svg');if(!svg||!priceChartGeometry)return null;
+  const rect=svg.getBoundingClientRect(),x=(event.clientX-rect.left)/rect.width*priceChartGeometry.width,y=(event.clientY-rect.top)/rect.height*priceChartGeometry.height;
+  let nearest=null,distance=Infinity;
+  for(const point of priceChartPoints){const d=(point.x-x)**2+(point.y-y)**2;if(d<distance){distance=d;nearest=point;}}
+  return distance<38**2?nearest:null;
+}
+function showPriceChartTooltip(point){
+  const chart=$('pw-chart'),tooltip=chart.querySelector('#pw-chart-tooltip'),svg=chart.querySelector('svg');
+  if(!tooltip||!svg||!priceChartGeometry)return;
+  if(priceChartActive!==point.row.id){
+    const row=point.row,status=recordStatus(row),detail=recordNoteParts(row.note).detail;
+    const weekday=['日','一','二','三','四','五','六'][new Date(row.date+'T00:00:00Z').getUTCDay()];
+    tooltip.innerHTML=`<div class="pw-chart-tooltip-head"><strong>${dateText(row.date)} 周${weekday}</strong><span class="pw-status-pill ${status}">${statusLabels[status]}</span></div><div class="pw-chart-tooltip-price">${money(parseMoney(row.price))}<span>成交价 · USD</span></div><dl><div><dt>价格类型</dt><dd data-activity="${activityKey(row)}">${escapeHtml(row.type||'平销')}</dd></div><div><dt>挂价</dt><dd>${money(parseMoney(row.list))}</dd></div><div><dt>活动价</dt><dd>${money(parseMoney(row.eventPrice))}</dd></div>${row.event&&row.event!==row.type?`<div><dt>活动</dt><dd>${escapeHtml(row.event)}</dd></div>`:''}</dl>${detail?`<p class="pw-chart-tooltip-note">${escapeHtml(detail)}</p>`:''}<button type="button" class="pw-chart-record-link" data-edit="${escapeHtml(row.id)}">查看记录</button>`;
+    priceChartActive=row.id;
+  }
+  tooltip.hidden=false;
+  const bounds=chart.getBoundingClientRect(),plot=svg.getBoundingClientRect();
+  const px=plot.left-bounds.left+point.x/priceChartGeometry.width*plot.width,py=plot.top-bounds.top+point.y/priceChartGeometry.height*plot.height;
+  const left=px+16+tooltip.offsetWidth<=bounds.width-8?px+16:px-tooltip.offsetWidth-16;
+  tooltip.style.left=Math.max(8,Math.min(bounds.width-tooltip.offsetWidth-8,left))+'px';
+  tooltip.style.top=Math.max(6,Math.min(bounds.height-tooltip.offsetHeight-6,py-tooltip.offsetHeight/2))+'px';
+  const guide=chart.querySelector('[data-chart-guide="line"]'),halo=chart.querySelector('[data-chart-guide="point"]');
+  guide.setAttribute('x1',point.x);guide.setAttribute('x2',point.x);guide.setAttribute('visibility','visible');
+  halo.setAttribute('cx',point.x);halo.setAttribute('cy',point.y);halo.setAttribute('visibility','visible');
+}
+function bindPriceChart(chart){
+  if(chart.dataset.bound)return;chart.dataset.bound='true';
+  chart.addEventListener('pointermove',event=>{
+    if(event.pointerType==='touch'||event.target.closest('#pw-chart-tooltip'))return;
+    const nearest=nearestPriceChartPoint(chart,event);if(nearest)showPriceChartTooltip(nearest);else hidePriceChartTooltip();
+  });
+  chart.addEventListener('pointerleave',()=>{if(!chart.contains(document.activeElement))hidePriceChartTooltip();});
+  chart.addEventListener('focusin',event=>{const id=event.target.closest('[data-chart-id]')?.dataset.chartId,point=priceChartPoints.find(p=>p.row.id===id);if(point)showPriceChartTooltip(point);});
+  chart.addEventListener('focusout',event=>{if(!chart.contains(event.relatedTarget))hidePriceChartTooltip();});
+  chart.addEventListener('click',event=>{
+    if(event.target.closest('#pw-chart-tooltip'))return;
+    const point=nearestPriceChartPoint(chart,event);
+    if(point){event.stopPropagation();showPriceChartTooltip(point);}
+  });
+  chart.addEventListener('keydown',event=>{
+    if(event.key==='Escape'){hidePriceChartTooltip();return;}
+    if(event.key==='Enter'||event.key===' '){const point=priceChartPoints.find(p=>p.row.id===event.target.dataset.chartId);if(point){event.preventDefault();showPriceChartTooltip(point);}}
+  });
+}
+function renderChart(){
+  if(state.page!=='schedule')return;
+  const chart=$('pw-chart'),range=currentRange();bindPriceChart(chart);priceChartPoints=[];priceChartActive=null;
+  const style=getComputedStyle(chart),width=Math.max(180,chart.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)),height=Math.max(200,chart.clientHeight-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom)),left=45,right=18,top=24,bottom=34;
+  const source=filteredRows().filter(row=>parseMoney(row.price)!==null&&recordStatus(row)!=='pending');
+  const prices=source.map(row=>parseMoney(row.price));if(currentStats.listPrice!==null)prices.push(currentStats.listPrice);
+  if(!source.length||!validDate(range.start)||!validDate(range.end)){chart.innerHTML='<div class="pw-empty">当前范围暂无实际或计划价格</div>';priceChartGeometry=null;return;}
+  const low=Math.min(...prices),high=Math.max(...prices),padding=Math.max(4,(high-low)*0.12),rough=Math.max(1,(high-low+padding*2)/4),power=10**Math.floor(Math.log10(rough));
+  const step=([1,2,2.5,5,10].find(n=>n*power>=rough)||10)*power,min=Math.max(0,Math.floor((low-padding)/step)*step),max=Math.ceil((high+padding)/step)*step;
+  const daySpan=daysBetween(range.start,range.end),x=date=>daySpan===0?(left+width-right)/2:left+daysBetween(range.start,date)/daySpan*(width-left-right),y=price=>top+(max-price)/(max-min)*(height-top-bottom);
+  priceChartGeometry={width,height};let markup='';
+  for(let value=min;value<=max+step/100;value+=step){const yy=y(value);markup+=`<line class="pw-grid-line" x1="${left}" x2="${width-right}" y1="${yy}" y2="${yy}"></line><text x="${left-9}" y="${yy+4}" text-anchor="end">${Number(value.toFixed(2))}</text>`;}
+  const ticks=daySpan===0?1:Math.min(daySpan+1,width<460?3:6);
+  for(let i=0;i<ticks;i++){const date=addDays(range.start,Math.round(daySpan*i/Math.max(1,ticks-1)));markup+=`<text x="${x(date)}" y="${height-8}" text-anchor="${ticks===1?'middle':i===0?'start':i===ticks-1?'end':'middle'}">${dateShort(date)}</text>`;}
+  if(currentStats.listPrice!==null)markup+=`<line class="pw-chart-reference" x1="${left}" x2="${width-right}" y1="${y(currentStats.listPrice)}" y2="${y(currentStats.listPrice)}"></line><text class="pw-reference-label" x="${width-right}" y="${y(currentStats.listPrice)-7}" text-anchor="end">List ${money(currentStats.listPrice)}</text>`;
+  for(const status of ['actual','plan']){
+    const values=source.filter(row=>recordStatus(row)===status).sort((a,b)=>a.date.localeCompare(b.date)),segments=[];let segment=[];
+    for(const row of values){if(segment.length&&daysBetween(segment.at(-1).date,row.date)>1){segments.push(segment);segment=[];}segment.push(row);}if(segment.length)segments.push(segment);
+    for(const group of segments){const path=group.map((row,i)=>(i?'L':'M')+x(row.date).toFixed(2)+','+y(parseMoney(row.price)).toFixed(2)).join(' ');if(group.length>1)markup+=`<path class="pw-price-area ${status}" d="${path} L${x(group.at(-1).date)},${height-bottom} L${x(group[0].date)},${height-bottom} Z"></path>`;markup+=`<path class="pw-chart-${status}" d="${path}"></path>`;}
+    const hitRadius=Math.max(2.5,Math.min(11,(width-left-right)/Math.max(1,daySpan)*0.42));
+    for(const row of values){const point={row,x:x(row.date),y:y(parseMoney(row.price))};priceChartPoints.push(point);markup+=`<circle class="pw-price-point ${status}" cx="${point.x}" cy="${point.y}" r="3.5"></circle><circle class="pw-chart-hit" cx="${point.x}" cy="${point.y}" r="${hitRadius}" fill="transparent" tabindex="0" role="button" data-chart-id="${escapeHtml(row.id)}" aria-label="${row.date} ${statusLabels[status]} ${money(parseMoney(row.price))} ${escapeHtml(row.type)}" aria-describedby="pw-chart-tooltip"><title>${row.date} ${statusLabels[status]} ${money(parseMoney(row.price))} ${escapeHtml(row.type)}</title></circle>`;}
+  }
+  markup+=`<line data-chart-guide="line" class="pw-chart-guide" y1="${top}" y2="${height-bottom}" visibility="hidden"></line><circle data-chart-guide="point" class="pw-chart-halo" r="7" visibility="hidden"></circle>`;
+  chart.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${dateText(range.start)}至${dateText(range.end)}实际与计划成交价走势，单位美元"><text x="${left}" y="12">USD</text>${markup}</svg><div id="pw-chart-tooltip" class="pw-chart-tooltip" role="tooltip" hidden></div>`;
+}
+
 const root=document.getElementById('ad600s-price-workspace');
 const $=id=>root.querySelector('#'+id);
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -792,6 +891,8 @@ function renderFilters(){
 function renderRecords(){
   const list=filteredRows(),size=7,pages=Math.max(1,Math.ceil(list.length/size));state.pageIndex=Math.max(0,Math.min(state.pageIndex,pages-1));
   const range=currentRange();$('pw-filter-count').textContent=`${list.length}条`;
+  const activities=new Map();for(const row of list){const label=row.type||row.event||'平销';if(!activities.has(label))activities.set(label,activityKey(row));}
+  $('pw-activity-legend').innerHTML=Array.from(activities,([label,key])=>`<span data-activity="${key}"><i aria-hidden="true"></i>${escapeHtml(label)}</span>`).join('');
   const calendar=state.view==='calendar'&&state.month!=='custom';
   if(!list.length)$('pw-records').innerHTML='<div class="pw-empty">当前范围没有记录，可新增日期或切换筛选。</div>';
   else if(calendar){
@@ -806,32 +907,11 @@ function renderRecords(){
     const weekday=['日','一','二','三','四','五','六'];
     $('pw-records').innerHTML=`<table class="pw-record-table"><thead><tr><th>日期</th><th>实际 / 计划</th><th class="pw-money-cell">成交价 $</th><th class="pw-money-cell">挂价 $</th><th>价格类型</th><th class="pw-money-cell">活动价 $</th><th>补充说明</th><th></th></tr></thead><tbody>${visible.map(r=>{const status=recordStatus(r);return`<tr data-record="${r.id}"><td>${dateShort(r.date)}<span class="pw-weekday">周${weekday[new Date(r.date+'T00:00:00Z').getUTCDay()]}</span></td><td><select class="pw-status-pill pw-status-select ${status}" data-status-id="${r.id}" aria-label="${r.date} 记录类型">${recordStatusOptions(r)}</select></td><td class="pw-money-cell"><input class="pw-cell-input" type="number" min="0.01" step="0.01" value="${escapeHtml(r.price??'')}" data-record-id="${r.id}" data-record-field="price" aria-label="${r.date} 成交价" placeholder="—"></td><td class="pw-money-cell"><input class="pw-cell-input" type="number" min="0.01" step="0.01" value="${escapeHtml(r.list??'')}" data-record-id="${r.id}" data-record-field="list" aria-label="${r.date} 挂价" placeholder="—"></td><td><span class="pw-type ${r.type==='黑五BD'?'pw-blackfriday':''}">${escapeHtml(r.type)}</span></td><td class="pw-money-cell"><input class="pw-cell-input" type="number" min="0.01" step="0.01" value="${escapeHtml(r.eventPrice??'')}" data-record-id="${r.id}" data-record-field="eventPrice" aria-label="${r.date} 活动价" placeholder="—"></td><td><input type="text" class="pw-note-input" value="${escapeHtml(recordNoteParts(r.note).detail)}" data-record-id="${r.id}" data-record-field="note" aria-label="${r.date} 备注" placeholder="补充说明（选填）" maxlength="200"></td><td><button type="button" class="pw-edit-button" data-edit="${r.id}">编辑</button></td></tr>`;}).join('')}</tbody></table>`;
   }
+  const byId=new Map(list.map(row=>[row.id,row]));
+  $('pw-records').querySelectorAll('tr[data-record],.pw-calendar-day').forEach(el=>{const row=byId.get(el.dataset.record||el.dataset.edit);if(row)el.dataset.activity=activityKey(row);});
   $('pw-pager').hidden=calendar;
   $('pw-pager').innerHTML=`<span>下拉选择实际 / 计划；计划落实后请确认“实际”。</span><div><button type="button" data-pager="-1" ${state.pageIndex===0?'disabled':''} aria-label="上一页">‹</button><span>${list.length?state.pageIndex+1:0} / ${list.length?pages:0}</span><button type="button" data-pager="1" ${state.pageIndex>=pages-1?'disabled':''} aria-label="下一页">›</button></div>`;
   $('pw-chart-period').textContent=`${dateText(range.start)}–${dateText(range.end)} · 成交价（USD）`;
-}
-function renderChart(){
-  if(state.page!=='schedule')return;
-  const chart=$('pw-chart'),range=currentRange(),rows=filteredRows();
-  const width=Math.max(250,chart.clientWidth-24),height=160,left=49,right=15,top=12,bottom=27;
-  const source=rows.filter(r=>parseMoney(r.price)!==null),prices=source.map(r=>parseMoney(r.price));
-  if(currentStats.listPrice!==null)prices.push(currentStats.listPrice);
-  if(!prices.length||!validDate(range.start)||!validDate(range.end)){chart.innerHTML='<div class="pw-empty">暂无可绘制的有效价格</div>';return;}
-  const min=Math.floor((Math.min(...prices)-12)/10)*10,max=Math.ceil((Math.max(...prices)+12)/10)*10;
-  const daySpan=daysBetween(range.start,range.end),span=Math.max(1,daySpan);
-  const x=d=>daySpan===0?(left+width-right)/2:left+daysBetween(range.start,d)/span*(width-left-right),y=p=>top+(max-p)/(max-min)*(height-top-bottom);
-  let markup='';
-  for(let i=0;i<=3;i++){const value=min+(max-min)*i/3,yy=y(value);markup+=`<line class="pw-grid-line" x1="${left}" x2="${width-right}" y1="${yy}" y2="${yy}"></line><text x="${left-8}" y="${yy+4}" text-anchor="end">${Math.round(value)}</text>`;}
-  const ticks=daySpan===0?1:width<460?3:5;for(let i=0;i<ticks;i++){const date=addDays(range.start,Math.round(daySpan*i/Math.max(1,ticks-1)));markup+=`<text x="${x(date)}" y="${height-6}" text-anchor="${ticks===1?'middle':i===0?'start':i===ticks-1?'end':'middle'}">${dateShort(date)}</text>`;}
-  if(currentStats.listPrice!==null)markup+=`<line class="pw-chart-reference" x1="${left}" x2="${width-right}" y1="${y(currentStats.listPrice)}" y2="${y(currentStats.listPrice)}"></line>`;
-  for(const status of ['actual','plan']){
-    const values=source.filter(r=>recordStatus(r)===status);let path='',prior=null;
-    for(const r of values){const separate=prior===null||daysBetween(prior.date,r.date)>1;path+=(separate?'M':'L')+x(r.date).toFixed(2)+','+y(parseMoney(r.price)).toFixed(2)+' ';prior=r;}
-    if(status==='actual'&&values.length>1&&values.every((r,i)=>i===0||daysBetween(values[i-1].date,r.date)===1))markup+=`<path class="pw-chart-area" d="${path}L${x(values.at(-1).date)},${height-bottom}L${x(values[0].date)},${height-bottom}Z"></path>`;
-    markup+=`<path class="pw-chart-${status}" d="${path}"></path>`;
-    for(const r of values)markup+=`<circle class="pw-dot-${status}" cx="${x(r.date)}" cy="${y(parseMoney(r.price))}" r="2.6"></circle><circle fill="transparent" cx="${x(r.date)}" cy="${y(parseMoney(r.price))}" r="12" data-edit="${r.id}" data-tooltip="${r.date} ${statusLabels[status]} ${money(parseMoney(r.price))} ${escapeHtml(r.type)}" aria-label="${r.date} ${statusLabels[status]} ${money(parseMoney(r.price))}"></circle>`;
-  }
-  chart.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${dateText(range.start)}至${dateText(range.end)}实际与计划成交价走势，单位美元"><text x="${width-right}" y="10" text-anchor="end">USD</text>${markup}</svg>`;
 }
 function referenceDetection(){return getReferenceDetection(allRows(),{anchor:currentStats.anchor,listPrice:state.listPrice,today:TODAY,includePlans:state.referenceScope==='with-plans'});}
 function renderReference(){
@@ -851,7 +931,7 @@ function renderReference(){
   $('pw-reference-conflicts').hidden=!s.conflicts.length;
   $('pw-reference-conflicts').textContent=s.conflicts.length?'同日价格冲突，暂不计入：'+s.conflicts.map(dateShort).join('、'):'';
   const byDate=new Map(s.days.map(r=>[r.date,r]));const hits=new Set(s.matches.map(r=>r.date));
-  $('pw-day-grid').innerHTML=Array.from({length:90},(_,i)=>{const d=addDays(s.anchor,-89+i),r=byDate.get(d),description=r?statusLabels[r.status]+' '+money(r.price)+' '+r.type:forecast?'无有效实际或计划记录':'无有效实际记录';return`<button type="button" class="pw-day-tile cursor-interaction ${r?.status==='plan'?'plan ':''}${hits.has(d)?'hit':r?'':'missing'} ${selectedDay===d?'selected':''}" data-day="${d}" data-tooltip="${d} ${escapeHtml(description)}" aria-label="${d} ${hits.has(d)?'匹配设置价 ':''}${escapeHtml(description)}">${d.slice(-2)}</button>`;}).join('');
+  $('pw-day-grid').innerHTML=Array.from({length:90},(_,i)=>{const d=addDays(s.anchor,-89+i),r=byDate.get(d),description=r?statusLabels[r.status]+' '+money(r.price)+' '+r.type:forecast?'无有效实际或计划记录':'无有效记录';return`<button type="button" class="pw-day-tile cursor-interaction ${r?.status==='plan'?'plan ':''}${hits.has(d)?'hit':r?'':'missing'} ${selectedDay===d?'selected':''}" data-day="${d}" data-tooltip="${d} ${escapeHtml(description)}" aria-label="${d} ${hits.has(d)?'匹配设置价 ':''}${escapeHtml(description)}">${dateShort(d)}</button>`;}).join('');
   if(selectedDay){const r=byDate.get(selectedDay);$('pw-day-selection').textContent=`${dateText(selectedDay)} · ${r?statusLabels[r.status]+' '+money(r.price)+' · '+r.type+(hits.has(selectedDay)?' · 匹配设置价':'')+(r.status==='plan'?' · 尚未落实':''):forecast?'无有效实际或计划记录':'无有效实际记录，计划不计入当前范围'}`;}
   else $('pw-day-selection').textContent=`${dateText(addDays(s.anchor,-89))} 开始，按日期从左到右排列；点击查看记录。`;
   $('pw-match-count').textContent=forecast?`共 ${s.matches.length} 天 · 实际 ${s.actualMatches.length} 天 / 计划 ${s.planMatches.length} 天`:`共 ${s.matches.length} 个实际日期，已按日期去重`;
@@ -1274,4 +1354,59 @@ window.addEventListener('beforeunload',event=>{if(maintenance&&editEpoch!==saved
 
 })().catch(error=>{const boot=document.getElementById('pw-boot');boot.hidden=false;boot.textContent='同步副本未能载入：'+error.message;});
 </script>
-<style>html{color-scheme:light dark}body{margin:0;background:light-dark(#f4f6fa,#10131a);font-family:Inter,'Microsoft YaHei',system-ui,sans-serif}#ad600s-price-workspace{max-width:1440px;margin:16px auto}#pw-boot{padding:40px;text-align:center}#ad600s-price-workspace button{cursor:pointer}#ad600s-price-workspace .pw-save{margin-right:0;max-width:46%;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-bar{padding:12px 26px 8px;background:var(--pw-surface);display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;font-size:11px}#ad600s-price-workspace .pw-storage-bar>div:first-child{display:flex;gap:9px;align-items:center;min-width:0;flex-wrap:wrap}#ad600s-price-workspace .pw-sync-note{padding:0 26px 12px;font-size:11px;color:var(--pw-muted);background:var(--pw-surface)}#ad600s-price-workspace .pw-sync-note a{color:var(--pw-blue);margin-left:10px}#ad600s-price-workspace .pw-publish-settings{padding:16px 26px;background:var(--pw-blue-soft);font-size:12px}#ad600s-price-workspace .pw-config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}#ad600s-price-workspace .pw-config-grid label{display:grid;gap:5px;font-size:11px}#ad600s-price-workspace .pw-config-grid input{width:100%}#ad600s-price-workspace .pw-token-label{grid-column:1/-1}#ad600s-price-workspace .pw-remember{display:flex;align-items:center;gap:6px;font-size:11px;margin:10px 0}#ad600s-price-workspace .pw-publish-settings p{font-size:11px;margin-top:10px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-error,#ad600s-price-workspace .pw-draft-note{padding:12px 26px;background:var(--pw-amber-soft);font-size:12px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-draft-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-local-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--pw-muted);padding-top:16px}#ad600s-price-workspace .pw-history-row{padding:12px 18px;border-top:1px solid var(--pw-line);display:flex;justify-content:space-between;gap:10px;font-size:12px;flex-wrap:wrap}#ad600s-price-workspace .pw-history-row p{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor-auto{grid-column:2;justify-self:start;color:var(--pw-blue)}#ad600s-price-workspace .pw-status-select{min-width:76px;max-width:100%;padding:4px 7px;border:1px solid var(--pw-line);border-radius:5px;cursor:pointer}#ad600s-price-workspace .pw-status-select:disabled{opacity:1;cursor:default}#ad600s-price-workspace input[readonly]{cursor:default}#ad600s-price-workspace button:disabled{cursor:default}@media(max-width:620px){#ad600s-price-workspace{margin:0}#ad600s-price-workspace .pw-save{max-width:100%}#ad600s-price-workspace .pw-storage-bar,#ad600s-price-workspace .pw-publish-settings{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-sync-note{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-config-grid{grid-template-columns:1fr}#ad600s-price-workspace .pw-anchor-auto{grid-column:1/-1}}</style></body></html>
+<style>html{color-scheme:light dark}body{margin:0;background:light-dark(#f4f6fa,#10131a);font-family:Inter,'Microsoft YaHei',system-ui,sans-serif}#ad600s-price-workspace{max-width:1440px;margin:16px auto}#pw-boot{padding:40px;text-align:center}#ad600s-price-workspace button{cursor:pointer}#ad600s-price-workspace .pw-save{margin-right:0;max-width:46%;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-bar{padding:12px 26px 8px;background:var(--pw-surface);display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;font-size:11px}#ad600s-price-workspace .pw-storage-bar>div:first-child{display:flex;gap:9px;align-items:center;min-width:0;flex-wrap:wrap}#ad600s-price-workspace .pw-sync-note{padding:0 26px 12px;font-size:11px;color:var(--pw-muted);background:var(--pw-surface)}#ad600s-price-workspace .pw-sync-note a{color:var(--pw-blue);margin-left:10px}#ad600s-price-workspace .pw-publish-settings{padding:16px 26px;background:var(--pw-blue-soft);font-size:12px}#ad600s-price-workspace .pw-config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}#ad600s-price-workspace .pw-config-grid label{display:grid;gap:5px;font-size:11px}#ad600s-price-workspace .pw-config-grid input{width:100%}#ad600s-price-workspace .pw-token-label{grid-column:1/-1}#ad600s-price-workspace .pw-remember{display:flex;align-items:center;gap:6px;font-size:11px;margin:10px 0}#ad600s-price-workspace .pw-publish-settings p{font-size:11px;margin-top:10px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-error,#ad600s-price-workspace .pw-draft-note{padding:12px 26px;background:var(--pw-amber-soft);font-size:12px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-draft-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-local-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--pw-muted);padding-top:16px}#ad600s-price-workspace .pw-history-row{padding:12px 18px;border-top:1px solid var(--pw-line);display:flex;justify-content:space-between;gap:10px;font-size:12px;flex-wrap:wrap}#ad600s-price-workspace .pw-history-row p{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor-auto{grid-column:2;justify-self:start;color:var(--pw-blue)}#ad600s-price-workspace .pw-status-select{min-width:76px;max-width:100%;padding:4px 7px;border:1px solid var(--pw-line);border-radius:5px;cursor:pointer}#ad600s-price-workspace .pw-status-select:disabled{opacity:1;cursor:default}#ad600s-price-workspace input[readonly]{cursor:default}#ad600s-price-workspace button:disabled{cursor:default}@media(max-width:620px){#ad600s-price-workspace{margin:0}#ad600s-price-workspace .pw-save{max-width:100%}#ad600s-price-workspace .pw-storage-bar,#ad600s-price-workspace .pw-publish-settings{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-sync-note{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-config-grid{grid-template-columns:1fr}#ad600s-price-workspace .pw-anchor-auto{grid-column:1/-1}}</style><style>#ad600s-price-workspace [data-activity="regular"]{--activity-tint:light-dark(#f4f6fa,#272d36);--activity-ink:light-dark(#5a677b,#c2ccda);--activity-line:light-dark(#d8dfe8,#485365)}
+#ad600s-price-workspace [data-activity="bd"]{--activity-tint:light-dark(#eef2ff,#283654);--activity-ink:light-dark(#405cb3,#b6c7ff);--activity-line:light-dark(#cbd6fb,#4e6498)}
+#ad600s-price-workspace [data-activity="deal7"]{--activity-tint:light-dark(#edf5fb,#213849);--activity-ink:light-dark(#356e9c,#a7d7fb);--activity-line:light-dark(#c6dff1,#426985)}
+#ad600s-price-workspace [data-activity="ped"]{--activity-tint:light-dark(#f5effb,#392a49);--activity-ink:light-dark(#7950a5,#d9b9f5);--activity-line:light-dark(#ddceef,#74548f)}
+#ad600s-price-workspace [data-activity="coupon"]{--activity-tint:light-dark(#edf8f1,#213f33);--activity-ink:light-dark(#237d58,#a5dfbc);--activity-line:light-dark(#c4e6d1,#426e57)}
+#ad600s-price-workspace [data-activity="ld"]{--activity-tint:light-dark(#eaf7fa,#203c43);--activity-ink:light-dark(#227e91,#a5dae5);--activity-line:light-dark(#bfe2e9,#42737d)}
+#ad600s-price-workspace [data-activity="sale"]{--activity-tint:light-dark(#fff5e7,#443827);--activity-ink:light-dark(#9c661c,#ecc38c);--activity-line:light-dark(#efd9b5,#7e6540)}
+#ad600s-price-workspace [data-activity="code"]{--activity-tint:light-dark(#fff0f7,#422638);--activity-ink:light-dark(#a04478,#eeb4d4);--activity-line:light-dark(#edcce0,#865472)}
+#ad600s-price-workspace [data-activity="bf-bd"]{--activity-tint:light-dark(#fff0f1,#48292c);--activity-ink:light-dark(#ae3f4b,#ffb7bf);--activity-line:light-dark(#edc5cb,#98525e)}
+#ad600s-price-workspace [data-activity="bf-ped"]{--activity-tint:light-dark(#fceff4,#442735);--activity-ink:light-dark(#a33663,#f3adcb);--activity-line:light-dark(#e9c1d0,#914963)}
+#ad600s-price-workspace [data-activity="bf-ld"]{--activity-tint:light-dark(#fff1ee,#462b27);--activity-ink:light-dark(#ac4b3e,#fbb8a9);--activity-line:light-dark(#edc7bf,#935b50)}
+#ad600s-price-workspace .pw-record-table tr[data-activity]>td{background:var(--activity-tint)}
+#ad600s-price-workspace .pw-record-table tr[data-activity]>td:first-child{box-shadow:inset 3px 0 var(--activity-ink)}
+#ad600s-price-workspace .pw-record-table tr[data-activity] .pw-type{color:var(--activity-ink);font-weight:500;background:transparent;padding:0}
+#ad600s-price-workspace .pw-calendar-day[data-activity]{background:var(--activity-tint);border-color:var(--activity-line);border-left:3px solid var(--activity-ink)}
+#ad600s-price-workspace .pw-calendar-day[data-activity].plan{border-top-style:dashed;border-right-style:dashed;border-bottom-style:dashed}
+#ad600s-price-workspace .pw-calendar-day[data-activity]>span:last-child{color:var(--activity-ink)}
+#ad600s-price-workspace .pw-activity-legend{display:flex;flex-wrap:wrap;gap:7px 15px;padding:0 18px 14px;font-size:11px;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-activity-legend>span{display:inline-flex;align-items:center;gap:5px}
+#ad600s-price-workspace .pw-activity-legend i{width:9px;height:9px;background:var(--activity-ink);border-radius:2px}
+#ad600s-price-workspace .pw-day-tile{aspect-ratio:1.3;min-height:36px;white-space:nowrap}
+#ad600s-price-workspace .pw-chart{height:282px;position:relative;padding:0 16px 14px}
+#ad600s-price-workspace .pw-chart .pw-grid-line{stroke-dasharray:3 5;opacity:.75}
+#ad600s-price-workspace .pw-chart .pw-chart-actual{stroke:var(--pw-blue);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+#ad600s-price-workspace .pw-chart .pw-chart-plan{stroke:var(--pw-amber);stroke-width:2.3;stroke-dasharray:6 5;stroke-linecap:round;stroke-linejoin:round}
+#ad600s-price-workspace .pw-chart .pw-price-area.actual{fill:var(--pw-blue);opacity:.065}
+#ad600s-price-workspace .pw-chart .pw-price-area.plan{fill:var(--pw-amber);opacity:.045}
+#ad600s-price-workspace .pw-chart .pw-price-point{stroke:var(--pw-surface);stroke-width:1.5;fill:var(--pw-blue)}
+#ad600s-price-workspace .pw-chart .pw-price-point.plan{fill:var(--pw-amber)}
+#ad600s-price-workspace .pw-chart .pw-chart-hit{cursor:crosshair;outline:none}
+#ad600s-price-workspace .pw-chart .pw-chart-guide{stroke:var(--pw-muted);stroke-dasharray:4 4;pointer-events:none}
+#ad600s-price-workspace .pw-chart .pw-chart-halo{fill:var(--pw-surface);fill-opacity:.6;stroke:var(--pw-blue);stroke-width:2;pointer-events:none}
+#ad600s-price-workspace .pw-chart .pw-reference-label{font-size:10px;paint-order:stroke;stroke:var(--pw-surface);stroke-width:4px;stroke-linejoin:round}
+#ad600s-price-workspace .pw-chart-tooltip{position:absolute;z-index:5;width:236px;max-width:calc(100% - 16px);padding:12px 13px;border:1px solid var(--pw-line);border-radius:7px;background:var(--pw-surface);box-shadow:0 5px 20px light-dark(#29344e20,#00000050);font-size:11px;line-height:1.5;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-chart-tooltip-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#ad600s-price-workspace .pw-chart-tooltip-head strong{font-size:11px}
+#ad600s-price-workspace .pw-chart-tooltip-price{font-size:22px;font-weight:500;margin:7px 0}
+#ad600s-price-workspace .pw-chart-tooltip-price>span{font-size:10px;font-weight:400;color:var(--pw-muted);margin-left:8px}
+#ad600s-price-workspace .pw-chart-tooltip dl{display:grid;gap:5px;margin:0}
+#ad600s-price-workspace .pw-chart-tooltip dl>div{display:flex;justify-content:space-between;gap:12px}
+#ad600s-price-workspace .pw-chart-tooltip dt{color:var(--pw-muted);flex-shrink:0}
+#ad600s-price-workspace .pw-chart-tooltip dd{margin:0;text-align:right;overflow-wrap:anywhere}
+#ad600s-price-workspace .pw-chart-tooltip dd[data-activity]{color:var(--activity-ink)}
+#ad600s-price-workspace .pw-chart-tooltip-note{margin-top:7px;padding-top:7px;border-top:1px solid var(--pw-line);overflow-wrap:anywhere;max-height:48px;overflow-y:auto;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-chart-record-link{background:none;border:0;color:var(--pw-blue);padding:7px 0 0;font-size:11px}
+#ad600s-price-workspace .pw-scenario-tab[data-scenario^="bf-"]{border-color:light-dark(#edc5cb,#98525e);color:var(--pw-red)}
+#ad600s-price-workspace .pw-scenario-tab[data-scenario^="bf-"].is-active{background:var(--pw-red-soft);border-color:var(--pw-red)}
+@media(max-width:620px){
+  #ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+  #ad600s-price-workspace .pw-day-tile{font-size:10px;min-height:34px}
+  #ad600s-price-workspace .pw-chart{height:278px;padding-left:10px;padding-right:10px}
+  #ad600s-price-workspace .pw-chart-tooltip{width:216px;padding:10px}
+  #ad600s-price-workspace .pw-activity-legend{padding-left:12px;padding-right:12px}
+}
+@media(max-width:360px){#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+</style></body></html>
