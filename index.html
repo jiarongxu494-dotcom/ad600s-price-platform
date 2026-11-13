@@ -1,13 +1,13 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AD600S · CSV同步价格平台副本</title></head><body><div id="pw-boot" role="status">正在读取共享CSV数据…</div><div id="ad600s-price-workspace" aria-label="AD600S CSV同步价格工作台" hidden>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>价格工作台 · 多ASIN管理与对比</title></head><body><div id="pw-boot" role="status">正在读取共享CSV数据…</div><div id="ad600s-price-workspace" aria-label="AD600S CSV同步价格工作台" hidden>
   <header class="pw-header">
     <div class="pw-brand"><span class="pw-brand-mark">T</span><div><strong>TOPDON</strong><span>价格工作台</span></div><span class="pw-demo-tag">CSV 同步副本</span></div>
     <div class="pw-save" id="pw-save" role="status" aria-live="polite"><span class="pw-save-dot"></span>源数据已载入</div>
   </header>
-  <div class="pw-storage-bar"><div><span class="pw-demo-tag" id="pw-mode">只读查看</span><span id="pw-sync-status" role="status" aria-live="polite">正在读取共享数据…</span></div><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="refresh-online">刷新线上数据</button><button type="button" class="pw-button" data-action="download-csv">下载CSV</button><button type="button" class="pw-button" data-action="settings">维护 / 发布设置</button><button type="button" class="pw-button pw-primary" id="pw-publish" data-action="publish" disabled>发布到线上</button><button type="button" class="pw-button" id="pw-exit-maint" data-action="exit-maint" hidden>退出维护</button></div></div>
-<div class="pw-sync-note">共享数据以发布结果为准 · 每60秒检查更新 · Pages部署可能需要几分钟 <a id="pw-last-commit" target="_blank" rel="noopener" hidden>查看本次提交</a></div>
+  <div class="pw-storage-bar"><div><span class="pw-demo-tag" id="pw-mode">只读查看</span><span id="pw-sync-status" role="status" aria-live="polite">正在读取共享数据…</span></div><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="refresh-online">刷新线上数据</button><button type="button" class="pw-button" data-action="download-csv">下载CSV</button><button type="button" class="pw-button" data-action="settings">维护 / 发布设置</button><button type="button" class="pw-button" id="pw-save-local" data-action="save-local" hidden>保存本机数据</button><button type="button" class="pw-button pw-primary" id="pw-publish" data-action="publish" disabled>保存并发布</button><button type="button" class="pw-button" id="pw-exit-maint" data-action="exit-maint" hidden>退出维护</button></div></div>
+<div class="pw-sync-note">本机保存：退出和刷新后保留 · 共享同步：点击保存并发布，等待Pages部署 <a id="pw-last-commit" target="_blank" rel="noopener" hidden>查看本次提交</a></div>
 <div class="pw-storage-error" id="pw-storage-error" hidden role="alert"><span id="pw-storage-error-text"></span><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="retry-save">重试保存草稿</button><button type="button" class="pw-button" data-action="backup">下载草稿备份</button></div></div>
 <div class="pw-draft-note" id="pw-draft-resume" hidden><span>本浏览器保留了尚未发布的草稿或部署中的提交。</span><button type="button" class="pw-button" data-action="resume-draft">恢复本机草稿</button><button type="button" class="pw-button" data-action="discard-reload">读取线上并放弃草稿</button></div>
-<section class="pw-publish-settings" id="pw-publish-settings" hidden><div class="pw-detail-head"><h3>维护与发布设置</h3><button type="button" class="pw-quiet-button" data-action="close-settings">收起</button></div><div class="pw-config-grid"><label>GitHub 用户名<input id="pw-config-owner" autocomplete="off"></label><label>仓库名<input id="pw-config-repo" autocomplete="off"></label><label>发布分支<input id="pw-config-branch" autocomplete="off"></label><label class="pw-token-label">GitHub Token<input id="pw-token" type="password" autocomplete="off" spellcheck="false" aria-label="GitHub Token" placeholder="只在你的浏览器中输入"></label></div><label class="pw-remember"><input type="checkbox" id="pw-remember-token">在此浏览器记住Token（默认仅保留到本次浏览会话）</label><div class="pw-row pw-wrap"><button type="button" class="pw-button pw-primary" data-action="authorize">验证并开启维护</button><button type="button" class="pw-button" data-action="authorize-resume">验证并恢复草稿</button><button type="button" class="pw-button" data-action="forget-token">清除Token</button><button type="button" id="pw-local-maint" class="pw-button" data-action="local-maint" hidden>本机预览维护</button></div><p id="pw-publish-message" role="status">请生成只授权本仓库、Contents读写权限的Fine-grained Token。Token不写入网页、价格数据和备份。</p></section><nav class="pw-nav" aria-label="工作台页面">
+<section class="pw-publish-settings" id="pw-publish-settings" hidden><div class="pw-detail-head"><h3>维护与发布设置</h3><button type="button" class="pw-quiet-button" data-action="close-settings">收起</button></div><div class="pw-config-grid"><label>GitHub 用户名<input id="pw-config-owner" autocomplete="off"></label><label>仓库名<input id="pw-config-repo" autocomplete="off"></label><label>发布分支<input id="pw-config-branch" autocomplete="off"></label><label class="pw-token-label">GitHub Token<input id="pw-token" type="password" autocomplete="off" spellcheck="false" aria-label="GitHub Token" placeholder="只在你的浏览器中输入"></label></div><label class="pw-remember"><input type="checkbox" id="pw-remember-token">在此浏览器记住Token（默认仅保留到本次浏览会话）</label><div class="pw-row pw-wrap"><button type="button" class="pw-button pw-primary" data-action="authorize">验证并开启维护</button><button type="button" class="pw-button" data-action="authorize-resume">验证并恢复草稿</button><button type="button" class="pw-button" data-action="forget-token">清除Token</button><button type="button" id="pw-local-maint" class="pw-button" data-action="local-maint" hidden>本机预览维护</button></div><p id="pw-publish-message" role="status">请生成只授权本仓库、Contents读写权限的Fine-grained Token。Token不写入网页、价格数据和备份。</p></section><details class="pw-data-manager" id="pw-data-manager"><summary>价格数据管理 <span>下载价格、设置与完整备份</span></summary><div class="pw-data-manager-body"><p>下载当前显示的全部价格记录，包含本机修改和未来计划。完整备份可在维护模式恢复。</p><div class="pw-row pw-wrap"><button type="button" class="pw-button" data-action="download-csv">下载价格 CSV</button><button type="button" class="pw-button" data-action="download-settings">下载计算器设置</button><button type="button" class="pw-button" data-action="backup">下载完整备份</button></div></div></details><nav class="pw-nav" aria-label="工作台页面">
     <button type="button" class="pw-nav-button is-active" data-page="schedule" aria-current="page">价格排期</button>
     <button type="button" class="pw-nav-button" data-page="reference">参考价检测</button>
     <button type="button" class="pw-nav-button" data-page="calculator">价格计算器</button>
@@ -21,17 +21,21 @@
     <section class="pw-detail" id="pw-full-preview" hidden><div class="pw-detail-head"><h3>全量CSV预览</h3><button type="button" class="pw-quiet-button" data-action="close-full">取消</button></div><p id="pw-full-summary"></p><button type="button" class="pw-button pw-primary" data-action="apply-full">确认全量替换草稿</button></section><section id="pw-schedule" aria-label="价格排期页面">
       <div class="pw-metrics" id="pw-metrics"></div>
       <div id="pw-metric-detail" class="pw-detail" hidden></div>
+      <div class="pw-schedule-overview">
       <section class="pw-panel pw-chart-panel" aria-label="实际与计划价格走势">
         <div class="pw-panel-head"><div><h2>价格排期走势</h2><span class="pw-small" id="pw-chart-period"></span></div><div class="pw-legend"><span><b class="pw-line-key"></b>实际</span><span><b class="pw-line-key pw-plan-key"></b>计划</span><span><b class="pw-line-key pw-ref-key"></b>List Price</span></div></div>
+        <div id="pw-chart-summary" class="pw-chart-summary"></div>
         <div id="pw-chart" class="pw-chart"></div>
       </section>
+      <section class="pw-panel pw-activity-panel" aria-label="活动安排总览"><div class="pw-panel-head"><div><h2>活动安排总览</h2><span class="pw-small" id="pw-activity-period"></span></div><span class="pw-count" id="pw-activity-count"></span></div><div id="pw-activity-totals" class="pw-activity-totals"></div><div id="pw-activity-overview" class="pw-activity-overview"></div></section>
+      </div>
       <section class="pw-panel pw-record-panel" aria-label="可编辑价格明细">
         <div class="pw-panel-head pw-wrap"><div class="pw-record-title"><h2>每日价格记录</h2><span class="pw-count" id="pw-filter-count"></span></div><div class="pw-row pw-wrap"><div class="pw-segment" aria-label="展示方式"><button type="button" data-view="table" class="is-active">表格</button><button type="button" data-view="calendar">月历</button></div><button type="button" class="pw-button" data-action="full-csv">上传全量CSV</button><input id="pw-full-file" type="file" accept=".csv" aria-label="上传全量CSV" hidden><button type="button" class="pw-button" data-action="open-import">批量导入 / 粘贴</button><button type="button" class="pw-button pw-primary" data-action="add">新增记录</button></div></div>
         <section class="pw-import-panel" id="pw-import-panel" aria-label="批量导入每日价格" hidden>
           <div class="pw-detail-head"><h3>批量更新每日价格</h3><button type="button" class="pw-quiet-button" data-action="close-import">收起</button></div>
-          <div class="pw-import-controls"><label class="pw-import-file-label">上传价格文件<input type="file" id="pw-import-file" accept=".xlsx,.csv,.tsv,.txt" aria-label="上传价格文件"></label><label id="pw-import-sheet-label" hidden>工作表<select id="pw-import-sheet" aria-label="导入工作表"></select></label></div>
+          <div class="pw-import-controls"><label class="pw-import-file-label">上传价格文件<input type="file" id="pw-import-file" accept=".xlsx,.csv,.tsv,.txt" aria-label="上传价格文件"></label><label>导入类型<select id="pw-import-kind" aria-label="导入价格类型"><option value="actual">实际价格（覆盖同日计划）</option><option value="plan">计划排期</option><option value="auto">按原备注识别</option></select></label><label id="pw-import-sheet-label" hidden>工作表<select id="pw-import-sheet" aria-label="导入工作表"></select></label></div>
           <label class="pw-paste-label" for="pw-import-text">或从Excel复制包含列名的数据，直接粘贴</label><textarea id="pw-import-text" rows="4" aria-label="粘贴价格数据" placeholder="抓取时间&#9;实际成交价&#9;实际挂价&#9;活动类型&#9;实际活动价"></textarea>
-          <div class="pw-import-actions"><button type="button" class="pw-button" data-action="preview-paste">识别并预览粘贴内容</button><span class="pw-small">同日取最后一次有效抓取；空价跳过，原有备注保留，计划与实际分别更新。</span></div>
+          <div class="pw-import-actions"><button type="button" class="pw-button" data-action="preview-paste">识别并预览粘贴内容</button><span class="pw-small">同日取最后一次有效抓取；实际覆盖同日计划，空价跳过，补充说明保留。</span></div>
           <div id="pw-import-message" class="pw-small" role="status" aria-live="polite">先预览字段映射与更新内容，再确认更新。</div>
           <div id="pw-import-preview" hidden><div id="pw-import-mapping" class="pw-import-mapping"></div><p id="pw-import-summary" class="pw-small"></p><div id="pw-import-issues" class="pw-import-issues pw-warn" role="alert" hidden></div><div id="pw-import-preview-table" class="pw-table-wrap"></div><div class="pw-import-actions"><button type="button" id="pw-import-apply" class="pw-button pw-primary" data-action="apply-import">确认更新到每日记录</button><button type="button" id="pw-import-undo" class="pw-button" data-action="undo-import" hidden>撤销本次导入</button></div></div>
         </section>
@@ -42,7 +46,7 @@
           <span class="pw-filter-help">明细筛选不改变看板的回看窗口</span>
         </div>
         <div id="pw-activity-legend" class="pw-activity-legend" aria-label="活动颜色"></div>
-        <div id="pw-editor" class="pw-editor" hidden></div>
+        <dialog id="pw-editor" class="pw-editor" aria-label="价格记录详情" hidden></dialog>
         <div class="pw-table-wrap" id="pw-records"></div>
         <div class="pw-pager" id="pw-pager"></div>
       </section>
@@ -72,15 +76,15 @@
 </div>
 <style>
 #ad600s-price-workspace{--pw-bg:light-dark(#f5f6fa,#141821);--pw-surface:light-dark(#ffffff,#1d2330);--pw-ink:light-dark(#20293b,#e9edf5);--pw-muted:light-dark(#667185,#aeb8cc);--pw-line:light-dark(#e4e8f0,#353e50);--pw-blue:light-dark(#4056c8,#a8b5ff);--pw-blue-soft:light-dark(#edf0ff,#303b66);--pw-amber:light-dark(#a46213,#f7c373);--pw-amber-soft:light-dark(#fff5e6,#443525);--pw-red:light-dark(#ae3f44,#ffadb1);--pw-red-soft:light-dark(#fff0f1,#4c3039);--pw-green:light-dark(#267454,#91d6b4);--pw-green-soft:light-dark(#edf7f1,#263f35);color:var(--pw-ink);background:var(--pw-bg);font:14px/1.5 'Segoe UI','Microsoft YaHei',sans-serif;border:1px solid var(--pw-line);border-radius:14px;overflow:hidden;min-width:0;font-variant-numeric:tabular-nums;}
-#ad600s-price-workspace *{box-sizing:border-box}#ad600s-price-workspace [hidden]{display:none!important}#ad600s-price-workspace button,#ad600s-price-workspace input,#ad600s-price-workspace select{font:inherit;color:inherit}#ad600s-price-workspace button{cursor:var(--cursor-interaction,auto)}#ad600s-price-workspace button:focus-visible,#ad600s-price-workspace input:focus-visible,#ad600s-price-workspace select:focus-visible{outline:2px solid var(--pw-blue);outline-offset:2px}#ad600s-price-workspace h1,#ad600s-price-workspace h2,#ad600s-price-workspace h3,#ad600s-price-workspace p{margin:0}#ad600s-price-workspace h1{font-size:25px;font-weight:500;letter-spacing:-.6px;margin:4px 0}#ad600s-price-workspace h2{font-size:15px;font-weight:500}#ad600s-price-workspace h3{font-size:14px;font-weight:500}#ad600s-price-workspace strong{font-weight:500}#ad600s-price-workspace .pw-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:19px 28px 15px;background:var(--pw-surface)}#ad600s-price-workspace .pw-brand{display:flex;align-items:center;gap:10px;min-width:0}#ad600s-price-workspace .pw-brand-mark{width:31px;height:31px;background:var(--pw-blue);color:light-dark(#fff,#1b2345);border-radius:8px;display:grid;place-items:center;font-size:21px;font-weight:500}#ad600s-price-workspace .pw-brand>div{display:flex;gap:12px;align-items:center}#ad600s-price-workspace .pw-brand strong{letter-spacing:1px;font-size:14px}#ad600s-price-workspace .pw-brand>div>span{padding-left:12px;border-left:1px solid var(--pw-line);color:var(--pw-muted);font-size:13px}#ad600s-price-workspace .pw-demo-tag{font-size:11px;background:var(--pw-blue-soft);color:var(--pw-blue);padding:3px 7px;border-radius:5px;white-space:nowrap}#ad600s-price-workspace .pw-save{font-size:11px;color:var(--pw-muted);display:flex;gap:6px;align-items:center;margin-right:68px}#ad600s-price-workspace .pw-save-dot{width:5px;height:5px;background:var(--pw-green);border-radius:50%;display:inline-block}#ad600s-price-workspace .pw-nav{display:flex;gap:25px;padding:0 28px;background:var(--pw-surface);border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace .pw-nav-button{border:0;border-bottom:2px solid transparent;background:none;display:flex;gap:7px;align-items:center;padding:13px 1px 12px;color:var(--pw-muted);font-size:13px;white-space:nowrap}#ad600s-price-workspace .pw-nav-button.is-active{border-bottom-color:var(--pw-blue);color:var(--pw-blue);font-weight:500}#ad600s-price-workspace i,#ad600s-price-workspace svg.lucide{width:15px;height:15px;flex-shrink:0}#ad600s-price-workspace .pw-main{padding:23px 26px 18px}#ad600s-price-workspace .pw-title-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:19px}#ad600s-price-workspace .pw-kicker{font-size:11px;letter-spacing:.4px;color:var(--pw-muted)}#ad600s-price-workspace .pw-kicker span{padding:0 6px;opacity:.55}#ad600s-price-workspace .pw-subtitle{font-size:12px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor{display:grid;grid-template-columns:auto 136px;align-items:center;gap:4px 9px;font-size:12px;flex-shrink:0}#ad600s-price-workspace .pw-anchor span{grid-column:2;color:var(--pw-muted);font-size:11px}#ad600s-price-workspace input,#ad600s-price-workspace select{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:6px;padding:7px 9px;min-width:0}#ad600s-price-workspace input[type=date]{color-scheme:light dark;padding:6px 7px;font-size:12px}#ad600s-price-workspace .pw-panel{background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:10px;margin-top:15px}#ad600s-price-workspace .pw-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px 12px}#ad600s-price-workspace .pw-panel-head>div:first-child{min-width:0}#ad600s-price-workspace .pw-small{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-row,#ad600s-price-workspace .pw-record-title{display:flex;align-items:center;gap:10px}#ad600s-price-workspace .pw-wrap{flex-wrap:wrap}#ad600s-price-workspace .pw-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 11px;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);font-size:12px;white-space:nowrap}#ad600s-price-workspace .pw-primary{background:var(--pw-blue);color:light-dark(#fff,#172041);border-color:var(--pw-blue)}#ad600s-price-workspace .pw-button:disabled{opacity:.4;cursor:default}#ad600s-price-workspace .pw-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}#ad600s-price-workspace .pw-metric{background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:9px;padding:14px 13px 11px;text-align:left;min-width:0}#ad600s-price-workspace .pw-metric:hover{border-color:var(--pw-blue)}#ad600s-price-workspace .pw-metric-label{display:block;color:var(--pw-muted);font-size:11px;min-height:34px}#ad600s-price-workspace .pw-metric-value{display:block;font-size:25px;line-height:1.3;font-weight:500;letter-spacing:-.8px;white-space:nowrap}#ad600s-price-workspace .pw-metric-foot{display:block;color:var(--pw-muted);font-size:11px;margin-top:8px;white-space:normal}#ad600s-price-workspace .pw-good{color:var(--pw-green)!important}#ad600s-price-workspace .pw-warn{color:var(--pw-amber)!important}#ad600s-price-workspace .pw-detail{padding:13px 16px;background:var(--pw-blue-soft);border-radius:8px;margin-top:10px;font-size:12px}#ad600s-price-workspace .pw-detail-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px}#ad600s-price-workspace .pw-quiet-button{background:none;border:0;padding:0;color:var(--pw-muted);font-size:12px}#ad600s-price-workspace .pw-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-legend>span{display:flex;align-items:center;gap:5px}#ad600s-price-workspace .pw-line-key{display:inline-block;width:17px;border-top:2px solid var(--pw-blue)}#ad600s-price-workspace .pw-plan-key{border-top:2px dashed var(--pw-amber)}#ad600s-price-workspace .pw-ref-key{border-top:1px dotted var(--pw-muted)}#ad600s-price-workspace .pw-chart{padding:0 12px 10px;height:177px}#ad600s-price-workspace .pw-chart svg{display:block;width:100%;height:100%;overflow:visible}#ad600s-price-workspace .pw-chart text{font-family:inherit;fill:var(--pw-muted);font-size:11px}#ad600s-price-workspace .pw-chart .pw-grid-line{stroke:var(--pw-line);stroke-width:1}#ad600s-price-workspace .pw-chart .pw-chart-actual{stroke:var(--pw-blue);fill:none;stroke-width:2}#ad600s-price-workspace .pw-chart .pw-chart-plan{stroke:var(--pw-amber);fill:none;stroke-width:2;stroke-dasharray:5 4}#ad600s-price-workspace .pw-chart .pw-chart-reference{stroke:var(--pw-muted);stroke-width:1;stroke-dasharray:2 4}#ad600s-price-workspace .pw-chart circle.pw-dot-actual{fill:var(--pw-blue)}#ad600s-price-workspace .pw-chart circle.pw-dot-plan{fill:var(--pw-amber)}#ad600s-price-workspace .pw-chart .pw-chart-area{fill:var(--pw-blue-soft)}#ad600s-price-workspace .pw-count{font-size:11px;background:var(--pw-bg);border-radius:5px;padding:2px 6px;color:var(--pw-muted)}#ad600s-price-workspace .pw-segment{display:flex;padding:2px;background:var(--pw-bg);border-radius:6px;border:1px solid var(--pw-line)}#ad600s-price-workspace .pw-segment button{background:none;border:0;border-radius:4px;padding:4px 9px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-segment button.is-active{background:var(--pw-surface);color:var(--pw-ink);box-shadow:0 1px 3px light-dark(#202a3b14,#00000022)}#ad600s-price-workspace .pw-filter-row{display:flex;align-items:end;flex-wrap:wrap;gap:10px;padding:0 18px 14px}#ad600s-price-workspace .pw-filter-row label{display:grid;gap:3px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-filter-row select{font-size:12px;color:var(--pw-ink);min-width:116px}#ad600s-price-workspace .pw-filter-help{font-size:11px;color:var(--pw-muted);margin-left:auto;padding-bottom:7px}#ad600s-price-workspace .pw-date-range{display:flex;gap:6px;align-items:end}#ad600s-price-workspace .pw-date-range>span{padding-bottom:7px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-table-wrap{overflow-x:auto;width:100%}#ad600s-price-workspace table{width:100%;border-collapse:collapse;text-align:left;font-size:12px}#ad600s-price-workspace .pw-record-table{min-width:780px}#ad600s-price-workspace th{font-weight:400;color:var(--pw-muted);background:var(--pw-bg);font-size:11px;padding:9px 12px;white-space:nowrap;border-top:1px solid var(--pw-line);border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace td{padding:9px 12px;border-bottom:1px solid var(--pw-line);vertical-align:middle}#ad600s-price-workspace td:first-child,#ad600s-price-workspace th:first-child{padding-left:18px}#ad600s-price-workspace td:last-child,#ad600s-price-workspace th:last-child{padding-right:18px}#ad600s-price-workspace .pw-money-cell{text-align:right;white-space:nowrap}#ad600s-price-workspace .pw-cell-input{width:80px;max-width:100%;padding:4px 5px;border-color:transparent;background:transparent;text-align:right;font-size:12px}#ad600s-price-workspace .pw-cell-input:hover,#ad600s-price-workspace .pw-note-input:hover{border-color:var(--pw-line)}#ad600s-price-workspace .pw-note-input{padding:4px 5px;border-color:transparent;background:transparent;min-width:74px;width:100%;max-width:130px;font-size:12px}#ad600s-price-workspace .pw-weekday{font-size:11px;color:var(--pw-muted);margin-left:5px}#ad600s-price-workspace .pw-status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;font-size:11px;background:var(--pw-blue-soft);color:var(--pw-blue);white-space:nowrap}#ad600s-price-workspace .pw-status-pill.plan{color:var(--pw-amber);background:var(--pw-amber-soft)}#ad600s-price-workspace .pw-status-pill.pending{color:var(--pw-red);background:var(--pw-red-soft)}#ad600s-price-workspace .pw-type{font-size:11px;color:var(--pw-muted);white-space:nowrap}#ad600s-price-workspace .pw-type.pw-blackfriday{color:var(--pw-red);background:var(--pw-red-soft);padding:2px 5px;border-radius:4px}#ad600s-price-workspace .pw-edit-button{background:none;border:0;font-size:11px;color:var(--pw-blue);padding:4px}#ad600s-price-workspace .pw-pager{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 17px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-pager>div{display:flex;align-items:center;gap:9px}#ad600s-price-workspace .pw-pager button{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:4px;padding:2px 7px}#ad600s-price-workspace .pw-pager button:disabled{opacity:.35;cursor:default}#ad600s-price-workspace .pw-empty{padding:35px 18px;text-align:center;color:var(--pw-muted);font-size:12px}#ad600s-price-workspace .pw-editor{margin:0 17px 14px;padding:14px;background:var(--pw-bg);border:1px solid var(--pw-line);border-radius:7px}#ad600s-price-workspace .pw-editor-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:10px 0}#ad600s-price-workspace .pw-editor-fields label{display:grid;gap:3px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-editor-fields input,#ad600s-price-workspace .pw-editor-fields select{width:100%;font-size:12px}#ad600s-price-workspace .pw-editor-fields .pw-span2{grid-column:span 2}#ad600s-price-workspace .pw-editor-actions{display:flex;align-items:center;gap:8px;justify-content:flex-end;font-size:11px}#ad600s-price-workspace .pw-editor-actions>span{margin-right:auto;color:var(--pw-muted)}#ad600s-price-workspace .pw-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:0 12px 12px;gap:5px}#ad600s-price-workspace .pw-calendar-weekday{text-align:center;color:var(--pw-muted);font-size:11px;padding:5px}#ad600s-price-workspace .pw-calendar-day{min-height:78px;border:1px solid var(--pw-line);border-radius:5px;background:var(--pw-surface);padding:7px;text-align:left;display:flex;flex-direction:column;gap:3px;min-width:0}#ad600s-price-workspace .pw-calendar-day.plan{background:var(--pw-amber-soft)}#ad600s-price-workspace .pw-calendar-day.pw-blackfriday{background:var(--pw-red-soft)}#ad600s-price-workspace .pw-calendar-day strong{font-size:13px}#ad600s-price-workspace .pw-calendar-day>span{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-calendar-empty{min-height:60px;background:var(--pw-bg);border-radius:5px}#ad600s-price-workspace .pw-reference-layout{display:grid;grid-template-columns:255px minmax(0,1fr);gap:15px}#ad600s-price-workspace .pw-reference-settings{padding:18px;margin-top:0}#ad600s-price-workspace .pw-price-setting{display:grid;gap:6px;font-size:12px;color:var(--pw-muted);margin-top:18px}#ad600s-price-workspace .pw-money-input{display:flex;align-items:center;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);padding-left:10px;color:var(--pw-ink)}#ad600s-price-workspace .pw-money-input input{border:0;width:100%;background:transparent;font-size:22px;padding:8px}#ad600s-price-workspace .pw-rule-row{display:flex;justify-content:space-between;gap:8px;font-size:11px;padding:13px 0;border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace .pw-rule-row>span:first-child{color:var(--pw-muted);flex-shrink:0}#ad600s-price-workspace .pw-rule-row>span:last-child{text-align:right}#ad600s-price-workspace .pw-rule-row strong{text-align:right;max-width:145px}#ad600s-price-workspace .pw-reference-result{margin-top:22px}#ad600s-price-workspace .pw-reference-result .pw-days-value{font-size:36px;letter-spacing:-1px}#ad600s-price-workspace .pw-reference-result .pw-days-unit{font-size:13px;color:var(--pw-muted);margin-left:6px}#ad600s-price-workspace .pw-reference-result .pw-day-status{display:block;font-size:12px;margin-top:2px}#ad600s-price-workspace .pw-progress{margin:12px 0;height:6px;background:var(--pw-bg);border-radius:5px;overflow:hidden}#ad600s-price-workspace .pw-progress>div{height:100%;background:var(--pw-green);border-radius:5px;transition:width .2s}#ad600s-price-workspace .pw-reference-note{margin-top:12px;line-height:1.6}#ad600s-price-workspace .pw-window-panel{margin-top:0;min-width:0}#ad600s-price-workspace .pw-window-legend{display:flex;gap:14px;flex-wrap:wrap;padding:0 18px 13px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-window-legend>span{display:flex;align-items:center;gap:4px}#ad600s-price-workspace .pw-window-key{width:9px;height:9px;border-radius:2px;display:inline-block}#ad600s-price-workspace .pw-hit-key{background:var(--pw-blue)}#ad600s-price-workspace .pw-actual-key{background:var(--pw-blue-soft)}#ad600s-price-workspace .pw-missing-key{background:var(--pw-bg)}#ad600s-price-workspace .pw-day-grid{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:4px;padding:0 18px 15px}#ad600s-price-workspace .pw-day-tile{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1.12;border:0;border-radius:4px;background:var(--pw-blue-soft);color:var(--pw-blue);font-size:11px;padding:0;min-width:0}#ad600s-price-workspace .pw-day-tile.hit{background:var(--pw-blue);color:light-dark(#fff,#172041)}#ad600s-price-workspace .pw-day-tile.missing{background:var(--pw-bg);color:var(--pw-muted)}#ad600s-price-workspace .pw-day-tile.selected{outline:2px solid var(--pw-amber);outline-offset:1px}#ad600s-price-workspace .pw-day-selection{padding:12px 18px;border-top:1px solid var(--pw-line);font-size:12px;min-height:44px;color:var(--pw-muted)}#ad600s-price-workspace .pw-matches{display:flex;flex-wrap:wrap;gap:7px;padding:2px 18px 18px}#ad600s-price-workspace .pw-match{background:var(--pw-blue-soft);border:0;border-radius:5px;padding:7px 10px;text-align:left;font-size:11px;display:flex;align-items:center;gap:8px}#ad600s-price-workspace .pw-match span{color:var(--pw-muted);font-size:11px}#ad600s-price-workspace .pw-basis-panel{margin-top:0}#ad600s-price-workspace .pw-basis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:2px 18px 18px}#ad600s-price-workspace .pw-basis-item{min-width:0}#ad600s-price-workspace .pw-basis-label{font-size:11px;min-height:37px;display:flex;gap:5px;align-items:start;color:var(--pw-muted)}#ad600s-price-workspace .pw-col-id{font:11px/1.4 ui-monospace,monospace;background:var(--pw-bg);padding:1px 4px;border-radius:3px;color:var(--pw-muted);flex-shrink:0}#ad600s-price-workspace .pw-basis-input{width:100%;font-size:18px!important;padding:8px!important}#ad600s-price-workspace .pw-basis-item>span{display:block;font-size:11px;color:var(--pw-muted);margin-top:5px}#ad600s-price-workspace .pw-basis-item input:placeholder-shown{border-color:var(--pw-amber)}#ad600s-price-workspace .pw-label-edit{padding:2px 3px!important;width:100%;font-size:11px!important}#ad600s-price-workspace .pw-scenario-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:20px}#ad600s-price-workspace .pw-scenario-tab{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:6px;font-size:12px;padding:8px 13px;color:var(--pw-muted)}#ad600s-price-workspace .pw-scenario-tab.is-active{background:var(--pw-blue-soft);color:var(--pw-blue);border-color:var(--pw-blue)}#ad600s-price-workspace .pw-calculation-panel{margin-top:10px}#ad600s-price-workspace .pw-rule-table{min-width:540px}#ad600s-price-workspace .pw-rule-table th:nth-child(1){width:47px}#ad600s-price-workspace .pw-rule-table th:nth-child(2){width:31%}#ad600s-price-workspace .pw-rule-table th:nth-child(3){width:40%}#ad600s-price-workspace .pw-rule-table td{padding-top:13px;padding-bottom:13px}#ad600s-price-workspace .pw-rule-table code{font:12px/1.5 ui-monospace,'Microsoft YaHei',monospace;color:var(--pw-muted);white-space:normal;overflow-wrap:anywhere}#ad600s-price-workspace .pw-rule-table input{width:100%;font-size:12px;padding:5px 7px}#ad600s-price-workspace .pw-rule-value{text-align:right;white-space:nowrap}#ad600s-price-workspace .pw-rule-value.is-error{color:var(--pw-amber);font-size:11px}#ad600s-price-workspace .pw-formula-help{font-size:11px;background:var(--pw-bg);color:var(--pw-muted);padding:9px 18px;border-top:1px solid var(--pw-line)}#ad600s-price-workspace .pw-calculation-result{padding:19px 20px;background:var(--pw-blue-soft);display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:0 0 9px 9px}#ad600s-price-workspace .pw-result-price{font-size:31px;letter-spacing:-1px;font-weight:500}#ad600s-price-workspace .pw-result-label{font-size:12px;color:var(--pw-muted)}#ad600s-price-workspace .pw-result-note{font-size:11px;color:var(--pw-muted);text-align:right;max-width:360px}#ad600s-price-workspace .pw-result-note>span{display:block}#ad600s-price-workspace .pw-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--pw-muted);padding-top:17px}#ad600s-price-workspace .pw-footer button{font-size:11px;background:none;border:0;color:var(--pw-muted);padding:0}#ad600s-price-workspace .pw-scope{margin-top:12px;background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:7px;padding:14px;font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-scope p{margin-top:7px}#ad600s-price-workspace .pw-alert{background:var(--pw-amber-soft);color:var(--pw-amber);padding:10px 13px;font-size:12px;border-radius:6px;margin-bottom:13px}#ad600s-price-workspace[data-density="roomy"] td{padding-top:14px;padding-bottom:14px}
-@media(max-width:800px){#ad600s-price-workspace .pw-main{padding:20px 18px 16px}#ad600s-price-workspace .pw-header{padding:16px 20px 12px}#ad600s-price-workspace .pw-nav{padding:0 20px}#ad600s-price-workspace .pw-metric{padding:12px 10px}#ad600s-price-workspace .pw-metric-value{font-size:22px}#ad600s-price-workspace .pw-filter-help{margin-left:0;flex-basis:100%;padding:0}#ad600s-price-workspace .pw-reference-layout{grid-template-columns:225px minmax(0,1fr)}#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(10,minmax(0,1fr))}#ad600s-price-workspace .pw-reference-settings{padding:15px}#ad600s-price-workspace .pw-basis{gap:8px}#ad600s-price-workspace .pw-basis-input{font-size:16px!important}}
-@media(max-width:620px){#ad600s-price-workspace .pw-header{flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-save{margin-right:0}#ad600s-price-workspace .pw-title-row{align-items:start;flex-direction:column;gap:12px}#ad600s-price-workspace .pw-anchor{grid-template-columns:auto 143px}#ad600s-price-workspace .pw-anchor span{grid-column:1 / -1}#ad600s-price-workspace .pw-nav{gap:19px}#ad600s-price-workspace .pw-nav-button{font-size:12px}#ad600s-price-workspace .pw-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#ad600s-price-workspace .pw-metric:last-child{grid-column:span 2}#ad600s-price-workspace .pw-metric-label{min-height:0}#ad600s-price-workspace .pw-metric-foot{margin-top:5px}#ad600s-price-workspace .pw-metric-value{margin-top:5px;font-size:25px}#ad600s-price-workspace .pw-chart-panel .pw-panel-head{align-items:start;flex-direction:column;gap:8px}#ad600s-price-workspace .pw-main{padding:18px 12px 14px}#ad600s-price-workspace .pw-reference-layout{grid-template-columns:minmax(0,1fr)}#ad600s-price-workspace .pw-reference-result{margin-top:12px}#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(10,minmax(0,1fr))}#ad600s-price-workspace .pw-reference-settings{display:block}#ad600s-price-workspace .pw-rule-row strong{max-width:none}#ad600s-price-workspace .pw-basis{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}#ad600s-price-workspace .pw-basis-item:last-child{grid-column:span 2}#ad600s-price-workspace .pw-basis-label{min-height:0;margin-bottom:5px}#ad600s-price-workspace .pw-calculation-result{align-items:start;flex-direction:column}#ad600s-price-workspace .pw-result-note{text-align:left}#ad600s-price-workspace .pw-editor-fields{grid-template-columns:repeat(2,minmax(0,1fr))}#ad600s-price-workspace .pw-month-grid{gap:3px;padding:0 7px 8px}#ad600s-price-workspace .pw-calendar-day{padding:5px 3px;min-height:75px}#ad600s-price-workspace .pw-calendar-day strong{font-size:11px}#ad600s-price-workspace .pw-calendar-day>span{font-size:11px}#ad600s-price-workspace .pw-filter-row{padding-left:12px;padding-right:12px}#ad600s-price-workspace .pw-panel-head{padding-left:13px;padding-right:13px}#ad600s-price-workspace .pw-brand>div>span{display:none}}
-@media(pointer:coarse){#ad600s-price-workspace button{min-height:40px}#ad600s-price-workspace input,#ad600s-price-workspace select{font-size:16px!important}#ad600s-price-workspace .pw-day-tile{min-height:30px}#ad600s-price-workspace .pw-cell-input{width:90px}}
+#ad600s-price-workspace *{box-sizing:border-box}#ad600s-price-workspace [hidden]{display:none!important}#ad600s-price-workspace button,#ad600s-price-workspace input,#ad600s-price-workspace select{font:inherit;color:inherit}#ad600s-price-workspace button{cursor:var(--cursor-interaction,auto)}#ad600s-price-workspace button:focus-visible,#ad600s-price-workspace input:focus-visible,#ad600s-price-workspace select:focus-visible{outline:2px solid var(--pw-blue);outline-offset:2px}#ad600s-price-workspace h1,#ad600s-price-workspace h2,#ad600s-price-workspace h3,#ad600s-price-workspace p{margin:0}#ad600s-price-workspace h1{font-size:25px;font-weight:500;letter-spacing:-.6px;margin:4px 0}#ad600s-price-workspace h2{font-size:17px;font-weight:500}#ad600s-price-workspace h3{font-size:16px;font-weight:500}#ad600s-price-workspace strong{font-weight:500}#ad600s-price-workspace .pw-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:19px 28px 15px;background:var(--pw-surface)}#ad600s-price-workspace .pw-brand{display:flex;align-items:center;gap:10px;min-width:0}#ad600s-price-workspace .pw-brand-mark{width:31px;height:31px;background:var(--pw-blue);color:light-dark(#fff,#1b2345);border-radius:8px;display:grid;place-items:center;font-size:21px;font-weight:500}#ad600s-price-workspace .pw-brand>div{display:flex;gap:12px;align-items:center}#ad600s-price-workspace .pw-brand strong{letter-spacing:1px;font-size:16px}#ad600s-price-workspace .pw-brand>div>span{padding-left:12px;border-left:1px solid var(--pw-line);color:var(--pw-muted);font-size:15px}#ad600s-price-workspace .pw-demo-tag{font-size:14px;background:var(--pw-blue-soft);color:var(--pw-blue);padding:3px 7px;border-radius:5px;white-space:nowrap}#ad600s-price-workspace .pw-save{font-size:14px;color:var(--pw-muted);display:flex;gap:6px;align-items:center;margin-right:68px}#ad600s-price-workspace .pw-save-dot{width:5px;height:5px;background:var(--pw-green);border-radius:50%;display:inline-block}#ad600s-price-workspace .pw-nav{display:flex;gap:25px;padding:0 28px;background:var(--pw-surface);border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace .pw-nav-button{border:0;border-bottom:2px solid transparent;background:none;display:flex;gap:7px;align-items:center;padding:13px 1px 12px;color:var(--pw-muted);font-size:15px;white-space:nowrap}#ad600s-price-workspace .pw-nav-button.is-active{border-bottom-color:var(--pw-blue);color:var(--pw-blue);font-weight:500}#ad600s-price-workspace i,#ad600s-price-workspace svg.lucide{width:15px;height:15px;flex-shrink:0}#ad600s-price-workspace .pw-main{padding:23px 26px 18px}#ad600s-price-workspace .pw-title-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:19px}#ad600s-price-workspace .pw-kicker{font-size:14px;letter-spacing:.4px;color:var(--pw-muted)}#ad600s-price-workspace .pw-kicker span{padding:0 6px;opacity:.55}#ad600s-price-workspace .pw-subtitle{font-size:15px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor{display:grid;grid-template-columns:auto 136px;align-items:center;gap:4px 9px;font-size:15px;flex-shrink:0}#ad600s-price-workspace .pw-anchor span{grid-column:2;color:var(--pw-muted);font-size:14px}#ad600s-price-workspace input,#ad600s-price-workspace select{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:6px;padding:7px 9px;min-width:0}#ad600s-price-workspace input[type=date]{color-scheme:light dark;padding:6px 7px;font-size:15px}#ad600s-price-workspace .pw-panel{background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:10px;margin-top:15px}#ad600s-price-workspace .pw-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px 12px}#ad600s-price-workspace .pw-panel-head>div:first-child{min-width:0}#ad600s-price-workspace .pw-small{font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-row,#ad600s-price-workspace .pw-record-title{display:flex;align-items:center;gap:10px}#ad600s-price-workspace .pw-wrap{flex-wrap:wrap}#ad600s-price-workspace .pw-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 11px;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);font-size:15px;white-space:nowrap}#ad600s-price-workspace .pw-primary{background:var(--pw-blue);color:light-dark(#fff,#172041);border-color:var(--pw-blue)}#ad600s-price-workspace .pw-button:disabled{opacity:.4;cursor:default}#ad600s-price-workspace .pw-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}#ad600s-price-workspace .pw-metric{background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:9px;padding:14px 13px 11px;text-align:left;min-width:0}#ad600s-price-workspace .pw-metric:hover{border-color:var(--pw-blue)}#ad600s-price-workspace .pw-metric-label{display:block;color:var(--pw-muted);font-size:14px;min-height:34px}#ad600s-price-workspace .pw-metric-value{display:block;font-size:25px;line-height:1.3;font-weight:500;letter-spacing:-.8px;white-space:nowrap}#ad600s-price-workspace .pw-metric-foot{display:block;color:var(--pw-muted);font-size:14px;margin-top:8px;white-space:normal}#ad600s-price-workspace .pw-good{color:var(--pw-green)!important}#ad600s-price-workspace .pw-warn{color:var(--pw-amber)!important}#ad600s-price-workspace .pw-detail{padding:13px 16px;background:var(--pw-blue-soft);border-radius:8px;margin-top:10px;font-size:15px}#ad600s-price-workspace .pw-detail-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px}#ad600s-price-workspace .pw-quiet-button{background:none;border:0;padding:0;color:var(--pw-muted);font-size:15px}#ad600s-price-workspace .pw-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-legend>span{display:flex;align-items:center;gap:5px}#ad600s-price-workspace .pw-line-key{display:inline-block;width:17px;border-top:2px solid var(--pw-blue)}#ad600s-price-workspace .pw-plan-key{border-top:2px dashed var(--pw-amber)}#ad600s-price-workspace .pw-ref-key{border-top:1px dotted var(--pw-muted)}#ad600s-price-workspace .pw-chart{padding:0 12px 10px;height:177px}#ad600s-price-workspace .pw-chart svg{display:block;width:100%;height:100%;overflow:visible}#ad600s-price-workspace .pw-chart text{font-family:inherit;fill:var(--pw-muted);font-size:14px}#ad600s-price-workspace .pw-chart .pw-grid-line{stroke:var(--pw-line);stroke-width:1}#ad600s-price-workspace .pw-chart .pw-chart-actual{stroke:var(--pw-blue);fill:none;stroke-width:2}#ad600s-price-workspace .pw-chart .pw-chart-plan{stroke:var(--pw-amber);fill:none;stroke-width:2;stroke-dasharray:5 4}#ad600s-price-workspace .pw-chart .pw-chart-reference{stroke:var(--pw-muted);stroke-width:1;stroke-dasharray:2 4}#ad600s-price-workspace .pw-chart circle.pw-dot-actual{fill:var(--pw-blue)}#ad600s-price-workspace .pw-chart circle.pw-dot-plan{fill:var(--pw-amber)}#ad600s-price-workspace .pw-chart .pw-chart-area{fill:var(--pw-blue-soft)}#ad600s-price-workspace .pw-count{font-size:14px;background:var(--pw-bg);border-radius:5px;padding:2px 6px;color:var(--pw-muted)}#ad600s-price-workspace .pw-segment{display:flex;padding:2px;background:var(--pw-bg);border-radius:6px;border:1px solid var(--pw-line)}#ad600s-price-workspace .pw-segment button{background:none;border:0;border-radius:4px;padding:4px 9px;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-segment button.is-active{background:var(--pw-surface);color:var(--pw-ink);box-shadow:0 1px 3px light-dark(#202a3b14,#00000022)}#ad600s-price-workspace .pw-filter-row{display:flex;align-items:end;flex-wrap:wrap;gap:10px;padding:0 18px 14px}#ad600s-price-workspace .pw-filter-row label{display:grid;gap:3px;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-filter-row select{font-size:15px;color:var(--pw-ink);min-width:116px}#ad600s-price-workspace .pw-filter-help{font-size:14px;color:var(--pw-muted);margin-left:auto;padding-bottom:7px}#ad600s-price-workspace .pw-date-range{display:flex;gap:6px;align-items:end}#ad600s-price-workspace .pw-date-range>span{padding-bottom:7px;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-table-wrap{overflow-x:auto;width:100%}#ad600s-price-workspace table{width:100%;border-collapse:collapse;text-align:left;font-size:15px}#ad600s-price-workspace .pw-record-table{min-width:780px}#ad600s-price-workspace th{font-weight:400;color:var(--pw-muted);background:var(--pw-bg);font-size:14px;padding:9px 12px;white-space:nowrap;border-top:1px solid var(--pw-line);border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace td{padding:9px 12px;border-bottom:1px solid var(--pw-line);vertical-align:middle}#ad600s-price-workspace td:first-child,#ad600s-price-workspace th:first-child{padding-left:18px}#ad600s-price-workspace td:last-child,#ad600s-price-workspace th:last-child{padding-right:18px}#ad600s-price-workspace .pw-money-cell{text-align:right;white-space:nowrap}#ad600s-price-workspace .pw-cell-input{width:80px;max-width:100%;padding:4px 5px;border-color:transparent;background:transparent;text-align:right;font-size:15px}#ad600s-price-workspace .pw-cell-input:hover,#ad600s-price-workspace .pw-note-input:hover{border-color:var(--pw-line)}#ad600s-price-workspace .pw-note-input{padding:4px 5px;border-color:transparent;background:transparent;min-width:74px;width:100%;max-width:130px;font-size:15px}#ad600s-price-workspace .pw-weekday{font-size:14px;color:var(--pw-muted);margin-left:5px}#ad600s-price-workspace .pw-status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;font-size:14px;background:var(--pw-blue-soft);color:var(--pw-blue);white-space:nowrap}#ad600s-price-workspace .pw-status-pill.plan{color:var(--pw-amber);background:var(--pw-amber-soft)}#ad600s-price-workspace .pw-status-pill.pending{color:var(--pw-red);background:var(--pw-red-soft)}#ad600s-price-workspace .pw-type{font-size:14px;color:var(--pw-muted);white-space:nowrap}#ad600s-price-workspace .pw-type.pw-blackfriday{color:var(--pw-red);background:var(--pw-red-soft);padding:2px 5px;border-radius:4px}#ad600s-price-workspace .pw-edit-button{background:none;border:0;font-size:14px;color:var(--pw-blue);padding:4px}#ad600s-price-workspace .pw-pager{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 17px;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-pager>div{display:flex;align-items:center;gap:9px}#ad600s-price-workspace .pw-pager button{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:4px;padding:2px 7px}#ad600s-price-workspace .pw-pager button:disabled{opacity:.35;cursor:default}#ad600s-price-workspace .pw-empty{padding:35px 18px;text-align:center;color:var(--pw-muted);font-size:15px}#ad600s-price-workspace .pw-editor{margin:0 17px 14px;padding:14px;background:var(--pw-bg);border:1px solid var(--pw-line);border-radius:7px}#ad600s-price-workspace .pw-editor-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:10px 0}#ad600s-price-workspace .pw-editor-fields label{display:grid;gap:3px;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-editor-fields input,#ad600s-price-workspace .pw-editor-fields select{width:100%;font-size:15px}#ad600s-price-workspace .pw-editor-fields .pw-span2{grid-column:span 2}#ad600s-price-workspace .pw-editor-actions{display:flex;align-items:center;gap:8px;justify-content:flex-end;font-size:14px}#ad600s-price-workspace .pw-editor-actions>span{margin-right:auto;color:var(--pw-muted)}#ad600s-price-workspace .pw-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:0 12px 12px;gap:5px}#ad600s-price-workspace .pw-calendar-weekday{text-align:center;color:var(--pw-muted);font-size:14px;padding:5px}#ad600s-price-workspace .pw-calendar-day{min-height:78px;border:1px solid var(--pw-line);border-radius:5px;background:var(--pw-surface);padding:7px;text-align:left;display:flex;flex-direction:column;gap:3px;min-width:0}#ad600s-price-workspace .pw-calendar-day.plan{background:var(--pw-amber-soft)}#ad600s-price-workspace .pw-calendar-day.pw-blackfriday{background:var(--pw-red-soft)}#ad600s-price-workspace .pw-calendar-day strong{font-size:15px}#ad600s-price-workspace .pw-calendar-day>span{font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-calendar-empty{min-height:60px;background:var(--pw-bg);border-radius:5px}#ad600s-price-workspace .pw-reference-layout{display:grid;grid-template-columns:255px minmax(0,1fr);gap:15px}#ad600s-price-workspace .pw-reference-settings{padding:18px;margin-top:0}#ad600s-price-workspace .pw-price-setting{display:grid;gap:6px;font-size:15px;color:var(--pw-muted);margin-top:18px}#ad600s-price-workspace .pw-money-input{display:flex;align-items:center;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);padding-left:10px;color:var(--pw-ink)}#ad600s-price-workspace .pw-money-input input{border:0;width:100%;background:transparent;font-size:22px;padding:8px}#ad600s-price-workspace .pw-rule-row{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:13px 0;border-bottom:1px solid var(--pw-line)}#ad600s-price-workspace .pw-rule-row>span:first-child{color:var(--pw-muted);flex-shrink:0}#ad600s-price-workspace .pw-rule-row>span:last-child{text-align:right}#ad600s-price-workspace .pw-rule-row strong{text-align:right;max-width:145px}#ad600s-price-workspace .pw-reference-result{margin-top:22px}#ad600s-price-workspace .pw-reference-result .pw-days-value{font-size:36px;letter-spacing:-1px}#ad600s-price-workspace .pw-reference-result .pw-days-unit{font-size:15px;color:var(--pw-muted);margin-left:6px}#ad600s-price-workspace .pw-reference-result .pw-day-status{display:block;font-size:15px;margin-top:2px}#ad600s-price-workspace .pw-progress{margin:12px 0;height:6px;background:var(--pw-bg);border-radius:5px;overflow:hidden}#ad600s-price-workspace .pw-progress>div{height:100%;background:var(--pw-green);border-radius:5px;transition:width .2s}#ad600s-price-workspace .pw-reference-note{margin-top:12px;line-height:1.6}#ad600s-price-workspace .pw-window-panel{margin-top:0;min-width:0}#ad600s-price-workspace .pw-window-legend{display:flex;gap:14px;flex-wrap:wrap;padding:0 18px 13px;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-window-legend>span{display:flex;align-items:center;gap:4px}#ad600s-price-workspace .pw-window-key{width:9px;height:9px;border-radius:2px;display:inline-block}#ad600s-price-workspace .pw-hit-key{background:var(--pw-blue)}#ad600s-price-workspace .pw-actual-key{background:var(--pw-blue-soft)}#ad600s-price-workspace .pw-missing-key{background:var(--pw-bg)}#ad600s-price-workspace .pw-day-grid{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:4px;padding:0 18px 15px}#ad600s-price-workspace .pw-day-tile{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1.12;border:0;border-radius:4px;background:var(--pw-blue-soft);color:var(--pw-blue);font-size:14px;padding:0;min-width:0}#ad600s-price-workspace .pw-day-tile.hit{background:var(--pw-blue);color:light-dark(#fff,#172041)}#ad600s-price-workspace .pw-day-tile.missing{background:var(--pw-bg);color:var(--pw-muted)}#ad600s-price-workspace .pw-day-tile.selected{outline:2px solid var(--pw-amber);outline-offset:1px}#ad600s-price-workspace .pw-day-selection{padding:12px 18px;border-top:1px solid var(--pw-line);font-size:15px;min-height:44px;color:var(--pw-muted)}#ad600s-price-workspace .pw-matches{display:flex;flex-wrap:wrap;gap:7px;padding:2px 18px 18px}#ad600s-price-workspace .pw-match{background:var(--pw-blue-soft);border:0;border-radius:5px;padding:7px 10px;text-align:left;font-size:14px;display:flex;align-items:center;gap:8px}#ad600s-price-workspace .pw-match span{color:var(--pw-muted);font-size:14px}#ad600s-price-workspace .pw-basis-panel{margin-top:0}#ad600s-price-workspace .pw-basis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:2px 18px 18px}#ad600s-price-workspace .pw-basis-item{min-width:0}#ad600s-price-workspace .pw-basis-label{font-size:14px;min-height:37px;display:flex;gap:5px;align-items:start;color:var(--pw-muted)}#ad600s-price-workspace .pw-col-id{font:11px/1.4 ui-monospace,monospace;background:var(--pw-bg);padding:1px 4px;border-radius:3px;color:var(--pw-muted);flex-shrink:0}#ad600s-price-workspace .pw-basis-input{width:100%;font-size:18px!important;padding:8px!important}#ad600s-price-workspace .pw-basis-item>span{display:block;font-size:14px;color:var(--pw-muted);margin-top:5px}#ad600s-price-workspace .pw-basis-item input:placeholder-shown{border-color:var(--pw-amber)}#ad600s-price-workspace .pw-label-edit{padding:2px 3px!important;width:100%;font-size:14px!important}#ad600s-price-workspace .pw-scenario-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:20px}#ad600s-price-workspace .pw-scenario-tab{border:1px solid var(--pw-line);background:var(--pw-surface);border-radius:6px;font-size:15px;padding:8px 13px;color:var(--pw-muted)}#ad600s-price-workspace .pw-scenario-tab.is-active{background:var(--pw-blue-soft);color:var(--pw-blue);border-color:var(--pw-blue)}#ad600s-price-workspace .pw-calculation-panel{margin-top:10px}#ad600s-price-workspace .pw-rule-table{min-width:540px}#ad600s-price-workspace .pw-rule-table th:nth-child(1){width:47px}#ad600s-price-workspace .pw-rule-table th:nth-child(2){width:31%}#ad600s-price-workspace .pw-rule-table th:nth-child(3){width:40%}#ad600s-price-workspace .pw-rule-table td{padding-top:13px;padding-bottom:13px}#ad600s-price-workspace .pw-rule-table code{font:12px/1.5 ui-monospace,'Microsoft YaHei',monospace;color:var(--pw-muted);white-space:normal;overflow-wrap:anywhere}#ad600s-price-workspace .pw-rule-table input{width:100%;font-size:15px;padding:5px 7px}#ad600s-price-workspace .pw-rule-value{text-align:right;white-space:nowrap}#ad600s-price-workspace .pw-rule-value.is-error{color:var(--pw-amber);font-size:14px}#ad600s-price-workspace .pw-formula-help{font-size:14px;background:var(--pw-bg);color:var(--pw-muted);padding:9px 18px;border-top:1px solid var(--pw-line)}#ad600s-price-workspace .pw-calculation-result{padding:19px 20px;background:var(--pw-blue-soft);display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:0 0 9px 9px}#ad600s-price-workspace .pw-result-price{font-size:31px;letter-spacing:-1px;font-weight:500}#ad600s-price-workspace .pw-result-label{font-size:15px;color:var(--pw-muted)}#ad600s-price-workspace .pw-result-note{font-size:14px;color:var(--pw-muted);text-align:right;max-width:360px}#ad600s-price-workspace .pw-result-note>span{display:block}#ad600s-price-workspace .pw-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--pw-muted);padding-top:17px}#ad600s-price-workspace .pw-footer button{font-size:14px;background:none;border:0;color:var(--pw-muted);padding:0}#ad600s-price-workspace .pw-scope{margin-top:12px;background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:7px;padding:14px;font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-scope p{margin-top:7px}#ad600s-price-workspace .pw-alert{background:var(--pw-amber-soft);color:var(--pw-amber);padding:10px 13px;font-size:15px;border-radius:6px;margin-bottom:13px}#ad600s-price-workspace[data-density="roomy"] td{padding-top:14px;padding-bottom:14px}
+@media(max-width:800px){#ad600s-price-workspace .pw-main{padding:20px 18px 16px}#ad600s-price-workspace .pw-header{padding:16px 20px 12px}#ad600s-price-workspace .pw-nav{padding:0 20px}#ad600s-price-workspace .pw-metric{padding:12px 10px}#ad600s-price-workspace .pw-metric-value{font-size:22px}#ad600s-price-workspace .pw-filter-help{margin-left:0;flex-basis:100%;padding:0}#ad600s-price-workspace .pw-reference-layout{grid-template-columns:225px minmax(0,1fr)}#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(10,minmax(0,1fr))}#ad600s-price-workspace .pw-reference-settings{padding:15px}#ad600s-price-workspace .pw-basis{gap:8px}#ad600s-price-workspace .pw-basis-input{font-size:18px!important}}
+@media(max-width:620px){#ad600s-price-workspace .pw-header{flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-save{margin-right:0}#ad600s-price-workspace .pw-title-row{align-items:start;flex-direction:column;gap:12px}#ad600s-price-workspace .pw-anchor{grid-template-columns:auto 143px}#ad600s-price-workspace .pw-anchor span{grid-column:1 / -1}#ad600s-price-workspace .pw-nav{gap:19px}#ad600s-price-workspace .pw-nav-button{font-size:15px}#ad600s-price-workspace .pw-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#ad600s-price-workspace .pw-metric:last-child{grid-column:span 2}#ad600s-price-workspace .pw-metric-label{min-height:0}#ad600s-price-workspace .pw-metric-foot{margin-top:5px}#ad600s-price-workspace .pw-metric-value{margin-top:5px;font-size:25px}#ad600s-price-workspace .pw-chart-panel .pw-panel-head{align-items:start;flex-direction:column;gap:8px}#ad600s-price-workspace .pw-main{padding:18px 12px 14px}#ad600s-price-workspace .pw-reference-layout{grid-template-columns:minmax(0,1fr)}#ad600s-price-workspace .pw-reference-result{margin-top:12px}#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(10,minmax(0,1fr))}#ad600s-price-workspace .pw-reference-settings{display:block}#ad600s-price-workspace .pw-rule-row strong{max-width:none}#ad600s-price-workspace .pw-basis{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}#ad600s-price-workspace .pw-basis-item:last-child{grid-column:span 2}#ad600s-price-workspace .pw-basis-label{min-height:0;margin-bottom:5px}#ad600s-price-workspace .pw-calculation-result{align-items:start;flex-direction:column}#ad600s-price-workspace .pw-result-note{text-align:left}#ad600s-price-workspace .pw-editor-fields{grid-template-columns:repeat(2,minmax(0,1fr))}#ad600s-price-workspace .pw-month-grid{gap:3px;padding:0 7px 8px}#ad600s-price-workspace .pw-calendar-day{padding:5px 3px;min-height:75px}#ad600s-price-workspace .pw-calendar-day strong{font-size:14px}#ad600s-price-workspace .pw-calendar-day>span{font-size:14px}#ad600s-price-workspace .pw-filter-row{padding-left:12px;padding-right:12px}#ad600s-price-workspace .pw-panel-head{padding-left:13px;padding-right:13px}#ad600s-price-workspace .pw-brand>div>span{display:none}}
+@media(pointer:coarse){#ad600s-price-workspace button{min-height:40px}#ad600s-price-workspace input,#ad600s-price-workspace select{font-size:18px!important}#ad600s-price-workspace .pw-day-tile{min-height:30px}#ad600s-price-workspace .pw-cell-input{width:90px}}
 @media(prefers-reduced-motion:reduce){#ad600s-price-workspace *{transition:none!important}}
 #ad600s-price-workspace .pw-calendar-meta{display:flex;gap:3px;flex-wrap:wrap}
 @media(max-width:620px){#ad600s-price-workspace .pw-calendar-meta{flex-direction:column;align-items:center;gap:2px}#ad600s-price-workspace .pw-calendar-day{align-items:center;min-height:54px}#ad600s-price-workspace .pw-calendar-day>strong,#ad600s-price-workspace .pw-calendar-day>span:last-child{display:none}#ad600s-price-workspace .pw-date-range{flex-wrap:wrap}#ad600s-price-workspace .pw-pager{align-items:start;flex-wrap:wrap}}
-@media(max-width:360px){#ad600s-price-workspace .pw-nav{padding:0 12px;gap:8px;justify-content:space-between}#ad600s-price-workspace .pw-nav-button{font-size:11px;gap:4px}#ad600s-price-workspace .pw-nav-button svg{width:13px;height:13px}}
-#ad600s-price-workspace .pw-scope-setting{display:grid;gap:6px;margin-top:16px;font-size:12px;color:var(--pw-muted)}
+@media(max-width:360px){#ad600s-price-workspace .pw-nav{padding:0 12px;gap:8px;justify-content:space-between}#ad600s-price-workspace .pw-nav-button{font-size:14px;gap:4px}#ad600s-price-workspace .pw-nav-button svg{width:13px;height:13px}}
+#ad600s-price-workspace .pw-scope-setting{display:grid;gap:6px;margin-top:16px;font-size:15px;color:var(--pw-muted)}
 #ad600s-price-workspace .pw-scope-setting select{width:100%;color:var(--pw-ink)}
 #ad600s-price-workspace .pw-reference-breakdown{display:block;margin-top:8px}
 #ad600s-price-workspace .pw-day-tile.plan{background:var(--pw-amber-soft);color:var(--pw-amber)}
@@ -90,25 +94,25 @@
 #ad600s-price-workspace .pw-reference-settings{min-width:0}
 #ad600s-price-workspace .pw-import-panel{margin:0 17px 15px;padding:15px;background:var(--pw-bg);border:1px solid var(--pw-line);border-radius:8px;min-width:0}
 #ad600s-price-workspace .pw-import-controls,#ad600s-price-workspace .pw-import-actions{display:flex;align-items:end;flex-wrap:wrap;gap:10px;margin:12px 0}
-#ad600s-price-workspace .pw-import-controls>label{display:grid;gap:4px;font-size:11px;color:var(--pw-muted);min-width:0;max-width:100%}
-#ad600s-price-workspace input[type=file]{font-size:11px;max-width:100%;width:260px}
-#ad600s-price-workspace .pw-paste-label{font-size:11px;color:var(--pw-muted);display:block;margin:8px 0 5px}
+#ad600s-price-workspace .pw-import-controls>label{display:grid;gap:4px;font-size:14px;color:var(--pw-muted);min-width:0;max-width:100%}
+#ad600s-price-workspace input[type=file]{font-size:14px;max-width:100%;width:260px}
+#ad600s-price-workspace .pw-paste-label{font-size:14px;color:var(--pw-muted);display:block;margin:8px 0 5px}
 #ad600s-price-workspace textarea{font:12px/1.6 ui-monospace,'Microsoft YaHei',monospace;color:var(--pw-ink);width:100%;max-width:100%;resize:vertical;border:1px solid var(--pw-line);border-radius:6px;background:var(--pw-surface);padding:9px;min-height:90px}
 #ad600s-price-workspace .pw-import-mapping{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}
-#ad600s-price-workspace .pw-import-mapping label{display:grid;gap:4px;font-size:11px;color:var(--pw-muted);min-width:0}
-#ad600s-price-workspace .pw-import-mapping select{font-size:12px;width:100%;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-import-mapping label{display:grid;gap:4px;font-size:14px;color:var(--pw-muted);min-width:0}
+#ad600s-price-workspace .pw-import-mapping select{font-size:15px;width:100%;color:var(--pw-ink)}
 #ad600s-price-workspace .pw-import-table{min-width:650px;margin-top:12px;background:var(--pw-surface)}
-#ad600s-price-workspace .pw-import-stamp{display:block;font-size:11px;color:var(--pw-muted)}
-#ad600s-price-workspace .pw-import-issues{font-size:11px;margin:9px 0}
-#ad600s-price-workspace .pw-price-advice-body{padding:0 18px 17px;font-size:12px;line-height:1.8}
-#ad600s-price-workspace .pw-advice-facts{display:flex;flex-wrap:wrap;gap:7px 20px;margin-bottom:10px;color:var(--pw-muted);font-size:11px}
+#ad600s-price-workspace .pw-import-stamp{display:block;font-size:14px;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-import-issues{font-size:14px;margin:9px 0}
+#ad600s-price-workspace .pw-price-advice-body{padding:0 18px 17px;font-size:15px;line-height:1.8}
+#ad600s-price-workspace .pw-advice-facts{display:flex;flex-wrap:wrap;gap:7px 20px;margin-bottom:10px;color:var(--pw-muted);font-size:14px}
 #ad600s-price-workspace .pw-advice-facts strong{color:var(--pw-ink)}
 #ad600s-price-workspace .pw-advice-main{margin:4px 0 8px}
 #ad600s-price-workspace .pw-advice-main strong{color:var(--pw-blue)}
 #ad600s-price-workspace .pw-advice-foot{margin-top:10px}
 @media(max-width:620px){#ad600s-price-workspace .pw-import-panel{margin:0 10px 12px;padding:12px}#ad600s-price-workspace .pw-import-mapping{grid-template-columns:repeat(2,minmax(0,1fr))}#ad600s-price-workspace .pw-import-controls{align-items:start;flex-direction:column}#ad600s-price-workspace .pw-price-advice-body{padding-left:13px;padding-right:13px}}
 @media(max-width:360px){#ad600s-price-workspace .pw-import-mapping{grid-template-columns:minmax(0,1fr)}}
-@media(pointer:coarse){#ad600s-price-workspace textarea{font-size:16px}}
+@media(pointer:coarse){#ad600s-price-workspace textarea{font-size:18px}}
 @media(max-width:620px){#ad600s-price-workspace .pw-import-controls{align-items:stretch}#ad600s-price-workspace .pw-import-controls .pw-import-file-label{width:100%}#ad600s-price-workspace .pw-import-file-label input[type=file]{width:100%}}
 </style>
 <script>
@@ -369,6 +373,43 @@ function calculateScenario(scenario,inputs,edits={}) {
   return {rules:results,...result,price,resultFormula:formulas[scenario.out]};
 }
 
+const DEFAULT_ASIN='B0CTHJW813';
+const PRODUCT_KEYS=['listPrice','overrides','labels','formulas'];
+const validAsin=value=>typeof value==='string'&&/^[A-Z0-9]{10}$/.test(value);
+const rowAsin=row=>String(row.asin||DEFAULT_ASIN).trim().toUpperCase();
+const productName=asin=>asin===DEFAULT_ASIN?'AD600S · '+asin:asin;
+const activityLabel=row=>String(row.event||row.type||'平销').trim()||'平销';
+function productAsins(state){return [...new Set([...(state.baseRows||[]),...(state.added||[])].map(row=>({...row,...state.patches?.[row.id]})).filter(row=>!row._deleted).map(rowAsin))].sort();}
+function emptyProduct(asin){return{listPrice:asin===DEFAULT_ASIN?239.99:null,overrides:{},labels:{},formulas:{}};}
+function ensureProductSettings(state){
+  state.productSettings||={};
+  if(!state.productSettings[DEFAULT_ASIN])state.productSettings[DEFAULT_ASIN]=Object.fromEntries(PRODUCT_KEYS.map(key=>[key,structuredClone(state[key]??emptyProduct(DEFAULT_ASIN)[key])]));
+  state.activeAsin=validAsin(state.activeAsin)?state.activeAsin:DEFAULT_ASIN;
+  state.trialOverridesByAsin||={};
+  if(state.activeAsin===DEFAULT_ASIN&&!state.trialOverridesByAsin[DEFAULT_ASIN]&&state.trialOverrides)state.trialOverridesByAsin[DEFAULT_ASIN]=structuredClone(state.trialOverrides);
+  return state;
+}
+function captureProductSettings(state){
+  ensureProductSettings(state);
+  state.productSettings[state.activeAsin]=Object.fromEntries(PRODUCT_KEYS.map(key=>[key,structuredClone(state[key]??emptyProduct(state.activeAsin)[key])]));
+  state.trialOverridesByAsin[state.activeAsin]=structuredClone(state.trialOverrides||{});
+}
+function hydrateProduct(state){
+  ensureProductSettings(state);
+  const available=productAsins(state);if(available.length&&!available.includes(state.activeAsin))state.activeAsin=available[0];
+  const config=state.productSettings[state.activeAsin]||emptyProduct(state.activeAsin);
+  for(const key of PRODUCT_KEYS)state[key]=structuredClone(config[key]??emptyProduct(state.activeAsin)[key]);
+  state.trialOverrides=structuredClone(state.trialOverridesByAsin[state.activeAsin]||{});
+  state.selectedAsins=Array.isArray(state.selectedAsins)?[...new Set(state.selectedAsins.filter(asin=>validAsin(asin)&&(!available.length||available.includes(asin))))]:[state.activeAsin];
+  if(!state.selectedAsins.length)state.selectedAsins=[state.activeAsin];
+  state.activityFilter=typeof state.activityFilter==='string'?state.activityFilter:'all';return state;
+}
+function changeProduct(state,asin){captureProductSettings(state);state.activeAsin=asin;return hydrateProduct(state);}
+function canonicalProducts(state){
+  const copy=structuredClone(state);captureProductSettings(copy);
+  return Object.fromEntries([...new Set([DEFAULT_ASIN,...productAsins(copy),...Object.keys(copy.productSettings)])].sort().map(asin=>[asin,copy.productSettings[asin]||emptyProduct(asin)]));
+}
+
 
 const IMPORT_FIELDS=[
   {key:'date',label:'日期',aliases:['日期','抓取时间','抓取日期','采集时间','date','timestamp'],required:true},
@@ -378,7 +419,7 @@ const IMPORT_FIELDS=[
   {key:'eventPrice',label:'活动价$',aliases:['活动价','活动价$','实际活动价','实际活动价$','promotionprice']},
   {key:'type',label:'价格类型',aliases:['价格类型','pricetype']},
   {key:'note',label:'备注',aliases:['备注','说明','note','notes']},
-  {key:'asin',label:'ASIN（校验）',aliases:['asin']},
+  {key:'asin',label:'ASIN',aliases:['asin','子asin','childasin']},
   {key:'site',label:'站点（校验）',aliases:['站点','国家','site','marketplace']}
 ];
 const normalizeHeader=value=>String(value??'').trim().toLowerCase().replace(/[\s＄$＿_]/g,'');
@@ -430,14 +471,15 @@ function prepareImport(table,existing,options={}){
   for(let i=0;i<table.rows.length;i++){
     const cells=table.rows[i],line=i+2;
     if(!cells.some(v=>String(v??'').trim()))continue;
-    const asin=String(get(cells,'asin')||'').trim().toUpperCase(),site=String(get(cells,'site')||'').trim().toUpperCase();
-    if((mapping.asin>=0&&asin!=='B0CTHJW813')||(mapping.site>=0&&!['US','美国','美国站','USA'].includes(site))){skipped.push({line,message:'不属于当前 AD600S / 美国站'});continue;}
+    const asin=String(get(cells,'asin')||options.asin||DEFAULT_ASIN).trim().toUpperCase(),site=String(get(cells,'site')||'US').trim().toUpperCase();
+    if(!validAsin(asin)){issues.push({line,message:'ASIN需为10位字母数字；无ASIN列时请填写导入归属ASIN'});continue;}
+    if(!['US','美国','美国站','USA'].includes(site)){skipped.push({line,message:'当前仅支持美国站USD'});continue;}
     const date=normalizeImportDate(get(cells,'date'),options.date1904);
     const rawPrice=get(cells,'price'),price=parseMoney(rawPrice);
     if(!date){issues.push({line,message:'日期或抓取时间无效'});continue;}
     if(String(rawPrice??'').trim()===''){skipped.push({line,message:date.date+' 抓取价格为空，跳过且不补零'});continue;}
     if(price===null){issues.push({line,message:'成交价须为大于0的数字'});continue;}
-    const patch={date:date.date,price,sourceTime:date.stamp};
+    const patch={asin,date:date.date,price,sourceTime:date.stamp};
     let bad=false;
     for(const field of ['list','eventPrice'])if(mapping[field]>=0){
       const value=get(cells,field),blank=String(value??'').trim()==='';
@@ -449,7 +491,8 @@ function prepareImport(table,existing,options={}){
     if(mapping.type>=0&&String(get(cells,'type')??'').trim())patch.type=String(get(cells,'type')).trim();
     else if(mapping.event>=0)patch.type=patch.event||((patch.eventPrice??null)!==null?'促销':'平销');
     const note=String(get(cells,'note')??'').trim();if(note)patch.note=note;
-    const status=recordStatus({...patch,note:note||''},today),key=date.date+'|'+status;
+    if(['actual','plan'].includes(options.importStatus))patch.note=recordNoteText(options.importStatus,recordNoteParts(note).detail);
+    const status=recordStatus({...patch,note:patch.note||''},today),key=asin+'|'+date.date+'|'+status;
     if(!groups.has(key))groups.set(key,[]);
     groups.get(key).push({patch,status,stamp:date.stamp,hasTime:date.hasTime,line});
   }
@@ -460,13 +503,19 @@ function prepareImport(table,existing,options={}){
     const latest=entries.at(-1),ties=entries.filter(v=>v.stamp===latest.stamp);
     const signatures=new Set(ties.map(v=>JSON.stringify([v.patch.price,v.patch.list??null,v.patch.event??null,v.patch.eventPrice??null,v.patch.type??null])));
     if(signatures.size>1){issues.push({line:latest.line,message:latest.patch.date+' 同一时间有不同价格，需先处理冲突'});continue;}
-    const matches=existing.filter(row=>row.date===latest.patch.date&&recordStatus(row,today)===latest.status);
-    if(matches.length>1){issues.push({line:latest.line,message:latest.patch.date+' 已有重复的同类记录，请先核对'});continue;}
-    const before=matches[0]||null;
+    const sameDay=existing.filter(row=>rowAsin(row)===latest.patch.asin&&row.date===latest.patch.date),incomingActual=groups.has(latest.patch.asin+'|'+latest.patch.date+'|actual');
+    if(latest.status==='plan'&&(incomingActual||sameDay.some(row=>recordStatus(row,today)==='actual'))){skipped.push({line:latest.line,message:latest.patch.date+' 已有实际价格，跳过同日计划'});continue;}
+    const matches=sameDay.filter(row=>recordStatus(row,today)===latest.status).sort((a,b)=>String(b.sourceTime||'').localeCompare(String(a.sourceTime||''))||a.id.localeCompare(b.id));
+    if(latest.status!=='actual'&&matches.length>1){issues.push({line:latest.line,message:latest.patch.date+' 已有重复的同类记录，请先核对'});continue;}
+    const before=matches[0]||(latest.status==='actual'?sameDay.find(row=>recordStatus(row,today)==='plan'):null)||null;
     if(before?.sourceTime&&before.sourceTime>latest.stamp){skipped.push({line:latest.line,message:latest.patch.date+' 已保存更晚抓取记录'});continue;}
     const after={...(before||{note:'',type:'平销',list:null,event:'',eventPrice:null}),...latest.patch};
-    const changed=!before||Object.keys(latest.patch).some(k=>k==='price'||k==='list'||k==='eventPrice'?parseMoney(before[k])!==parseMoney(after[k]):String(before[k]??'')!==String(after[k]??''));
-    changes.push({before,after,status:latest.status,action:!before?'add':changed?'update':'unchanged',line:latest.line});
+    if(!String(get(table.rows[latest.line-2]||[],'note')??'').trim()&&before)after.note=before.note;
+    if(latest.status==='actual')after.note=recordNoteText('actual',recordNoteParts(after.note).detail);
+    else if(latest.status==='plan'&&options.importStatus==='plan')after.note=recordNoteText('plan',recordNoteParts(after.note).detail);
+    const removeIds=latest.status==='actual'?sameDay.filter(row=>row.id!==before?.id).map(row=>row.id):[];
+    const changed=!before||removeIds.length>0||Object.keys(after).some(k=>k==='asin'?rowAsin(before)!==after.asin:k==='price'||k==='list'||k==='eventPrice'?parseMoney(before[k])!==parseMoney(after[k]):String(before[k]??'')!==String(after[k]??''));
+    changes.push({before,after,removeIds,replacesPlan:latest.status==='actual'&&sameDay.some(row=>recordStatus(row,today)==='plan'),status:latest.status,action:!before?'add':changed?'update':'unchanged',line:latest.line});
   }
   changes.sort((a,b)=>a.after.date.localeCompare(b.after.date));
   return{changes,issues,skipped,sourceCount:table.rows.length,collapsed};
@@ -587,12 +636,14 @@ function validateWorkspace(state){
   for(const row of [...state.baseRows,...state.added]){
     if(!row||typeof row.id!=='string'||!/^[-a-zA-Z0-9_]{1,160}$/.test(row.id)||ids.has(row.id)||!dateValid(row.date))throw Error('记录日期或唯一标识无效，请检查重复记录。');
     ids.add(row.id);
+    if(row.asin!==undefined&&!/^[A-Z0-9]{10}$/.test(row.asin))throw Error('记录ASIN无效。');
     for(const key of ['price','list','eventPrice'])if(!amountValid(row[key]))throw Error(row.date+' 的价格必须大于0，或留空。');
   }
   if(!state.patches||typeof state.patches!=='object'||Array.isArray(state.patches))throw Error('记录修改内容不正确。');
   for(const [id,patch] of Object.entries(state.patches)){
     if(!ids.has(id)||!patch||typeof patch!=='object'||Array.isArray(patch))throw Error('修改内容引用了不存在的记录。');
     if(patch.date!==undefined&&!dateValid(patch.date))throw Error('修改后的日期无效。');
+    if(patch.asin!==undefined&&!/^[A-Z0-9]{10}$/.test(patch.asin))throw Error('修改后的ASIN无效。');
     for(const key of ['price','list','eventPrice'])if(!amountValid(patch[key]))throw Error('价格必须大于0，或留空。');
   }
   if(state.anchor!==undefined&&!dateValid(state.anchor))throw Error('统计锚点不是有效日期。');
@@ -602,6 +653,15 @@ function validateWorkspace(state){
   for(const value of Object.values(state.labels))if(typeof value!=='string'||value.length>40)throw Error('列名最多40字符。');
   for(const value of Object.values(state.overrides))if(!amountValid(value))throw Error('计算器输入必须大于0，或留空。');
   for(const key of ['overrides','labels','formulas'])for(const id of Object.keys(state[key]))if(!/^[A-Z]{1,2}$/.test(id))throw Error('计算器列标识无效。');
+  if(state.activeAsin!==undefined&&!/^[A-Z0-9]{10}$/.test(state.activeAsin))throw Error('当前ASIN无效。');
+  if(state.selectedAsins!==undefined&&(!Array.isArray(state.selectedAsins)||state.selectedAsins.length>200||state.selectedAsins.some(value=>typeof value!=='string'||!/^[A-Z0-9]{10}$/.test(value))))throw Error('对比ASIN设置无效。');
+  if(state.productSettings!==undefined){
+    if(!state.productSettings||typeof state.productSettings!=='object'||Array.isArray(state.productSettings))throw Error('产品设置无效。');
+    for(const [asin,config] of Object.entries(state.productSettings)){
+      if(!/^[A-Z0-9]{10}$/.test(asin)||!config||typeof config!=='object'||Array.isArray(config)||!amountValid(config.listPrice))throw Error('产品参考价无效。');
+      for(const key of ['overrides','labels','formulas']){if(!config[key]||typeof config[key]!=='object'||Array.isArray(config[key]))throw Error('产品计算器设置无效。');for(const [id,value] of Object.entries(config[key]))if(!/^[A-Z]{1,2}$/.test(id)||(key==='overrides'?!amountValid(value):typeof value!=='string'||value.length>(key==='labels'?40:240)))throw Error('产品计算器字段无效。');}
+    }
+  }
   for(const [key,allowed] of Object.entries({page:['schedule','reference','calculator'],referenceScope:['actual','with-plans'],status:['all','actual','plan','pending'],view:['table','calendar'],scenario:['bd','ped','prime-bd','prime-ped','bf-bd','bf-ped'],density:['compact','roomy']}))if(!allowed.includes(state[key]))throw Error('界面设置无效：'+key);
   if(state.month!=='custom'&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(state.month))throw Error('月份设置无效。');
   if(!dateValid(state.start)||!dateValid(state.end)||!Number.isInteger(state.pageIndex)||state.pageIndex<0||typeof state.anchorAuto!=='boolean')throw Error('日期区间或页码设置无效。');
@@ -612,8 +672,8 @@ function businessFingerprint(state){
 }
 
 
-const SHARED_KEYS=['listPrice','anchor','anchorAuto','referenceScope','overrides','labels','formulas'];
-function defaultWorkspace(){const now=TODAY;return{version:1,baseRows:[],added:[],patches:{},page:'schedule',anchor:now,anchorAuto:true,listPrice:239.99,referenceScope:'actual',month:now.slice(0,7),start:now.slice(0,7)+'-01',end:now,status:'all',view:'table',pageIndex:0,scenario:'bd',editRules:false,overrides:{},labels:{},formulas:{},density:'compact'};}
+const SHARED_KEYS=['listPrice','anchor','anchorAuto','referenceScope','overrides','labels','formulas','productSettings'];
+function defaultWorkspace(){const now=TODAY;return{version:1,baseRows:[],added:[],patches:{},page:'schedule',anchor:now,anchorAuto:true,listPrice:239.99,referenceScope:'actual',month:now.slice(0,7),start:now.slice(0,7)+'-01',end:now,status:'all',view:'table',pageIndex:0,scenario:'bd',editRules:false,overrides:{},labels:{},formulas:{},density:'compact',activeAsin:DEFAULT_ASIN,selectedAsins:[DEFAULT_ASIN],activityFilter:'all',productSettings:{},trialOverridesByAsin:{}};}
 function decodeCsvBytes(input){
   const bytes=input instanceof Uint8Array?input:new Uint8Array(input);if(bytes.length>2*1024*1024)throw Error('CSV超过2MB，请缩小数据范围。');
   try{return{text:new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes),encoding:'UTF-8'};}
@@ -634,8 +694,8 @@ function csvMatrix(text){
   return rows;
 }
 const cleanHeader=s=>String(s).trim().replace(/[\s_$＄]/g,'').toLowerCase();
-function parseScheduleCsv(text){
-  const matrix=csvMatrix(text);if(matrix.length<2)throw Error('CSV没有价格记录。');
+function parseScheduleCsv(text,{asin=DEFAULT_ASIN}={}){
+  const matrix=csvMatrix(text);if(!matrix.length)throw Error('CSV需包含列名。');
   const headers=matrix[0],mapping=detectImportMapping(headers);if(mapping.date<0||mapping.price<0)throw Error('CSV需包含“日期”和“成交价$”列。');
   if(matrix.length>20001)throw Error('CSV超过20000条记录。');
   const timeColumn=headers.findIndex(h=>['抓取时间','采集时间'].includes(String(h).trim()));
@@ -645,27 +705,30 @@ function parseScheduleCsv(text){
     const date=normalizeImportDate(get('date'));if(!date)throw Error('CSV第'+(index+2)+'行日期无效。');
     const amount=(key,optional)=>{const value=get(key);if(!value.trim()||(optional&&Number(value)===0))return null;if(parseMoney(value)===null)throw Error('CSV第'+(index+2)+'行'+key+'价格无效。');return value;};
     const row={id:'csv-'+(index+2),_csvLine:index+1,date:date.date,month:date.date.slice(0,7),price:amount('price',false),list:amount('list',true),eventPrice:amount('eventPrice',true),type:get('type')||get('event')||'平销',event:get('event'),note:get('note')};
+    row.asin=get('asin').trim().toUpperCase()||String(asin).trim().toUpperCase();if(!validAsin(row.asin))throw Error('CSV第'+(index+2)+'行ASIN需为10位字母数字。');
+    if(get('site').trim()&&!['US','USA','美国','美国站'].includes(get('site').trim().toUpperCase()))throw Error('当前仅支持美国站USD数据。');
     if(timeColumn>=0&&String(cells[timeColumn]||'').trim()){const stamp=normalizeImportDate(cells[timeColumn]);if(!stamp)throw Error('CSV抓取时间无效。');row.sourceTime=stamp.stamp;}
     return row;
   });
   return{headers,matrix,mapping,rows,text};
 }
-function sharedSettings(state){return Object.fromEntries(SHARED_KEYS.map(key=>[key,structuredClone(state[key])]));}
+function sharedSettings(state){const productSettings=canonicalProducts(state),primary=productSettings[DEFAULT_ASIN];return{...Object.fromEntries(SHARED_KEYS.filter(key=>key!=='productSettings').map(key=>[key,structuredClone(PRODUCT_KEYS.includes(key)?primary[key]:state[key])])),productSettings};}
 function parseSettings(text){
   if(!text)return sharedSettings(defaultWorkspace());let envelope;try{envelope=JSON.parse(text.replace(/^\uFEFF/,''));}catch{throw Error('settings.json不是有效JSON。');}
   if(envelope.version!==1||!envelope.settings||typeof envelope.settings!=='object')throw Error('settings.json版本或结构无效。');
-  const result=sharedSettings(defaultWorkspace());for(const key of SHARED_KEYS)if(Object.hasOwn(envelope.settings,key))result[key]=envelope.settings[key];return result;
+  const result=sharedSettings(defaultWorkspace());for(const key of SHARED_KEYS)if(Object.hasOwn(envelope.settings,key))result[key]=envelope.settings[key];
+  if(!envelope.settings.productSettings)result.productSettings={[DEFAULT_ASIN]:Object.fromEntries(PRODUCT_KEYS.map(key=>[key,structuredClone(result[key])]))};return result;
 }
-function workspaceFromCsv(text,settings){const parsed=parseScheduleCsv(text);return{...defaultWorkspace(),...settings,baseRows:parsed.rows,_csvText:text};}
-function effectiveRows(state){return[...state.baseRows,...state.added].map(row=>({...row,...state.patches[row.id]}));}
+function workspaceFromCsv(text,settings){const parsed=parseScheduleCsv(text);return hydrateProduct({...defaultWorkspace(),...settings,baseRows:parsed.rows,_csvText:text});}
+function effectiveRows(state){return[...state.baseRows,...state.added].map(row=>({...row,...state.patches[row.id]})).filter(row=>!row._deleted);}
 const recordFields=['date','price','list','eventPrice','type','event','note','sourceTime'];
-const recordSignature=row=>JSON.stringify(recordFields.map(key=>String(row[key]??'')));
+const recordSignature=row=>JSON.stringify([rowAsin(row),...recordFields.map(key=>String(row[key]??''))]);
 function workspaceCsv(state){
   const parsed=state._csvText?parseScheduleCsv(state._csvText):null,rows=effectiveRows(state);
-  if(!rows.length)throw Error('至少保留一条排期记录。');
   if(parsed&&rows.length===parsed.rows.length&&rows.every((row,i)=>recordSignature(row)===recordSignature(parsed.rows[i])))return state._csvText;
   const headers=parsed?[...parsed.headers]:['月','日期','星期','星期','价格类型','成交价$','挂价$','活动类型','活动价$','备注'];
   const mapping=detectImportMapping(headers);
+  if(mapping.asin<0&&rows.some(row=>rowAsin(row)!==DEFAULT_ASIN)){mapping.asin=headers.length;headers.push('ASIN');}
   for(const [key,label] of Object.entries({type:'价格类型',list:'挂价$',event:'活动类型',eventPrice:'活动价$',note:'备注'}))if(mapping[key]<0){mapping[key]=headers.length;headers.push(label);}
   let timeColumn=headers.findIndex(h=>['抓取时间','采集时间'].includes(String(h).trim()));
   if(rows.some(row=>row.sourceTime)&&timeColumn<0){timeColumn=headers.length;headers.push('抓取时间');}
@@ -673,6 +736,7 @@ function workspaceCsv(state){
   for(const row of rows){
     const original=parsed?.rows.find(r=>r._csvLine===row._csvLine),cells=original?[...(parsed.matrix[original._csvLine]||[])]:[];
     while(cells.length<headers.length)cells.push('');
+    if(mapping.asin>=0)cells[mapping.asin]=rowAsin(row);
     for(const key of ['date','price','list','eventPrice','type','event','note'])if(mapping[key]>=0&&(!original||String(original[key]??'')!==String(row[key]??'')))cells[mapping[key]]=row[key]??'';
     if(timeColumn>=0&&(!original||row.sourceTime!==original.sourceTime))cells[timeColumn]=row.sourceTime||'';
     if(!original||original.date!==row.date){const week=new Date(row.date+'T00:00:00Z').getUTCDay();headers.forEach((header,index)=>{const name=cleanHeader(header);if(['月','月份','month'].includes(name))cells[index]=row.date.slice(0,7);if(['星期','周几','weekday'].includes(name)){const numeric=/^\d+$/.test(String(cells[index]))||(index===2&&cleanHeader(headers[3])==='星期');cells[index]=numeric?String(week||7):'周'+['日','一','二','三','四','五','六'][week];}});}
@@ -732,7 +796,7 @@ async function openCopyStore(){
 }
 
 const DEFAULT_CONFIG={"owner":"jiarongxu494-dotcom","repo":"ad600s-price-platform","branch":"main"};
-const UI_KEYS=['page','month','start','end','status','view','pageIndex','scenario','editRules','density','anchor','anchorAuto','trialOverrides'];
+const UI_KEYS=['page','month','start','end','status','view','pageIndex','scenario','editRules','density','anchor','anchorAuto','trialOverrides','activeAsin','selectedAsins','activityFilter','trialOverridesByAsin'];
 let maintenance=false;
 const repoConfigKey='ad600s-csv-repo:'+location.pathname.replace(/\/index\.html$/,'/');
 let config={...DEFAULT_CONFIG};
@@ -754,15 +818,47 @@ async function openSharedWorkspace(){
   try{online=await requestSharedFiles();if(store)await store.saveOnline(online).catch(()=>{});}
   catch(error){online=store?await store.getOnline():null;if(!online)throw Error(error.message+' 请确认 index.html、data.csv 和 settings.json 在同一目录。');validateWorkspace(online.state);online={...online,mode:'offline',error:error.message};}
   const draft=store?await store.loadDraft():null,prefs=store?await store.getPreferences():null;
-  const working=structuredClone(online.state);if(prefs)for(const key of UI_KEYS)if(Object.hasOwn(prefs,key))working[key]=prefs[key];
-  try{validateWorkspace(working);}catch{Object.assign(working,Object.fromEntries(UI_KEYS.map(key=>[key,defaultWorkspace()[key]])));}
-  return{store,online,draft,state:working,savedAt:online.checkedAt};
+  let restoredDraft=false;
+  if(draft?.keepVisible&&(draft.dirty||draft.pending)){try{validateWorkspace(draft.state);restoredDraft=true;}catch{}}
+  const working=structuredClone(restoredDraft?draft.state:online.state);if(prefs)for(const key of UI_KEYS)if(Object.hasOwn(prefs,key))working[key]=prefs[key];
+  hydrateProduct(working);
+  try{validateWorkspace(working);}catch{Object.assign(working,Object.fromEntries(UI_KEYS.map(key=>[key,defaultWorkspace()[key]])));hydrateProduct(working);}
+  return{store,online,draft,state:working,restoredDraft,savedAt:online.checkedAt};
 }
 
 const BOOTSTRAP=await openSharedWorkspace();
 const BASE_ROWS = [];
 const IMPORT_SAMPLE = [];
 let priceChartPoints=[],priceChartGeometry=null,priceChartActive=null;
+let activityGroups=new Map();
+const SERIES_COLORS=['#5263df','#0c9784','#d07b28','#ad56c4','#d35476','#2e92ba','#758b36','#8263bd'];
+function seriesColor(asin){return SERIES_COLORS[Math.max(0,productAsins(state).indexOf(asin))%SERIES_COLORS.length];}
+function overviewDailyRows(){
+  const byDate=new Map(),rank={actual:3,plan:2,pending:1};
+  for(const row of filteredRows()){const key=rowAsin(row)+'|'+row.date,old=byDate.get(key);if(!old||rank[recordStatus(row)]>rank[recordStatus(old)]||(recordStatus(row)===recordStatus(old)&&String(row.sourceTime||'')>String(old.sourceTime||'')))byDate.set(key,row);}
+  return [...byDate.values()].sort((a,b)=>rowAsin(a).localeCompare(rowAsin(b))||a.date.localeCompare(b.date));
+}
+function renderActivityOverview(rows){
+  const range=currentRange(),groups=[];activityGroups=new Map();
+  for(const row of rows){
+    const last=groups.at(-1),key=activityKey(row),label=activityLabel(row),status=recordStatus(row),asin=rowAsin(row);
+    if(last&&last.asin===asin&&last.key===key&&last.label===label&&last.status===status&&daysBetween(last.end,row.date)===1){last.end=row.date;last.rows.push(row);}
+    else groups.push({asin,start:row.date,end:row.date,key,label,status,rows:[row]});
+  }
+  $('pw-activity-period').textContent=dateShort(range.start)+'–'+dateShort(range.end)+' · 与记录筛选同步';
+  $('pw-activity-count').textContent=groups.length+' 段';
+  const span=Math.max(1,daysBetween(range.start,range.end)+1);groups.forEach((group,i)=>{group.id='campaign-'+i;activityGroups.set(group.id,group);});
+  const lanes=state.selectedAsins.map(asin=>`<div class="pw-campaign-lane"><strong style="color:${seriesColor(asin)}">${productName(asin)}</strong><div class="pw-campaign-track">${groups.filter(group=>group.asin===asin).map(group=>`<button type="button" data-campaign-id="${group.id}" data-activity="${group.key}" class="pw-campaign-bar ${group.status}" style="left:${daysBetween(range.start,group.start)/span*100}%;width:${group.rows.length/span*100}%" title="${productName(asin)} ${dateText(group.start)}–${dateText(group.end)} ${escapeHtml(group.label)} ${statusLabels[group.status]}">${escapeHtml(group.label)}</button>`).join('')}</div></div>`).join('');
+  $('pw-activity-totals').innerHTML=rows.length?`<div class="pw-campaign-axis"><span>${dateShort(range.start)}</span><span>${dateShort(addDays(range.start,Math.floor((span-1)/2)))}</span><span>${dateShort(range.end)}</span></div>${lanes}<p class="pw-small">实线为实际，虚线为计划 · 点击活动查看每日记录</p>`:'';
+  $('pw-activity-overview').innerHTML=groups.length?groups.map(group=>{
+    const prices=group.rows.map(row=>parseMoney(row.price)).filter(price=>price!==null),low=prices.length?Math.min(...prices):null,high=prices.length?Math.max(...prices):null;
+    const price=low===high?money(low):money(low)+'–'+money(high);
+    return `<button type="button" class="pw-campaign-row pw-activity-card" data-activity="${group.key}" data-campaign-id="${group.id}"><span class="pw-campaign-dot"></span><span class="pw-campaign-info"><strong>${escapeHtml(group.label)} <small>${state.selectedAsins.length>1?productName(group.asin):''}</small></strong><span>${dateText(group.start)}${group.end!==group.start?'–'+dateText(group.end):''} · ${group.rows.length} 天</span></span><span class="pw-campaign-value"><strong>${price}</strong><span class="pw-status-pill ${group.status}">${statusLabels[group.status]}</span></span><span class="pw-campaign-arrow">↗</span></button>`;
+  }).join(''):'<div class="pw-empty">当前范围暂无活动记录</div>';
+}
+function renderChartSummary(rows){
+  $('pw-chart-summary').innerHTML=state.selectedAsins.map(asin=>{const actual=rows.filter(row=>rowAsin(row)===asin&&recordStatus(row)==='actual'&&parseMoney(row.price)!==null).at(-1);return`<div style="--series-color:${seriesColor(asin)}"><span><i></i>${productName(asin)}</span><strong>${money(actual?parseMoney(actual.price):null)}<small>${actual?dateShort(actual.date)+' 实际':'暂无实际'}</small></strong></div>`;}).join('');
+}
 function hidePriceChartTooltip(){
   const chart=$('pw-chart');chart.querySelector('#pw-chart-tooltip')?.setAttribute('hidden','');
   chart.querySelectorAll('[data-chart-guide]').forEach(el=>el.setAttribute('visibility','hidden'));priceChartActive=null;
@@ -780,14 +876,14 @@ function showPriceChartTooltip(point){
   if(priceChartActive!==point.row.id){
     const row=point.row,status=recordStatus(row),detail=recordNoteParts(row.note).detail;
     const weekday=['日','一','二','三','四','五','六'][new Date(row.date+'T00:00:00Z').getUTCDay()];
-    tooltip.innerHTML=`<div class="pw-chart-tooltip-head"><strong>${dateText(row.date)} 周${weekday}</strong><span class="pw-status-pill ${status}">${statusLabels[status]}</span></div><div class="pw-chart-tooltip-price">${money(parseMoney(row.price))}<span>成交价 · USD</span></div><dl><div><dt>价格类型</dt><dd data-activity="${activityKey(row)}">${escapeHtml(row.type||'平销')}</dd></div><div><dt>挂价</dt><dd>${money(parseMoney(row.list))}</dd></div><div><dt>活动价</dt><dd>${money(parseMoney(row.eventPrice))}</dd></div>${row.event&&row.event!==row.type?`<div><dt>活动</dt><dd>${escapeHtml(row.event)}</dd></div>`:''}</dl>${detail?`<p class="pw-chart-tooltip-note">${escapeHtml(detail)}</p>`:''}<button type="button" class="pw-chart-record-link" data-edit="${escapeHtml(row.id)}">查看记录</button>`;
+    tooltip.innerHTML=`<div class="pw-chart-tooltip-head"><strong>${dateText(row.date)} 周${weekday}</strong><span class="pw-status-pill ${status}">${statusLabels[status]}</span></div><div class="pw-small">${productName(rowAsin(row))}</div><div class="pw-chart-tooltip-price">${money(parseMoney(row.price))}<span>成交价 · USD</span></div><dl><div><dt>活动类型</dt><dd data-activity="${activityKey(row)}">${escapeHtml(activityLabel(row))}</dd></div><div><dt>挂价</dt><dd>${money(parseMoney(row.list))}</dd></div><div><dt>活动价</dt><dd>${money(parseMoney(row.eventPrice))}</dd></div></dl>${detail?`<p class="pw-chart-tooltip-note">${escapeHtml(detail)}</p>`:''}<button type="button" class="pw-chart-record-link" data-edit="${escapeHtml(row.id)}">查看记录</button>`;
     priceChartActive=row.id;
   }
   tooltip.hidden=false;
   const bounds=chart.getBoundingClientRect(),plot=svg.getBoundingClientRect();
   const px=plot.left-bounds.left+point.x/priceChartGeometry.width*plot.width,py=plot.top-bounds.top+point.y/priceChartGeometry.height*plot.height;
   const left=px+16+tooltip.offsetWidth<=bounds.width-8?px+16:px-tooltip.offsetWidth-16;
-  tooltip.style.left=Math.max(8,Math.min(bounds.width-tooltip.offsetWidth-8,left))+'px';
+  tooltip.style.left=(chart.scrollLeft+Math.max(8,Math.min(bounds.width-tooltip.offsetWidth-8,left)))+'px';
   tooltip.style.top=Math.max(6,Math.min(bounds.height-tooltip.offsetHeight-6,py-tooltip.offsetHeight/2))+'px';
   const guide=chart.querySelector('[data-chart-guide="line"]'),halo=chart.querySelector('[data-chart-guide="point"]');
   guide.setAttribute('x1',point.x);guide.setAttribute('x2',point.x);guide.setAttribute('visibility','visible');
@@ -815,27 +911,31 @@ function bindPriceChart(chart){
 function renderChart(){
   if(state.page!=='schedule')return;
   const chart=$('pw-chart'),range=currentRange();bindPriceChart(chart);priceChartPoints=[];priceChartActive=null;
-  const style=getComputedStyle(chart),width=Math.max(180,chart.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)),height=Math.max(200,chart.clientHeight-parseFloat(style.paddingTop)-parseFloat(style.paddingBottom)),left=45,right=18,top=24,bottom=34;
-  const source=filteredRows().filter(row=>parseMoney(row.price)!==null&&recordStatus(row)!=='pending');
+  const daily=overviewDailyRows();renderActivityOverview(daily);renderChartSummary(daily);
+  const source=daily.filter(row=>parseMoney(row.price)!==null&&recordStatus(row)!=='pending');
   const prices=source.map(row=>parseMoney(row.price));if(currentStats.listPrice!==null)prices.push(currentStats.listPrice);
   if(!source.length||!validDate(range.start)||!validDate(range.end)){chart.innerHTML='<div class="pw-empty">当前范围暂无实际或计划价格</div>';priceChartGeometry=null;return;}
-  const low=Math.min(...prices),high=Math.max(...prices),padding=Math.max(4,(high-low)*0.12),rough=Math.max(1,(high-low+padding*2)/4),power=10**Math.floor(Math.log10(rough));
-  const step=([1,2,2.5,5,10].find(n=>n*power>=rough)||10)*power,min=Math.max(0,Math.floor((low-padding)/step)*step),max=Math.ceil((high+padding)/step)*step;
-  const daySpan=daysBetween(range.start,range.end),x=date=>daySpan===0?(left+width-right)/2:left+daysBetween(range.start,date)/daySpan*(width-left-right),y=price=>top+(max-price)/(max-min)*(height-top-bottom);
+  const style=getComputedStyle(chart),daySpan=daysBetween(range.start,range.end),width=Math.max(260,chart.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),Math.min(12000,daySpan*18+84)),height=340,left=48,right=36,top=77,bottom=46;
+  const low=Math.min(...prices),high=Math.max(...prices),padding=Math.max(3,(high-low)*.15),rough=Math.max(1,(high-low+padding*2)/4),power=10**Math.floor(Math.log10(rough)),step=([1,2,2.5,5,10].find(n=>n*power>=rough)||10)*power;
+  const min=Math.max(0,Math.floor((low-padding)/step)*step),max=Math.ceil((high+padding)/step)*step,x=date=>daySpan?left+daysBetween(range.start,date)/daySpan*(width-left-right):(left+width-right)/2,y=price=>top+(max-price)/(max-min)*(height-top-bottom);
   priceChartGeometry={width,height};let markup='';
-  for(let value=min;value<=max+step/100;value+=step){const yy=y(value);markup+=`<line class="pw-grid-line" x1="${left}" x2="${width-right}" y1="${yy}" y2="${yy}"></line><text x="${left-9}" y="${yy+4}" text-anchor="end">${Number(value.toFixed(2))}</text>`;}
-  const ticks=daySpan===0?1:Math.min(daySpan+1,width<460?3:6);
-  for(let i=0;i<ticks;i++){const date=addDays(range.start,Math.round(daySpan*i/Math.max(1,ticks-1)));markup+=`<text x="${x(date)}" y="${height-8}" text-anchor="${ticks===1?'middle':i===0?'start':i===ticks-1?'end':'middle'}">${dateShort(date)}</text>`;}
-  if(currentStats.listPrice!==null)markup+=`<line class="pw-chart-reference" x1="${left}" x2="${width-right}" y1="${y(currentStats.listPrice)}" y2="${y(currentStats.listPrice)}"></line><text class="pw-reference-label" x="${width-right}" y="${y(currentStats.listPrice)-7}" text-anchor="end">List ${money(currentStats.listPrice)}</text>`;
-  for(const status of ['actual','plan']){
-    const values=source.filter(row=>recordStatus(row)===status).sort((a,b)=>a.date.localeCompare(b.date)),segments=[];let segment=[];
-    for(const row of values){if(segment.length&&daysBetween(segment.at(-1).date,row.date)>1){segments.push(segment);segment=[];}segment.push(row);}if(segment.length)segments.push(segment);
-    for(const group of segments){const path=group.map((row,i)=>(i?'L':'M')+x(row.date).toFixed(2)+','+y(parseMoney(row.price)).toFixed(2)).join(' ');if(group.length>1)markup+=`<path class="pw-price-area ${status}" d="${path} L${x(group.at(-1).date)},${height-bottom} L${x(group[0].date)},${height-bottom} Z"></path>`;markup+=`<path class="pw-chart-${status}" d="${path}"></path>`;}
-    const hitRadius=Math.max(2.5,Math.min(11,(width-left-right)/Math.max(1,daySpan)*0.42));
-    for(const row of values){const point={row,x:x(row.date),y:y(parseMoney(row.price))};priceChartPoints.push(point);markup+=`<circle class="pw-price-point ${status}" cx="${point.x}" cy="${point.y}" r="3.5"></circle><circle class="pw-chart-hit" cx="${point.x}" cy="${point.y}" r="${hitRadius}" fill="transparent" tabindex="0" role="button" data-chart-id="${escapeHtml(row.id)}" aria-label="${row.date} ${statusLabels[status]} ${money(parseMoney(row.price))} ${escapeHtml(row.type)}" aria-describedby="pw-chart-tooltip"><title>${row.date} ${statusLabels[status]} ${money(parseMoney(row.price))} ${escapeHtml(row.type)}</title></circle>`;}
-  }
+  for(let value=min;value<=max+step/100;value+=step){const yy=y(value);markup+=`<line class="pw-grid-line" x1="${left}" x2="${width-right}" y1="${yy}" y2="${yy}"></line><text x="${left-12}" y="${yy+4}" text-anchor="end">${Number(value.toFixed(2))}</text>`;}
+  const ticks=daySpan?Math.min(daySpan+1,6):1;for(let i=0;i<ticks;i++){const date=addDays(range.start,Math.round(daySpan*i/Math.max(1,ticks-1)));markup+=`<text x="${x(date)}" y="${height-12}" text-anchor="${i===0?'start':i===ticks-1?'end':'middle'}">${dateShort(date)}</text>`;}
+  if(currentStats.listPrice!==null&&state.selectedAsins.length===1)markup+=`<line class="pw-chart-reference" x1="${left}" x2="${width-right}" y1="${y(currentStats.listPrice)}" y2="${y(currentStats.listPrice)}"></line><text class="pw-reference-label" x="${width-right}" y="${y(currentStats.listPrice)-9}" text-anchor="end">List ${money(currentStats.listPrice)}</text>`;
+  state.selectedAsins.forEach((asin,seriesIndex)=>{
+    const values=source.filter(row=>rowAsin(row)===asin),color=seriesColor(asin);let previousPriceLabel=-Infinity;
+    const segments=[];for(const row of values){const last=segments.at(-1);if(last&&daysBetween(last.at(-1).date,row.date)===1)last.push(row);else segments.push([row]);}for(const segment of segments)if(segment.length>1)markup+=`<path class="pw-series-area" fill="${color}" d="M${x(segment[0].date)},${height-bottom} ${segment.map(row=>'L'+x(row.date)+','+y(parseMoney(row.price))).join(' ')} L${x(segment.at(-1).date)},${height-bottom} Z"></path>`;
+    for(let i=1;i<values.length;i++){const a=values[i-1],b=values[i];if(daysBetween(a.date,b.date)!==1)continue;markup+=`<path class="pw-series-line ${recordStatus(b)}" data-series-asin="${asin}" stroke="${color}" d="M${x(a.date)},${y(parseMoney(a.price))} L${x(b.date)},${y(parseMoney(b.price))}"></path>`;}
+    values.forEach((row,i)=>{
+      const point={row,x:x(row.date),y:y(parseMoney(row.price))},status=recordStatus(row),promo=activityKey(row)!=='regular',label=activityLabel(row);priceChartPoints.push(point);
+      markup+=`<circle class="pw-series-dot ${status}" cx="${point.x}" cy="${point.y}" r="${promo?4:3}" fill="${color}"></circle>`;
+      if(promo){const yy=point.y-12-(seriesIndex%3)*12;markup+=`<text class="pw-chart-event-label" data-event-row="${row.id}" x="${point.x+3}" y="${yy}" fill="${color}" text-anchor="start" transform="rotate(-52 ${point.x+3} ${yy})">${escapeHtml(label)}</text>`;}
+      if((i===0||i===values.length-1||parseMoney(row.price)!==parseMoney(values[i-1]?.price))&&point.x-previousPriceLabel>90){markup+=`<text class="pw-chart-key-label" x="${point.x}" y="${point.y+23}" text-anchor="${point.x>width-80?'end':point.x<70?'start':'middle'}">${money(parseMoney(row.price))}</text>`;previousPriceLabel=point.x;}
+      markup+=`<circle class="pw-chart-hit" cx="${point.x}" cy="${point.y}" r="10" fill="transparent" tabindex="0" role="button" data-chart-id="${escapeHtml(row.id)}" data-asin="${asin}" aria-label="${row.date} ${statusLabels[status]} ${money(parseMoney(row.price))} ${escapeHtml(label)} ${asin}" aria-describedby="pw-chart-tooltip"><title>${asin} ${row.date} ${money(parseMoney(row.price))} ${escapeHtml(label)}</title></circle>`;
+    });
+  });
   markup+=`<line data-chart-guide="line" class="pw-chart-guide" y1="${top}" y2="${height-bottom}" visibility="hidden"></line><circle data-chart-guide="point" class="pw-chart-halo" r="7" visibility="hidden"></circle>`;
-  chart.innerHTML=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${dateText(range.start)}至${dateText(range.end)}实际与计划成交价走势，单位美元"><text x="${left}" y="12">USD</text>${markup}</svg><div id="pw-chart-tooltip" class="pw-chart-tooltip" role="tooltip" hidden></div>`;
+  chart.innerHTML=`<svg viewBox="0 0 ${width} ${height}" style="width:${width}px;height:${height}px" role="img" aria-label="${dateText(range.start)}至${dateText(range.end)} ${state.selectedAsins.length}个ASIN价格对比，单位美元"><text x="${left}" y="25">USD · 非平销点标注活动</text>${markup}</svg><div id="pw-chart-tooltip" class="pw-chart-tooltip" role="tooltip" hidden></div>`;
 }
 
 const root=document.getElementById('ad600s-price-workspace');
@@ -847,14 +947,15 @@ const dateText=s=>s.replaceAll('-','/');
 const statusLabels={actual:'实际',plan:'计划',pending:'待确认'};
 const defaults={version:1,page:'schedule',anchor:'2026-11-03',anchorAuto:true,listPrice:239.99,referenceScope:'actual',month:'2026-11',start:'2026-11-01',end:'2026-11-30',status:'all',view:'table',pageIndex:0,scenario:'bd',editRules:false,patches:{},added:[],overrides:{},labels:{},formulas:{},density:'compact'};
 function savedObject(snapshot){return snapshot||{};}
-function restore(snapshot){const saved=savedObject(snapshot);return saved.version===1?{...structuredClone(defaults),...saved}:structuredClone(defaults);}
+function restore(snapshot){const saved=savedObject(snapshot);return hydrateProduct(saved.version===1?{...structuredClone(defaults),...saved}:structuredClone(defaults));}
 let state=restore(BOOTSTRAP.state);
 let currentStats,selectedMetric=null,selectedDay=null,editorId=null,saveTimer=null;
-function allRows(){return [...(state.baseRows||BASE_ROWS).map(r=>({...r,...(state.patches[r.id]||{})})),...state.added.map(r=>({...r,...(state.patches[r.id]||{})}))];}
-function freshStats(){const s=getStats(allRows(),{anchor:state.anchorAuto?undefined:state.anchor,listPrice:state.listPrice,today:TODAY});if(state.anchorAuto)state.anchor=s.anchor;return s;}
+function allRows(){return [...(state.baseRows||BASE_ROWS).map(r=>({...r,...(state.patches[r.id]||{})})),...state.added.map(r=>({...r,...(state.patches[r.id]||{})}))].filter(row=>!row._deleted);}
+function focusRows(){return allRows().filter(row=>rowAsin(row)===state.activeAsin);}
+function freshStats(){const s=getStats(focusRows(),{anchor:state.anchorAuto?undefined:state.anchor,listPrice:state.listPrice,today:TODAY});if(state.anchorAuto)state.anchor=s.anchor;return s;}
 function setSaveStatus(text){$('pw-save').innerHTML='<span class="pw-save-dot"></span>'+escapeHtml(text);}
 function updateRecord(id,key,value){state.patches[id]={...(state.patches[id]||{}),[key]:value};}
-function alertMessage(text){$('pw-alert').textContent=text;$('pw-alert').hidden=!text;}
+function alertMessage(text){$('pw-alert').textContent=text;$('pw-alert').hidden=!text;if($('pw-editor')?.open&&text){let error=$('pw-editor').querySelector('.pw-editor-error');if(!error){error=document.createElement('p');error.className='pw-editor-error';error.setAttribute('role','alert');$('pw-editor').prepend(error);}error.textContent=text;}}
 function renderMetrics(){
   const s=currentStats;
   const items=[
@@ -877,7 +978,7 @@ function renderMetricDetail(){
   el.innerHTML=`<div class="pw-detail-head"><strong>${title}</strong><button type="button" class="pw-quiet-button" data-action="close-detail">收起</button></div><div>${escapeHtml(body)}</div>`;
 }
 function currentRange(){if(state.month==='custom')return{start:state.start,end:state.end};return{start:state.month+'-01',end:addDays(addDays(state.month+'-01',32).slice(0,7)+'-01',-1)};}
-function filteredRows(){const range=currentRange();if(!validDate(range.start)||!validDate(range.end)||range.start>range.end)return[];return allRows().filter(r=>r.date>=range.start&&r.date<=range.end&&(state.status==='all'||recordStatus(r)===state.status)).sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id));}
+function filteredRows(){const range=currentRange();if(!validDate(range.start)||!validDate(range.end)||range.start>range.end)return[];return allRows().filter(r=>state.selectedAsins.includes(rowAsin(r))&&r.date>=range.start&&r.date<=range.end&&(state.status==='all'||recordStatus(r)===state.status)&&(state.activityFilter==='all'||activityLabel(r)===state.activityFilter)).sort((a,b)=>a.date.localeCompare(b.date)||rowAsin(a).localeCompare(rowAsin(b))||a.id.localeCompare(b.id));}
 function recordStatusOptions(row){
   const status=recordStatus(row),future=row.date>TODAY;
   return (status==='pending'?'<option value="pending" selected disabled>待确认</option>':'')+['actual','plan'].map(value=>`<option value="${value}" ${status===value?'selected':''} ${value==='actual'&&future?'disabled':''}>${statusLabels[value]}</option>`).join('');
@@ -913,7 +1014,7 @@ function renderRecords(){
   $('pw-pager').innerHTML=`<span>下拉选择实际 / 计划；计划落实后请确认“实际”。</span><div><button type="button" data-pager="-1" ${state.pageIndex===0?'disabled':''} aria-label="上一页">‹</button><span>${list.length?state.pageIndex+1:0} / ${list.length?pages:0}</span><button type="button" data-pager="1" ${state.pageIndex>=pages-1?'disabled':''} aria-label="下一页">›</button></div>`;
   $('pw-chart-period').textContent=`${dateText(range.start)}–${dateText(range.end)} · 成交价（USD）`;
 }
-function referenceDetection(){return getReferenceDetection(allRows(),{anchor:currentStats.anchor,listPrice:state.listPrice,today:TODAY,includePlans:state.referenceScope==='with-plans'});}
+function referenceDetection(){return getReferenceDetection(focusRows(),{anchor:currentStats.anchor,listPrice:state.listPrice,today:TODAY,includePlans:state.referenceScope==='with-plans'});}
 function renderReference(){
   const s=referenceDetection(),forecast=s.includePlans;
   $('pw-reference-scope').value=forecast?'with-plans':'actual';
@@ -992,7 +1093,7 @@ function renderCommon(){
   root.querySelectorAll('[data-page]').forEach(b=>{const active=b.dataset.page===state.page;b.classList.toggle('is-active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   ['schedule','reference','calculator'].forEach(p=>$('pw-'+p).hidden=p!==state.page);
   const s=currentStats;
-  $('pw-source-info').textContent=`导入排期 ${state.baseRows.length} 条 · 当前实际 ${s.actualCount} 条 / 计划 ${s.planCount} 条${s.pendingCount?' / 待确认 '+s.pendingCount+' 条':''} · 金额 USD`;
+  $('pw-source-info').textContent=`全部记录 ${allRows().length} 条 · 当前ASIN：实际 ${s.actualCount} 条 / 计划 ${s.planCount} 条${s.pendingCount?' / 待确认 '+s.pendingCount+' 条':''} · 金额 USD`;
   const warnings=[];if(s.conflicts.length)warnings.push(`同日实际价格冲突：${s.conflicts.join('、')}，这些日期暂不计入统计`);
   if(s.pendingCount)warnings.push(`${s.pendingCount}条未来记录未标计划，暂列待确认`);
   alertMessage(warnings.join('；'));
@@ -1004,17 +1105,22 @@ function openEditor(id){
   const r=existing||{date:state.anchor>=TODAY?addDays(TODAY,1):state.anchor,price:'',list:'',eventPrice:'',type:'平销',event:'',note:'计划'};
   $('pw-editor').hidden=false;
   $('pw-editor').innerHTML=`<div class="pw-detail-head"><h3>${id?'编辑价格记录':'新增价格记录'}</h3><button type="button" class="pw-quiet-button" data-action="close-editor">收起</button></div><div class="pw-editor-fields"><label>日期<input type="date" id="pw-edit-date" value="${r.date}" aria-label="编辑记录日期" ${id?'disabled':''}></label><label>实际 / 计划<select id="pw-edit-status" aria-label="编辑记录类型">${recordStatusOptions(r)}</select></label><label>成交价 $<input type="number" id="pw-edit-price" value="${escapeHtml(r.price??'')}" step="0.01" min="0.01" aria-label="编辑记录成交价"></label><label>挂价 $<input type="number" id="pw-edit-list" value="${escapeHtml(r.list??'')}" step="0.01" min="0.01"></label><label>活动价 $<input type="number" id="pw-edit-eventPrice" value="${escapeHtml(r.eventPrice??'')}" step="0.01" min="0.01"></label><label>价格类型<select id="pw-edit-type">${PROMO_TYPES.map(t=>`<option ${r.type===t?'selected':''}>${t}</option>`).join('')}</select></label><label>活动类型<input type="text" id="pw-edit-event" value="${escapeHtml(r.event)}" maxlength="60"></label><label class="pw-span2">补充说明（选填）<input type="text" id="pw-edit-note" value="${escapeHtml(recordNoteParts(r.note).detail)}" maxlength="200" aria-label="编辑记录备注"></label></div><div class="pw-editor-actions"><span>未来安排选择“计划”，落实后确认“实际”。</span><button type="button" class="pw-button" data-action="close-editor">取消</button><button type="button" class="pw-button pw-primary" data-action="save-editor">${id?'应用修改':'添加记录'}</button></div>`;
+  const asin=existing?rowAsin(existing):($('pw-target-asin')?.value.trim().toUpperCase()||state.activeAsin);
+  $('pw-editor').querySelector('.pw-editor-fields').insertAdjacentHTML('afterbegin',`<label class="pw-span2">ASIN<input id="pw-edit-asin" aria-label="编辑记录ASIN" value="${escapeHtml(asin)}" maxlength="10" ${id?'disabled':''}></label>`);
+  $('pw-editor').querySelector('h3').textContent=(maintenance?'编辑':'查看')+'价格记录 · '+(existing?productName(asin):'新增');
+  if(!$('pw-editor').open)$('pw-editor').showModal();
 }
 function applyEditor(){
   const date=$('pw-edit-date').value,price=$('pw-edit-price').value,status=$('pw-edit-status').value;
+  const asin=$('pw-edit-asin').value.trim().toUpperCase();if(!validAsin(asin)){alertMessage('ASIN需为10位字母数字。');return;}
   if(!validDate(date)||parseMoney(price)===null){alertMessage('请填写有效日期和大于0的成交价。');return;}
   if(!['actual','plan'].includes(status)||(status==='actual'&&date>TODAY)){alertMessage('请选择记录类型；未来日期请选择“计划”。');return;}
-  const row={date,price,month:date.slice(0,7),list:$('pw-edit-list').value||null,eventPrice:$('pw-edit-eventPrice').value||null,type:$('pw-edit-type').value,event:$('pw-edit-event').value,note:recordNoteText(status,$('pw-edit-note').value)};
+  const row={asin,date,price,month:date.slice(0,7),list:$('pw-edit-list').value||null,eventPrice:$('pw-edit-eventPrice').value||null,type:$('pw-edit-type').value,event:$('pw-edit-event').value,note:recordNoteText(status,$('pw-edit-note').value)};
   const badOptional=['list','eventPrice'].some(k=>row[k]!==null&&parseMoney(row[k])===null);
   if(badOptional){alertMessage('挂价和活动价可留空，填写时需为大于0的数字。');return;}
   if(editorId)state.patches[editorId]={...(state.patches[editorId]||{}),...row};
-  else{const duplicate=allRows().some(r=>r.date===date&&recordStatus(r)===recordStatus(row));if(duplicate){alertMessage('这一天已有相同记录类型，请直接编辑原记录。');return;}row.id='manual-'+crypto.randomUUID();state.added.push(row);state.month=date.slice(0,7);state.pageIndex=0;}
-  $('pw-editor').hidden=true;editorId=null;renderAll();persist();
+  else{const duplicate=allRows().some(r=>rowAsin(r)===asin&&r.date===date&&recordStatus(r)===recordStatus(row));if(duplicate){alertMessage('该ASIN这一天已有相同记录类型，请直接编辑原记录。');return;}row.id='manual-'+crypto.randomUUID();state.added.push(row);changeProduct(state,asin);state.selectedAsins=[asin];state.month=date.slice(0,7);state.pageIndex=0;}
+  $('pw-editor').close();$('pw-editor').hidden=true;editorId=null;renderAll();persist();
 }
 
 root.addEventListener('click',event=>{
@@ -1028,7 +1134,7 @@ root.addEventListener('click',event=>{
   if(target.dataset.scenario){state.scenario=target.dataset.scenario;renderCalculator();persist();return;}
   const action=target.dataset.action;
   if(action==='add')openEditor(null);
-  if(action==='close-editor'){$('pw-editor').hidden=true;editorId=null;}
+  if(action==='close-editor'){$('pw-editor').close();$('pw-editor').hidden=true;editorId=null;}
   if(action==='save-editor')applyEditor();
   if(action==='close-detail'){selectedMetric=null;renderMetricDetail();}
   if(action==='show-scope')$('pw-scope').hidden=!$('pw-scope').hidden;
@@ -1069,7 +1175,7 @@ function compactDateRanges(dates){
   groups.push(start===end?dateText(start):dateText(start)+'–'+dateText(end));return groups.join('、');
 }
 function renderPriceAdvice(){
-  const proposal=getPriceAdvice(allRows(),{anchor:currentStats.anchor,listPrice:state.listPrice,today:TODAY,includePlans:state.referenceScope==='with-plans'});
+  const proposal=getPriceAdvice(focusRows(),{anchor:currentStats.anchor,listPrice:state.listPrice,today:TODAY,includePlans:state.referenceScope==='with-plans'});
   const panel=$('pw-price-advice');panel.hidden=proposal.kind==='sufficient';
   if(panel.hidden)return;
   let body='';
@@ -1097,10 +1203,10 @@ function loadImportMatrix(matrix,label,date1904=false){
 }
 function refreshImportPreview(){
   if(!importSession)return;
-  importPreview=prepareImport(importSession,allRows(),{mapping:importSession.mapping,date1904:importSession.date1904,today:TODAY});
+  importPreview=prepareImport(importSession,allRows(),{mapping:importSession.mapping,date1904:importSession.date1904,today:TODAY,importStatus:$('pw-import-kind').value,asin:$('pw-target-asin').value.trim().toUpperCase()});
   const {changes,issues,skipped,collapsed,sourceCount}=importPreview;
   const added=changes.filter(c=>c.action==='add').length,updated=changes.filter(c=>c.action==='update').length,unchanged=changes.length-added-updated;
-  $('pw-import-summary').textContent=`${importSession.label} · ${sourceCount} 条来源记录 → ${changes.length} 条每日记录 · 新增 ${added} / 更新 ${updated} / 不变 ${unchanged} · 合并同日抓取 ${collapsed} 条 / 跳过 ${skipped.length} 条`;
+  $('pw-import-summary').textContent=`${importSession.label} · ${sourceCount} 条来源记录 → ${changes.length} 条每日记录 · 新增 ${added} / 更新 ${updated} / 不变 ${unchanged} · 覆盖计划 ${changes.filter(c=>c.replacesPlan).length} 天 / 清理重复 ${changes.reduce((n,c)=>n+c.removeIds.length,0)} 条 · 合并同日抓取 ${collapsed} 条 / 跳过 ${skipped.length} 条`;
   $('pw-import-issues').hidden=!issues.length&&!skipped.length;
   $('pw-import-issues').innerHTML=[...issues.map(item=>'第'+item.line+'行：'+item.message),...skipped.map(item=>'跳过第'+item.line+'行：'+item.message)].slice(0,8).map(message=>`<div>${escapeHtml(message)}</div>`).join('')+(issues.length+skipped.length>8?'<div>另有 '+(issues.length+skipped.length-8)+' 条提示。</div>':'');
   const labels={add:'新增',update:'更新',unchanged:'不变'};
@@ -1114,15 +1220,17 @@ function applyBatchImport(){
   const changes=importPreview.changes.filter(change=>change.action!=='unchanged');if(!changes.length)return;
   importUndo=[];
   for(const change of changes){
+    for(const id of change.removeIds){const previous=structuredClone(state.patches[id]||{}),after={...previous,_deleted:true};state.patches[id]=after;importUndo.push({id,keys:['_deleted'],previous,after:structuredClone(after)});}
     if(change.before){
       const previous=structuredClone(state.patches[change.before.id]||{}),patch={...previous},keys=[];
       for(const [key,value] of Object.entries(change.after))if(key!=='id'&&JSON.stringify(value)!==JSON.stringify(change.before[key])){patch[key]=value;keys.push(key);}
       state.patches[change.before.id]=patch;importUndo.push({id:change.before.id,keys,previous,after:structuredClone(patch)});
-    }else{const row={...change.after,id:'import-'+change.after.date+'-'+change.status+'-'+Date.now()};state.added.push(row);importUndo.push({id:row.id,newRow:structuredClone(row)});}
+    }else{const row={...change.after,id:'import-'+change.after.asin+'-'+change.after.date+'-'+change.status+'-'+Date.now()};state.added.push(row);importUndo.push({id:row.id,newRow:structuredClone(row)});}
   }
   state.page='schedule';state.month=changes[0].after.date.slice(0,7);state.pageIndex=0;state.status='all';state.view='table';
+  changeProduct(state,changes[0].after.asin);state.selectedAsins=[...new Set(changes.map(change=>change.after.asin))];state.activityFilter='all';
   renderAll();persist();$('pw-import-undo').hidden=false;
-  setImportMessage('已更新 '+changes.length+' 条每日记录；价格看板与参考价检测已重算。');
+  setImportMessage('已更新 '+changes.length+' 条每日记录，同日实际已覆盖计划；点击“保存本机数据”保留，或“保存并发布”同步到其他设备。');
   $('pw-import-apply').disabled=true;
 }
 root.addEventListener('click',event=>{
@@ -1152,6 +1260,7 @@ root.addEventListener('click',event=>{
 });
 root.addEventListener('change',async event=>{
   const target=event.target;
+  if(target.id==='pw-import-kind')refreshImportPreview();
   if(target.dataset.importMap&&importSession){importSession.mapping[target.dataset.importMap]=Number(target.value);refreshImportPreview();}
   if(target.id==='pw-import-sheet'&&importSession?.workbook){const workbook=importSession.workbook;loadImportMatrix(workbook.sheets[Number(target.value)].matrix,workbook.label,date1904FromWorkbook(workbook));importSession.workbook=workbook;}
   if(target.id==='pw-import-file'&&target.files?.[0]){
@@ -1170,30 +1279,115 @@ root.addEventListener('change',async event=>{
 });
 function date1904FromWorkbook(workbook){return workbook.date1904===true;}
 
+function initializePortfolioLayout(){
+  const main=root.querySelector('.pw-main'),dock=document.createElement('section');dock.className='pw-source-dock';dock.id='pw-source-dock';
+  dock.innerHTML='<div class="pw-source-heading"><div><span class="pw-eyebrow">PRICE INTELLIGENCE</span><h2>导入价格，开始分析</h2><p>导入文件中的 ASIN 自动分组；没有 ASIN 列时，使用右侧填写的 ASIN。</p></div><label>导入 / 新增归属 ASIN<input id="pw-target-asin" aria-label="导入归属ASIN" maxlength="10" spellcheck="false"></label></div><div id="pw-source-actions" class="pw-source-actions"></div><div id="pw-product-controls" class="pw-product-controls"></div>';
+  main.prepend(dock);
+  const analysisContext=document.createElement('section');analysisContext.id='pw-analysis-context';analysisContext.className='pw-analysis-context';analysisContext.hidden=true;dock.after(analysisContext);
+  for(const action of ['open-import','add','full-csv']){const button=root.querySelector('button[data-action="'+action+'"]');if(button){button.classList.toggle('pw-primary',action==='open-import');button.textContent=action==='open-import'?'上传 / 粘贴价格':action==='full-csv'?'全量替换 CSV':'新增记录';$('pw-source-actions').append(button);}}
+  dock.append($('pw-import-panel'));if($('pw-full-preview'))dock.append($('pw-full-preview'));
+  const empty=document.createElement('section');empty.id='pw-data-empty';empty.className='pw-data-empty';empty.innerHTML='<span>01 — IMPORT</span><h2>先导入价格数据</h2><p></p><button type="button" class="pw-button pw-primary" data-action="go-schedule">前往价格排期导入数据</button>';analysisContext.after(empty);
+  const filters=root.querySelector('.pw-filter-row');filters.classList.add('pw-global-filters');filters.insertAdjacentHTML('beforeend','<label>活动类型<select id="pw-activity-filter" aria-label="筛选活动类型"><option value="all">全部活动</option></select></label>');empty.after(filters);
+  const nav=root.querySelector('.pw-nav'),sidebar=document.createElement('aside');sidebar.className='pw-sidebar';sidebar.innerHTML='<a class="pw-side-brand" href="#"><span>T</span><div>TOPDON<strong>价格工作台</strong></div></a><div class="pw-side-caption">工作空间</div>';
+  sidebar.append(nav);sidebar.insertAdjacentHTML('beforeend','<div class="pw-side-foot">AMAZON · US<br>价格记录 / 排期 / 对比</div>');
+  const body=document.createElement('div');body.className='pw-workspace-body';for(const child of [...root.children])body.append(child);root.append(sidebar,body);root.append($('pw-editor'));
+  root.insertAdjacentHTML('beforeend','<dialog id="pw-campaign-dialog" class="pw-campaign-dialog" aria-label="活动记录详情"></dialog>');
+  $('pw-editor').addEventListener('cancel',event=>{event.preventDefault();$('pw-editor').close();$('pw-editor').hidden=true;editorId=null;});
+  $('pw-target-asin').addEventListener('change',()=>{if(importSession)refreshImportPreview();});
+}
+initializePortfolioLayout();
+function renderPortfolioControls(){
+  const asins=productAsins(state),selected=state.selectedAsins,isSchedule=state.page==='schedule',controls=$('pw-product-controls');
+  $('pw-source-dock').hidden=!isSchedule;$('pw-analysis-context').hidden=isSchedule;
+  if(isSchedule)$('pw-source-dock').insertBefore(controls,$('pw-import-panel'));else $('pw-analysis-context').append(controls);
+  controls.innerHTML=`<div class="pw-product-focus"><label>当前分析 ASIN<select id="pw-active-asin" aria-label="当前分析ASIN">${[...new Set([...asins,state.activeAsin])].map(asin=>`<option value="${asin}" ${asin===state.activeAsin?'selected':''}>${productName(asin)}</option>`).join('')}</select></label><span ${isSchedule?'':'hidden'}>参考价检测与计算器按此 ASIN 独立计算</span></div><div class="pw-product-compare" ${isSchedule?'':'hidden'}><div class="pw-compare-heading"><strong>走势 / 活动对比</strong><button type="button" class="pw-quiet-button" data-action="compare-all">全选已导入 ASIN</button></div><div class="pw-product-chips">${asins.map(asin=>`<label style="--series-color:${seriesColor(asin)}"><input type="checkbox" data-compare-asin="${asin}" aria-label="对比 ${asin}" ${selected.includes(asin)?'checked':''}><i></i><span>${productName(asin)}</span></label>`).join('')||'<span class="pw-small">导入后显示可选 ASIN</span>'}</div></div>${isSchedule?'':'<div class="pw-analysis-source"><strong>数据来自「价格排期」</strong><span>按当前 ASIN 的价格记录计算</span><button type="button" class="pw-quiet-button" data-action="go-schedule">前往价格排期 →</button></div>'}`;
+  const target=$('pw-target-asin');if(target.dataset.active!==state.activeAsin){target.value=state.activeAsin;target.dataset.active=state.activeAsin;}
+  const hasRows=allRows().length>0;$('pw-data-empty').hidden=hasRows;
+  $('pw-data-empty').querySelector('p').textContent=isSchedule?'从上方上传文件、粘贴数据或新增记录。导入后将显示价格指标、走势和活动安排；多选 ASIN 可进行对比。':'请先在「价格排期」导入或新增价格记录，再查看本页。';$('pw-data-empty').querySelector('button').hidden=isSchedule;
+  if(!hasRows)for(const page of ['schedule','reference','calculator'])$('pw-'+page).hidden=true;
+  root.querySelector('.pw-global-filters').hidden=!hasRows||state.page!=='schedule';
+  const kicker=root.querySelector('.pw-kicker');kicker.textContent='AMAZON US / '+productName(state.activeAsin)+' / USD';
+  root.querySelector('.pw-basis-panel h2').textContent=productName(state.activeAsin)+' 基础价格';
+  $('pw-page-subtitle').textContent=state.page==='schedule'?(selected.length>1?'已选 '+selected.length+' 个 ASIN 对比；下方指标属于 '+productName(state.activeAsin):'导入、记录和比较每天的实际价格与未来安排。'):'当前分析：'+productName(state.activeAsin);
+  if($('pw-editor').hidden&&$('pw-editor').open)$('pw-editor').close();
+}
+const portfolioRenderAll=renderAll;renderAll=function(){portfolioRenderAll();renderPortfolioControls();};
+const portfolioRenderFilters=renderFilters;renderFilters=function(){
+  portfolioRenderFilters();const types=[...new Set(allRows().filter(row=>state.selectedAsins.includes(rowAsin(row))).map(activityLabel))].sort();
+  $('pw-activity-filter').innerHTML='<option value="all">全部活动</option>'+types.map(type=>`<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`).join('');$('pw-activity-filter').value=state.activityFilter;
+};
+function renderProductCalendars(rows){
+  const range=currentRange(),offset=(new Date(range.start+'T00:00:00Z').getUTCDay()+6)%7,days=Number(range.end.slice(-2));
+  const asins=state.selectedAsins,monthLabel=state.month.slice(0,4)+'年'+Number(state.month.slice(5))+'月';
+  return `<div class="pw-calendar-panels ${asins.length===1?'is-single':'is-comparison'}">${asins.map(asin=>{
+    const records=rows.filter(row=>rowAsin(row)===asin),byDate=new Map();
+    for(const row of records){if(!byDate.has(row.date))byDate.set(row.date,[]);byDate.get(row.date).push(row);}
+    const actual=records.filter(row=>recordStatus(row)==='actual').length,plan=records.filter(row=>recordStatus(row)==='plan').length;
+    let grid=['一','二','三','四','五','六','日'].map(day=>'<div class="pw-calendar-weekday">周'+day+'</div>').join('')+'<div class="pw-calendar-outside" aria-hidden="true"></div>'.repeat(offset);
+    for(let i=1;i<=days;i++){
+      const date=state.month+'-'+String(i).padStart(2,'0'),daily=byDate.get(date)||[];
+      grid+='<div class="pw-calendar-cell">'+(daily.length?daily.map(row=>{
+        const status=recordStatus(row),label=activityLabel(row),description=dateText(date)+' · '+productName(asin)+' · '+money(parseMoney(row.price))+' · '+label+' · '+statusLabels[status];
+        return `<button type="button" class="pw-calendar-day ${status}" data-edit="${row.id}" data-activity="${activityKey(row)}" data-calendar-asin="${asin}" aria-label="${escapeHtml(description)}" title="${escapeHtml(description)}"><time datetime="${date}">${dateText(date)}</time><strong>${money(parseMoney(row.price))}</strong><span class="pw-calendar-day-meta"><span class="pw-calendar-activity">${escapeHtml(label)}</span><span class="pw-status-pill ${status}">${statusLabels[status]}</span></span></button>`;
+      }).join(''):`<div class="pw-calendar-empty"><time datetime="${date}">${dateText(date)}</time><span>—</span></div>`)+'</div>';
+    }
+    return `<section class="pw-calendar-board" data-calendar-product="${asin}" aria-label="${productName(asin)} ${monthLabel}价格月历" style="--series-color:${seriesColor(asin)}"><header class="pw-calendar-product"><div><h3><i aria-hidden="true"></i>${productName(asin)}</h3><p>${monthLabel} · ${records.length} 条记录</p></div><div class="pw-calendar-counts"><span>实际 <b>${actual}</b></span><span>计划 <b>${plan}</b></span></div></header><div class="pw-calendar-scroll" tabindex="0" aria-label="${asin}月历，可横向滚动"><div class="pw-month-grid">${grid}</div></div>${records.length?'':'<p class="pw-calendar-no-records">当前筛选下此 ASIN 暂无记录</p>'}</section>`;
+  }).join('')}</div>`;
+}
+const portfolioRenderRecords=renderRecords;renderRecords=function(){
+  portfolioRenderRecords();const rows=filteredRows(),byId=new Map(allRows().map(row=>[row.id,row]));
+  if(state.view==='calendar'&&state.month!=='custom'){
+    $('pw-records').innerHTML=renderProductCalendars(rows);
+  }else{
+    const table=$('pw-records').querySelector('table');if(table){table.querySelector('thead tr').insertAdjacentHTML('afterbegin','<th>ASIN</th>');for(const tr of table.querySelectorAll('tr[data-record]')){const row=byId.get(tr.dataset.record);tr.dataset.asin=rowAsin(row);tr.insertAdjacentHTML('afterbegin',`<td class="pw-record-asin"><strong>${rowAsin(row)===DEFAULT_ASIN?'AD600S':rowAsin(row)}</strong><span>${rowAsin(row)===DEFAULT_ASIN?rowAsin(row):''}</span></td>`);}}
+  }
+};
+function selectPortfolio(asin,selected){changeProduct(state,asin);state.selectedAsins=selected;state.activityFilter='all';state.pageIndex=0;selectedMetric=null;selectedDay=null;renderAll();persist();}
+root.addEventListener('change',event=>{
+  const el=event.target;
+  if(el.id==='pw-active-asin'){selectPortfolio(el.value,state.selectedAsins.includes(el.value)?state.selectedAsins:[el.value]);}
+  if(el.dataset.compareAsin){const selected=[...root.querySelectorAll('[data-compare-asin]:checked')].map(input=>input.dataset.compareAsin);if(!selected.length){el.checked=true;return;}selectPortfolio(selected.includes(state.activeAsin)?state.activeAsin:selected[0],selected);}
+  if(el.id==='pw-activity-filter'){state.activityFilter=el.value;state.pageIndex=0;renderRecords();renderChart();persist();}
+});
+function showCampaignDetails(group){
+  const dialog=$('pw-campaign-dialog');dialog.innerHTML=`<div class="pw-detail-head"><div><span class="pw-eyebrow">${productName(group.asin)}</span><h2>${escapeHtml(group.label)} · ${dateText(group.start)}–${dateText(group.end)}</h2></div><button type="button" class="pw-button" data-action="close-campaign">关闭</button></div><p class="pw-small">共 ${group.rows.length} 天 · 点击任一日期查看${maintenance?'或编辑':''}记录</p><div class="pw-campaign-detail-list">${group.rows.map(row=>`<button type="button" class="pw-campaign-detail-row" data-edit="${row.id}"><time>${dateText(row.date)}</time><strong>${money(parseMoney(row.price))}</strong><span class="pw-status-pill ${recordStatus(row)}">${statusLabels[recordStatus(row)]}</span><span>${escapeHtml(recordNoteParts(row.note).detail)||'查看详情 →'}</span></button>`).join('')}</div>`;dialog.showModal();
+}
+root.addEventListener('click',event=>{
+  const button=event.target.closest('button');if(!button)return;
+  if(button.dataset.action==='go-schedule'){state.page='schedule';renderAll();persist();return;}
+  if(button.dataset.page)$('pw-import-panel').hidden=true;
+  if(button.dataset.campaignId){event.stopImmediatePropagation();const group=activityGroups.get(button.dataset.campaignId);if(group)showCampaignDetails(group);}
+  if(button.dataset.action==='close-campaign')$('pw-campaign-dialog').close();
+  if(button.dataset.edit&&$('pw-campaign-dialog').open)$('pw-campaign-dialog').close();
+  if(button.dataset.action==='compare-all'){const asins=productAsins(state);if(asins.length)selectPortfolio(asins.includes(state.activeAsin)?state.activeAsin:asins[0],asins);}
+},true);
+
 const store=BOOTSTRAP.store;
 let online=BOOTSTRAP.online,baseHashes={...online.hashes},baseline=contentFingerprint(online.state),publishing=false,polling=false,dirty=false,remoteConflict=false,pending=null,fullPreview=null;
-let editEpoch=0,savedEpoch=0,saving=false,saveError=null,explicitReason='',draft=BOOTSTRAP.draft;
+let editEpoch=0,savedEpoch=0,saving=false,saveTask=null,saveError=null,explicitReason='',draft=BOOTSTRAP.draft,keepLocalView=BOOTSTRAP.restoredDraft===true;
+if(keepLocalView){baseHashes=draft.baseHashes||baseHashes;baseline=migrateDraftBaseline(draft.baseline);pending=draft.pending||null;dirty=contentFingerprint(state)!==baseline;}
 const clone=structuredClone;
 const timeLabel=value=>new Date(value).toLocaleString('zh-CN',{hour12:false,timeZone:'Asia/Shanghai'});
 const sameHashes=(a,b)=>a&&b&&a['data.csv']===b['data.csv']&&a['settings.json']===b['settings.json'];
 const mutationActions=new Set(['add','save-editor','open-import','apply-import','undo-import','toggle-formulas','full-csv','apply-full','restore','restore-history']);
 const settingsMessage=(message,error=false)=>{$('pw-publish-message').textContent=message;$('pw-publish-message').classList.toggle('pw-warn',error);};
 function renderSyncStatus(message,error=false){
-  if(!message)message=remoteConflict?'线上已有新版本，请先备份草稿再读取线上数据':pending?'已提交GitHub，等待Pages部署更新':dirty?'本地草稿 · 尚未发布':online.mode==='offline'?'离线缓存 · '+timeLabel(online.checkedAt):'线上数据 · '+allRows().length+' 条 · 检查于 '+timeLabel(online.checkedAt);
+  if(!message)message=remoteConflict?'线上已有新版本 · 本机数据已保留，请备份后核对':pending?'已提交GitHub，等待Pages部署更新':dirty?(keepLocalView?'本机已保存 · 尚未发布到其他设备':'本地草稿 · 点击保存或发布'):online.mode==='offline'?'离线缓存 · '+timeLabel(online.checkedAt):'线上数据 · '+allRows().length+' 条 · 检查于 '+timeLabel(online.checkedAt);
   $('pw-sync-status').textContent=message;$('pw-sync-status').classList.toggle('pw-warn',error||remoteConflict||online.mode==='offline');
   $('pw-publish').disabled=!maintenance||publishing||!dirty||remoteConflict;
-  $('pw-draft-resume').hidden=!draft?.dirty&&!draft?.pending;
+  $('pw-draft-resume').hidden=keepLocalView||(!draft?.dirty&&!draft?.pending);
   $('pw-mode').textContent=maintenance?'维护模式':'只读查看';
   $('pw-exit-maint').hidden=!maintenance;
-  $('pw-storage-mode').textContent=maintenance?'本机草稿，发布后共享':'仓库共享CSV';
+  $('pw-storage-mode').textContent=keepLocalView?'本机保存的数据 · 发布后共享':maintenance?'本机草稿，发布后共享':'仓库共享CSV';
+  $('pw-save-local').hidden=!maintenance;$('pw-save-local').disabled=publishing||saving;
 }
 function applyAccess(){
   const editable=maintenance&&!publishing;
   root.querySelectorAll('[data-record-id],[data-label-id],[data-formula-id],#pw-list-price').forEach(el=>el.readOnly=!editable);
   root.querySelectorAll('[data-basis-id]').forEach(el=>el.readOnly=publishing);
   root.querySelectorAll('[data-action="relink"]').forEach(el=>el.disabled=publishing);
-  root.querySelectorAll('[data-status-id],#pw-edit-date,#pw-edit-status,#pw-edit-price,#pw-edit-list,#pw-edit-eventPrice,#pw-edit-type,#pw-edit-event,#pw-edit-note').forEach(el=>el.disabled=!editable||(el.id==='pw-edit-date'&&editorId));
-  root.querySelectorAll('[data-action]').forEach(el=>{if(mutationActions.has(el.dataset.action))el.hidden=!maintenance;});
+  root.querySelectorAll('[data-status-id],#pw-edit-date,#pw-edit-asin,#pw-edit-status,#pw-edit-price,#pw-edit-list,#pw-edit-eventPrice,#pw-edit-type,#pw-edit-event,#pw-edit-note').forEach(el=>el.disabled=!editable||(['pw-edit-date','pw-edit-asin'].includes(el.id)&&editorId));
+  root.querySelectorAll('[data-action]').forEach(el=>{if(mutationActions.has(el.dataset.action))el.hidden=!maintenance&&!['add','open-import','full-csv'].includes(el.dataset.action);});
   root.querySelectorAll('button[data-edit]').forEach(el=>{if(el.classList.contains('pw-edit-button'))el.textContent=maintenance?'编辑':'查看';});
   root.querySelectorAll('[data-action="restore"],[data-history-restore]').forEach(el=>el.hidden=!editable);
   root.querySelectorAll('#pw-config-owner,#pw-config-repo,#pw-config-branch,#pw-token,#pw-remember-token').forEach(el=>el.disabled=publishing);
@@ -1210,7 +1404,7 @@ root.addEventListener('click',event=>{
     event.preventDefault();event.stopImmediatePropagation();
     if(!publishing){state.trialOverrides={...(state.trialOverrides||{}),B:null,C:null,D:null,E:null};renderCalculator();persist();}return;
   }
-  if((!maintenance||publishing)&&(mutationActions.has(button.dataset.action)||button.dataset.historyRestore!==undefined)){event.preventDefault();event.stopImmediatePropagation();}
+  if((!maintenance||publishing)&&(mutationActions.has(button.dataset.action)||button.dataset.historyRestore!==undefined)){event.preventDefault();event.stopImmediatePropagation();if(!publishing&&['add','open-import','full-csv'].includes(button.dataset.action)){$('pw-publish-settings').hidden=false;$('pw-publish-settings').scrollIntoView({block:'center'});settingsMessage('先开启维护再导入或新增；已有数据可直接查看，本机预览可使用“本机预览维护”。');}}
 },true);
 root.addEventListener('input',event=>{
   const el=event.target;
@@ -1222,31 +1416,45 @@ root.addEventListener('input',event=>{
 function updateDirty(){try{dirty=contentFingerprint(state)!==baseline;}catch{dirty=true;}renderSyncStatus();}
 root.addEventListener('change',event=>{if((!maintenance||publishing)&&(event.target.dataset.statusId||event.target.id==='pw-edit-status')){event.preventDefault();event.stopImmediatePropagation();renderRecords();}},true);
 function persist(reason){
+  captureProductSettings(state);
   editEpoch++;saveError=null;if(typeof reason==='string')explicitReason=reason;
   if(maintenance)updateDirty();clearTimeout(saveTimer);setSaveStatus(maintenance?'正在保存本机草稿…':'查看设置已更新');saveTimer=setTimeout(flushSave,350);
 }
-async function flushSave(){
-  clearTimeout(saveTimer);if(saving||savedEpoch===editEpoch)return;saving=true;
+function flushSave(){
+  clearTimeout(saveTimer);if(saveTask)return saveTask;if(savedEpoch===editEpoch)return Promise.resolve();
+  saveTask=Promise.resolve().then(async()=>{saving=true;
   try{
     if(!store)throw Error('浏览器不允许保存草稿。请先下载备份，再允许网站保存数据。');
     while(savedEpoch<editEpoch){const epoch=editEpoch;await store.savePreferences(Object.fromEntries(UI_KEYS.map(key=>[key,state[key]])));
-      if(maintenance){validateWorkspace(state);draft=await store.saveDraft({state:clone(state),baseHashes,baseline,dirty,pending},explicitReason||'修改本机草稿');explicitReason='';}
+      if(maintenance){validateWorkspace(state);draft=await store.saveDraft({state:clone(state),baseHashes,baseline,dirty,pending,keepVisible:keepLocalView},explicitReason||'修改本机草稿');explicitReason='';}
       savedEpoch=epoch;setSaveStatus(maintenance?(dirty?'草稿已保存在本机 · 尚未发布':pending?'提交已保存 · 等待部署':'本机草稿已保存'):'查看设置已保存在本机');
     }
     $('pw-storage-error').hidden=true;saveError=null;
   }catch(error){saveError=error;setSaveStatus('尚未保存：'+error.message);$('pw-storage-error').hidden=false;$('pw-storage-error-text').textContent=error.message;}
-  finally{saving=false;renderSyncStatus();}
+  finally{saving=false;saveTask=null;renderSyncStatus();}
+  });return saveTask;
+}
+async function saveLocalWorkspace(){
+  if(!maintenance||publishing)return;
+  updateDirty();const previous=keepLocalView;keepLocalView=dirty||!!pending;persist('点击保存本机数据');await flushSave();
+  if(saveError){keepLocalView=previous;throw saveError;}
+  setSaveStatus(dirty?'本机数据已保存 · 尚未发布':pending?'本机数据已保存 · 等待部署':'已保存');renderSyncStatus();
+}
+async function exitMaintenance(){
+  if(publishing)throw Error('正在发布，请等待提交完成。');
+  await saveLocalWorkspace();maintenance=false;editorId=null;$('pw-editor').hidden=true;$('pw-import-panel').hidden=true;renderAll();renderSyncStatus();
+  setSaveStatus(dirty?'本机数据已保存 · 退出后继续显示':pending?'已退出维护 · 等待Pages部署':'已退出维护');
 }
 function downloadText(text,name,type){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),15000);}
 function downloadBackup(prefix='AD600S价格备份'){downloadText(JSON.stringify({format:'ad600s-price-platform',version:1,exportedAt:new Date().toISOString(),state:clone(state)},null,2),prefix+'_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json','application/json');}
 function migrateDraftBaseline(value){
   if(!value)return contentFingerprint(online.state);
-  try{const [csv,settings]=JSON.parse(value);delete settings.anchor;delete settings.anchorAuto;return JSON.stringify([csv,settings]);}catch{return value;}
+  try{const [csv,settings]=JSON.parse(value);return contentFingerprint(workspaceFromCsv(csv,parseSettings(JSON.stringify({version:1,settings}))));}catch{return value;}
 }
 function enterMaintenance(nextDraft){
   if(nextDraft){validateWorkspace(nextDraft.state);const prefs=Object.fromEntries(UI_KEYS.map(key=>[key,state[key]]));state=restore(nextDraft.state);Object.assign(state,prefs);baseHashes=nextDraft.baseHashes||online.hashes;baseline=migrateDraftBaseline(nextDraft.baseline);pending=nextDraft.pending||null;remoteConflict=!pending&&!sameHashes(baseHashes,online.hashes);}
-  else{baseHashes={...online.hashes};baseline=contentFingerprint(online.state);pending=null;remoteConflict=false;}
-  maintenance=true;updateDirty();renderAll();$('pw-publish-settings').hidden=true;setSaveStatus('维护模式 · 修改先保存为本机草稿');
+  else if(!keepLocalView){baseHashes={...online.hashes};baseline=contentFingerprint(online.state);pending=null;remoteConflict=false;}
+  hydrateProduct(state);maintenance=true;updateDirty();renderAll();$('pw-publish-settings').hidden=true;setSaveStatus('维护模式 · 修改先保存为本机草稿');
 }
 async function authorizeMaintenance(resume=false){
   const next={owner:$('pw-config-owner').value.trim(),repo:$('pw-config-repo').value.trim(),branch:$('pw-config-branch').value.trim()};validateRepoConfig(next);
@@ -1257,8 +1465,9 @@ async function authorizeMaintenance(resume=false){
   if(store)draft=await store.loadDraft();enterMaintenance(resume&&draft?draft:null);settingsMessage('已开启维护模式。');
 }
 function applyOnline(next){
-  const prefs=Object.fromEntries(UI_KEYS.map(key=>[key,state[key]]));state=restore(next.state);Object.assign(state,prefs);online=next;baseHashes={...next.hashes};baseline=contentFingerprint(next.state);dirty=false;remoteConflict=false;
+  const prefs=Object.fromEntries(UI_KEYS.map(key=>[key,state[key]]));state=restore(next.state);Object.assign(state,prefs);online=next;baseHashes={...next.hashes};baseline=contentFingerprint(next.state);dirty=false;remoteConflict=false;keepLocalView=false;
   selectedDay=null;selectedMetric=null;editorId=null;$('pw-editor').hidden=true;$('pw-import-panel').hidden=true;importSession=null;importPreview=null;importUndo=null;
+  if($('pw-editor').open)$('pw-editor').close();hydrateProduct(state);
   renderAll();renderSyncStatus();
 }
 async function refreshShared(force=false){
@@ -1266,19 +1475,20 @@ async function refreshShared(force=false){
   try{
     const next=await requestSharedFiles();
     if(pending){
-      if(sameHashes(next.hashes,pending.hashes)){pending=null;online=next;if(!dirty)applyOnline(next);if(store){await store.saveOnline(next);if(maintenance){persist('确认Pages已更新');await flushSave();}}}
+      if(sameHashes(next.hashes,pending.hashes)){pending=null;online=next;if(!dirty)applyOnline(next);if(store){await store.saveOnline(next);if(maintenance){persist('确认Pages已更新');await flushSave();}else if(draft?.pending){draft=await store.saveDraft({...draft,pending:null,dirty,keepVisible:keepLocalView},'确认Pages已更新');}}}
       else if(!sameHashes(next.hashes,pending.previousHashes)){remoteConflict=true;renderSyncStatus('发现与本次提交不同的线上版本，已保留本机草稿。',true);return;}
       else{renderSyncStatus('GitHub已接收提交，Pages仍在部署，稍后自动检查。');return;}
     }else if(!sameHashes(next.hashes,online.hashes)){
-      if(maintenance&&dirty&&!force){remoteConflict=true;renderSyncStatus('线上已有新版本，已保留本机草稿，请备份后重新读取。',true);return;}
+      if(dirty&&!force){remoteConflict=true;renderSyncStatus('线上已有新版本，已保留本机数据，请备份后核对。',true);return;}
       applyOnline(next);if(store)await store.saveOnline(next);
     }else{online={...next};if(store)await store.saveOnline(next);}
-    renderSyncStatus();setSaveStatus(maintenance?(dirty?'本机草稿尚未发布':'已读取最新线上数据'):'共享数据已读取');
+    renderSyncStatus();setSaveStatus(dirty?'本机保存的数据 · 尚未发布':pending?'等待Pages部署':'共享数据已读取');
   }catch(error){online.mode='offline';renderSyncStatus('线上读取失败，保留上次数据：'+error.message,true);}
   finally{polling=false;}
 }
 async function publishWorkspace(){
   if(!maintenance||publishing||!dirty||remoteConflict)return;
+  keepLocalView=true;
   await flushSave();if(saveError)throw saveError;
   const token=readToken();if(!token){$('pw-publish-settings').hidden=false;throw Error('请先验证GitHub Token，再发布。');}
   const snapshot=clone(state);validateWorkspace(snapshot);
@@ -1318,13 +1528,15 @@ root.addEventListener('click',async event=>{
     if(action==='resume-draft'){if(!maintenance){$('pw-publish-settings').hidden=false;settingsMessage('输入Token后点“验证并恢复草稿”，或在本机使用预览维护。');}else{draft=await store.loadDraft();if(draft)enterMaintenance(draft);}}
     if(action==='authorize-resume')await authorizeMaintenance(true);
     if(action==='local-maint'){if(!['localhost','127.0.0.1'].includes(location.hostname))throw Error('本机预览入口仅限本机使用。');if(store)draft=await store.loadDraft();enterMaintenance(draft?.dirty||draft?.pending?draft:null);}
-    if(action==='exit-maint'){await flushSave();if(saveError)throw saveError;maintenance=false;const next=clone(online);applyOnline(next);setSaveStatus('已退出维护，本机草稿已保留');}
-    if(action==='forget-token'){clearToken();$('pw-token').value='';if(maintenance){await flushSave();maintenance=false;applyOnline(online);}settingsMessage('已清除本仓库Token。');}
+    if(action==='exit-maint')await exitMaintenance();
+    if(action==='save-local')await saveLocalWorkspace();
+    if(action==='forget-token'){if(maintenance)await exitMaintenance();clearToken();$('pw-token').value='';settingsMessage('已清除本仓库Token，本机保存的数据已保留。');}
     if(action==='refresh-online')await refreshShared();
     if(action==='discard-reload')await discardAndReload();
     if(action==='publish')await publishWorkspace();
     if(action==='backup')downloadBackup();
     if(action==='download-csv')downloadText(csvUtf8(workspaceCsv(state)),'data.csv','text/csv;charset=utf-8');
+    if(action==='download-settings')downloadText(settingsText({...state,anchor:online.state.anchor,anchorAuto:online.state.anchorAuto}),'settings.json','application/json');
     if(action==='restore')$('pw-restore-file').click();
     if(action==='retry-save')await flushSave();
     if(action==='history')await renderHistory();
@@ -1333,20 +1545,21 @@ root.addEventListener('click',async event=>{
     if(action==='auto-anchor'){state.anchorAuto=true;renderAll();persist('锚点跟随最新实际日期');}
     if(action==='full-csv')$('pw-full-file').click();
     if(action==='close-full')$('pw-full-preview').hidden=true;
-    if(action==='apply-full'&&fullPreview){if(dirty){downloadBackup('全量替换前_备份');}state={...state,baseRows:fullPreview.rows,patches:{},added:[],_csvText:fullPreview.text,page:'schedule',pageIndex:0};validateWorkspace(state);$('pw-full-preview').hidden=true;fullPreview=null;renderAll();persist('全量CSV替换为本机草稿');}
+    if(action==='apply-full'&&fullPreview){if(dirty){downloadBackup('全量替换前_备份');}captureProductSettings(state);state={...state,baseRows:fullPreview.rows,patches:{},added:[],_csvText:fullPreview.text,page:'schedule',pageIndex:0,status:'all',activityFilter:'all'};const asins=productAsins(state);changeProduct(state,asins.includes(state.activeAsin)?state.activeAsin:(asins[0]||state.activeAsin));state.selectedAsins=asins.length?asins:[state.activeAsin];if(fullPreview.rows.length)state.month=fullPreview.rows.map(row=>row.date).sort().at(-1).slice(0,7);validateWorkspace(state);$('pw-full-preview').hidden=true;fullPreview=null;importSession=null;importPreview=null;importUndo=null;$('pw-import-preview').hidden=true;$('pw-import-undo').hidden=true;renderAll();persist('全量CSV替换为本机草稿');}
   }catch(error){if(error.status===401)clearToken();settingsMessage(error.message,true);renderSyncStatus(error.message,true);}
 });
 $('pw-full-file').addEventListener('change',async event=>{
   const file=event.target.files[0];if(!file||!maintenance)return;
-  try{const decoded=decodeCsvBytes(await file.arrayBuffer()),text=csvUtf8(decoded.text),parsed=parseScheduleCsv(text);validateWorkspace({...state,baseRows:parsed.rows,patches:{},added:[],_csvText:text});fullPreview={...parsed,text};$('pw-full-preview').hidden=false;const actual=parsed.rows.filter(row=>recordStatus(row)==='actual').length,plan=parsed.rows.filter(row=>recordStatus(row)==='plan').length;$('pw-full-summary').textContent=file.name+' · '+decoded.encoding+' · '+parsed.rows.length+' 条（实际 '+actual+' / 计划 '+plan+' / 待确认 '+(parsed.rows.length-actual-plan)+'）。确认后全量替换当前价格草稿，计算器设置保留；未编辑时发布保留原CSV列顺序和内容。';}
+  try{const decoded=decodeCsvBytes(await file.arrayBuffer()),text=csvUtf8(decoded.text),parsed=parseScheduleCsv(text,{asin:$('pw-target-asin').value.trim().toUpperCase()});validateWorkspace({...state,baseRows:parsed.rows,patches:{},added:[],_csvText:text});fullPreview={...parsed,text};$('pw-full-preview').hidden=false;const actual=parsed.rows.filter(row=>recordStatus(row)==='actual').length,plan=parsed.rows.filter(row=>recordStatus(row)==='plan').length;$('pw-full-summary').textContent=file.name+' · '+decoded.encoding+' · '+parsed.rows.length+' 条（实际 '+actual+' / 计划 '+plan+' / 待确认 '+(parsed.rows.length-actual-plan)+'）。确认后全量替换所有ASIN的价格草稿，计算器设置保留；追加其他ASIN请使用“批量导入 / 粘贴”。';}
   catch(error){fullPreview=null;$('pw-full-preview').hidden=true;renderSyncStatus('全量CSV未导入：'+error.message,true);}
   finally{event.target.value='';}
 });
 $('pw-restore-file').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{if(file.size>2*1024*1024)throw Error('备份超过2MB。');const backup=JSON.parse(await file.text());if(backup.format!=='ad600s-price-platform'||backup.version!==1)throw Error('请选择本平台JSON备份。');await replaceWorkspace(backup.state,'从备份恢复为草稿');}catch(error){renderSyncStatus(error.message,true);}finally{event.target.value='';}});
 $('pw-config-owner').value=config.owner;$('pw-config-repo').value=config.repo;$('pw-config-branch').value=config.branch;
 $('pw-local-maint').hidden=!['localhost','127.0.0.1'].includes(location.hostname);
-$('pw-storage-description').textContent='打开时读取仓库 data.csv，每60秒检查更新。维护修改先保存在本机草稿；点击“发布到线上”后提交GitHub，并等待Pages部署。参考价和计算器设置通过 settings.json 共享。公开仓库中的数据可被任何拿到链接的人读取，持有仓库写入Token才能发布。';
-renderAll();root.hidden=false;document.getElementById('pw-boot').hidden=true;renderSyncStatus();setSaveStatus(online.mode==='offline'?'离线缓存数据':'共享CSV已载入');
+$('pw-storage-description').textContent='“保存本机数据”保存到当前浏览器，退出维护和刷新后继续显示；“保存并发布”提交GitHub，Pages部署后其他设备更新。未发布的本机版本会单独标注，线上更新不会覆盖它。可在“价格数据管理”下载当前CSV、设置或完整备份。';
+if(keepLocalView&&!pending&&!sameHashes(baseHashes,online.hashes))remoteConflict=true;
+renderAll();root.hidden=false;document.getElementById('pw-boot').hidden=true;renderSyncStatus();setSaveStatus(keepLocalView?'已载入本机保存的数据':online.mode==='offline'?'离线缓存数据':'共享CSV已载入');
 if(globalThis.ResizeObserver){let last=0;new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(Math.abs(width-last)>1){last=width;renderChart();}}).observe($('pw-chart'));}
 setInterval(()=>{if(!document.hidden)refreshShared();},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshShared();});
@@ -1354,7 +1567,7 @@ window.addEventListener('beforeunload',event=>{if(maintenance&&editEpoch!==saved
 
 })().catch(error=>{const boot=document.getElementById('pw-boot');boot.hidden=false;boot.textContent='同步副本未能载入：'+error.message;});
 </script>
-<style>html{color-scheme:light dark}body{margin:0;background:light-dark(#f4f6fa,#10131a);font-family:Inter,'Microsoft YaHei',system-ui,sans-serif}#ad600s-price-workspace{max-width:1440px;margin:16px auto}#pw-boot{padding:40px;text-align:center}#ad600s-price-workspace button{cursor:pointer}#ad600s-price-workspace .pw-save{margin-right:0;max-width:46%;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-bar{padding:12px 26px 8px;background:var(--pw-surface);display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;font-size:11px}#ad600s-price-workspace .pw-storage-bar>div:first-child{display:flex;gap:9px;align-items:center;min-width:0;flex-wrap:wrap}#ad600s-price-workspace .pw-sync-note{padding:0 26px 12px;font-size:11px;color:var(--pw-muted);background:var(--pw-surface)}#ad600s-price-workspace .pw-sync-note a{color:var(--pw-blue);margin-left:10px}#ad600s-price-workspace .pw-publish-settings{padding:16px 26px;background:var(--pw-blue-soft);font-size:12px}#ad600s-price-workspace .pw-config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}#ad600s-price-workspace .pw-config-grid label{display:grid;gap:5px;font-size:11px}#ad600s-price-workspace .pw-config-grid input{width:100%}#ad600s-price-workspace .pw-token-label{grid-column:1/-1}#ad600s-price-workspace .pw-remember{display:flex;align-items:center;gap:6px;font-size:11px;margin:10px 0}#ad600s-price-workspace .pw-publish-settings p{font-size:11px;margin-top:10px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-error,#ad600s-price-workspace .pw-draft-note{padding:12px 26px;background:var(--pw-amber-soft);font-size:12px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-draft-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-local-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--pw-muted);padding-top:16px}#ad600s-price-workspace .pw-history-row{padding:12px 18px;border-top:1px solid var(--pw-line);display:flex;justify-content:space-between;gap:10px;font-size:12px;flex-wrap:wrap}#ad600s-price-workspace .pw-history-row p{font-size:11px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor-auto{grid-column:2;justify-self:start;color:var(--pw-blue)}#ad600s-price-workspace .pw-status-select{min-width:76px;max-width:100%;padding:4px 7px;border:1px solid var(--pw-line);border-radius:5px;cursor:pointer}#ad600s-price-workspace .pw-status-select:disabled{opacity:1;cursor:default}#ad600s-price-workspace input[readonly]{cursor:default}#ad600s-price-workspace button:disabled{cursor:default}@media(max-width:620px){#ad600s-price-workspace{margin:0}#ad600s-price-workspace .pw-save{max-width:100%}#ad600s-price-workspace .pw-storage-bar,#ad600s-price-workspace .pw-publish-settings{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-sync-note{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-config-grid{grid-template-columns:1fr}#ad600s-price-workspace .pw-anchor-auto{grid-column:1/-1}}</style><style>#ad600s-price-workspace [data-activity="regular"]{--activity-tint:light-dark(#f4f6fa,#272d36);--activity-ink:light-dark(#5a677b,#c2ccda);--activity-line:light-dark(#d8dfe8,#485365)}
+<style>html{color-scheme:light dark}body{margin:0;background:light-dark(#f4f6fa,#10131a);font-family:Inter,'Microsoft YaHei',system-ui,sans-serif}#ad600s-price-workspace{max-width:1440px;margin:16px auto}#pw-boot{padding:40px;text-align:center}#ad600s-price-workspace button{cursor:pointer}#ad600s-price-workspace .pw-save{margin-right:0;max-width:46%;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-bar{padding:12px 26px 8px;background:var(--pw-surface);display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;font-size:14px}#ad600s-price-workspace .pw-storage-bar>div:first-child{display:flex;gap:9px;align-items:center;min-width:0;flex-wrap:wrap}#ad600s-price-workspace .pw-sync-note{padding:0 26px 12px;font-size:14px;color:var(--pw-muted);background:var(--pw-surface)}#ad600s-price-workspace .pw-sync-note a{color:var(--pw-blue);margin-left:10px}#ad600s-price-workspace .pw-publish-settings{padding:16px 26px;background:var(--pw-blue-soft);font-size:15px}#ad600s-price-workspace .pw-config-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}#ad600s-price-workspace .pw-config-grid label{display:grid;gap:5px;font-size:14px}#ad600s-price-workspace .pw-config-grid input{width:100%}#ad600s-price-workspace .pw-token-label{grid-column:1/-1}#ad600s-price-workspace .pw-remember{display:flex;align-items:center;gap:6px;font-size:14px;margin:10px 0}#ad600s-price-workspace .pw-publish-settings p{font-size:14px;margin-top:10px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-storage-error,#ad600s-price-workspace .pw-draft-note{padding:12px 26px;background:var(--pw-amber-soft);font-size:15px;overflow-wrap:anywhere}#ad600s-price-workspace .pw-draft-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px}#ad600s-price-workspace .pw-local-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--pw-muted);padding-top:16px}#ad600s-price-workspace .pw-history-row{padding:12px 18px;border-top:1px solid var(--pw-line);display:flex;justify-content:space-between;gap:10px;font-size:15px;flex-wrap:wrap}#ad600s-price-workspace .pw-history-row p{font-size:14px;color:var(--pw-muted)}#ad600s-price-workspace .pw-anchor-auto{grid-column:2;justify-self:start;color:var(--pw-blue)}#ad600s-price-workspace .pw-status-select{min-width:76px;max-width:100%;padding:4px 7px;border:1px solid var(--pw-line);border-radius:5px;cursor:pointer}#ad600s-price-workspace .pw-status-select:disabled{opacity:1;cursor:default}#ad600s-price-workspace input[readonly]{cursor:default}#ad600s-price-workspace button:disabled{cursor:default}@media(max-width:620px){#ad600s-price-workspace{margin:0}#ad600s-price-workspace .pw-save{max-width:100%}#ad600s-price-workspace .pw-storage-bar,#ad600s-price-workspace .pw-publish-settings{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-sync-note{padding-left:14px;padding-right:14px}#ad600s-price-workspace .pw-config-grid{grid-template-columns:1fr}#ad600s-price-workspace .pw-anchor-auto{grid-column:1/-1}}</style><style>#ad600s-price-workspace [data-activity="regular"]{--activity-tint:light-dark(#f4f6fa,#272d36);--activity-ink:light-dark(#5a677b,#c2ccda);--activity-line:light-dark(#d8dfe8,#485365)}
 #ad600s-price-workspace [data-activity="bd"]{--activity-tint:light-dark(#eef2ff,#283654);--activity-ink:light-dark(#405cb3,#b6c7ff);--activity-line:light-dark(#cbd6fb,#4e6498)}
 #ad600s-price-workspace [data-activity="deal7"]{--activity-tint:light-dark(#edf5fb,#213849);--activity-ink:light-dark(#356e9c,#a7d7fb);--activity-line:light-dark(#c6dff1,#426985)}
 #ad600s-price-workspace [data-activity="ped"]{--activity-tint:light-dark(#f5effb,#392a49);--activity-ink:light-dark(#7950a5,#d9b9f5);--activity-line:light-dark(#ddceef,#74548f)}
@@ -1371,7 +1584,7 @@ window.addEventListener('beforeunload',event=>{if(maintenance&&editEpoch!==saved
 #ad600s-price-workspace .pw-calendar-day[data-activity]{background:var(--activity-tint);border-color:var(--activity-line);border-left:3px solid var(--activity-ink)}
 #ad600s-price-workspace .pw-calendar-day[data-activity].plan{border-top-style:dashed;border-right-style:dashed;border-bottom-style:dashed}
 #ad600s-price-workspace .pw-calendar-day[data-activity]>span:last-child{color:var(--activity-ink)}
-#ad600s-price-workspace .pw-activity-legend{display:flex;flex-wrap:wrap;gap:7px 15px;padding:0 18px 14px;font-size:11px;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-activity-legend{display:flex;flex-wrap:wrap;gap:7px 15px;padding:0 18px 14px;font-size:14px;color:var(--pw-muted)}
 #ad600s-price-workspace .pw-activity-legend>span{display:inline-flex;align-items:center;gap:5px}
 #ad600s-price-workspace .pw-activity-legend i{width:9px;height:9px;background:var(--activity-ink);border-radius:2px}
 #ad600s-price-workspace .pw-day-tile{aspect-ratio:1.3;min-height:36px;white-space:nowrap}
@@ -1386,27 +1599,233 @@ window.addEventListener('beforeunload',event=>{if(maintenance&&editEpoch!==saved
 #ad600s-price-workspace .pw-chart .pw-chart-hit{cursor:crosshair;outline:none}
 #ad600s-price-workspace .pw-chart .pw-chart-guide{stroke:var(--pw-muted);stroke-dasharray:4 4;pointer-events:none}
 #ad600s-price-workspace .pw-chart .pw-chart-halo{fill:var(--pw-surface);fill-opacity:.6;stroke:var(--pw-blue);stroke-width:2;pointer-events:none}
-#ad600s-price-workspace .pw-chart .pw-reference-label{font-size:10px;paint-order:stroke;stroke:var(--pw-surface);stroke-width:4px;stroke-linejoin:round}
-#ad600s-price-workspace .pw-chart-tooltip{position:absolute;z-index:5;width:236px;max-width:calc(100% - 16px);padding:12px 13px;border:1px solid var(--pw-line);border-radius:7px;background:var(--pw-surface);box-shadow:0 5px 20px light-dark(#29344e20,#00000050);font-size:11px;line-height:1.5;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-chart .pw-reference-label{font-size:13px;paint-order:stroke;stroke:var(--pw-surface);stroke-width:4px;stroke-linejoin:round}
+#ad600s-price-workspace .pw-chart-tooltip{position:absolute;z-index:5;width:236px;max-width:calc(100% - 16px);padding:12px 13px;border:1px solid var(--pw-line);border-radius:7px;background:var(--pw-surface);box-shadow:0 5px 20px light-dark(#29344e20,#00000050);font-size:14px;line-height:1.5;color:var(--pw-ink)}
 #ad600s-price-workspace .pw-chart-tooltip-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-#ad600s-price-workspace .pw-chart-tooltip-head strong{font-size:11px}
+#ad600s-price-workspace .pw-chart-tooltip-head strong{font-size:14px}
 #ad600s-price-workspace .pw-chart-tooltip-price{font-size:22px;font-weight:500;margin:7px 0}
-#ad600s-price-workspace .pw-chart-tooltip-price>span{font-size:10px;font-weight:400;color:var(--pw-muted);margin-left:8px}
+#ad600s-price-workspace .pw-chart-tooltip-price>span{font-size:13px;font-weight:400;color:var(--pw-muted);margin-left:8px}
 #ad600s-price-workspace .pw-chart-tooltip dl{display:grid;gap:5px;margin:0}
 #ad600s-price-workspace .pw-chart-tooltip dl>div{display:flex;justify-content:space-between;gap:12px}
 #ad600s-price-workspace .pw-chart-tooltip dt{color:var(--pw-muted);flex-shrink:0}
 #ad600s-price-workspace .pw-chart-tooltip dd{margin:0;text-align:right;overflow-wrap:anywhere}
 #ad600s-price-workspace .pw-chart-tooltip dd[data-activity]{color:var(--activity-ink)}
 #ad600s-price-workspace .pw-chart-tooltip-note{margin-top:7px;padding-top:7px;border-top:1px solid var(--pw-line);overflow-wrap:anywhere;max-height:48px;overflow-y:auto;color:var(--pw-muted)}
-#ad600s-price-workspace .pw-chart-record-link{background:none;border:0;color:var(--pw-blue);padding:7px 0 0;font-size:11px}
+#ad600s-price-workspace .pw-chart-record-link{background:none;border:0;color:var(--pw-blue);padding:7px 0 0;font-size:14px}
 #ad600s-price-workspace .pw-scenario-tab[data-scenario^="bf-"]{border-color:light-dark(#edc5cb,#98525e);color:var(--pw-red)}
 #ad600s-price-workspace .pw-scenario-tab[data-scenario^="bf-"].is-active{background:var(--pw-red-soft);border-color:var(--pw-red)}
 @media(max-width:620px){
   #ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
-  #ad600s-price-workspace .pw-day-tile{font-size:10px;min-height:34px}
+  #ad600s-price-workspace .pw-day-tile{font-size:13px;min-height:34px}
   #ad600s-price-workspace .pw-chart{height:278px;padding-left:10px;padding-right:10px}
   #ad600s-price-workspace .pw-chart-tooltip{width:216px;padding:10px}
   #ad600s-price-workspace .pw-activity-legend{padding-left:12px;padding-right:12px}
 }
 @media(max-width:360px){#ad600s-price-workspace .pw-day-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+
+#ad600s-price-workspace{font-size:18px;line-height:1.6}
+#ad600s-price-workspace h1{font-size:1.65rem;font-weight:750;letter-spacing:-.03em}
+#ad600s-price-workspace h2{font-size:1.125rem;font-weight:700}
+#ad600s-price-workspace h3{font-size:1rem;font-weight:700}
+#ad600s-price-workspace .pw-button{font-size:.875rem;min-height:40px;padding:8px 13px;border-radius:8px;font-weight:550}
+#ad600s-price-workspace .pw-nav-button{font-size:1rem;font-weight:600;padding-top:15px;padding-bottom:15px}
+#ad600s-price-workspace .pw-metric-value{font-size:1.95rem;font-weight:750;letter-spacing:-.035em}
+#ad600s-price-workspace .pw-metric-label{font-size:.875rem;line-height:1.5;min-height:42px}
+#ad600s-price-workspace .pw-metric-foot{font-size:.8125rem}
+#ad600s-price-workspace .pw-schedule-overview{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,1fr);gap:18px;margin-top:20px}
+#ad600s-price-workspace .pw-schedule-overview>.pw-panel{margin-top:0;min-width:0;box-shadow:0 4px 18px light-dark(#14224405,#0002);border-radius:14px}
+#ad600s-price-workspace .pw-chart-panel .pw-panel-head{align-items:flex-start;gap:12px;flex-wrap:wrap;padding-bottom:10px}
+#ad600s-price-workspace .pw-chart-summary{display:grid;grid-template-columns:1.3fr 1.3fr 1fr;gap:12px;padding:4px 20px 18px}
+#ad600s-price-workspace .pw-chart-summary>div{display:grid;gap:3px}
+#ad600s-price-workspace .pw-chart-summary span{font-size:.8125rem;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-chart-summary strong{font-size:1.4rem;letter-spacing:-.025em;font-weight:750}
+#ad600s-price-workspace .pw-chart-summary small{font-size:.8125rem;font-weight:400;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-chart{height:330px;padding:0 14px 14px}
+#ad600s-price-workspace .pw-chart text{font-size:.8125rem}
+#ad600s-price-workspace .pw-chart .pw-chart-key-label{font-size:.8125rem;font-weight:750;fill:var(--pw-ink);paint-order:stroke;stroke:var(--pw-surface);stroke-width:5px;stroke-linejoin:round;pointer-events:none}
+#ad600s-price-workspace .pw-chart .pw-price-point.key-point{stroke-width:2.2}
+#ad600s-price-workspace .pw-chart .pw-chart-actual{stroke-width:3}
+#ad600s-price-workspace .pw-chart .pw-price-area.actual{opacity:.045}
+#ad600s-price-workspace .pw-chart .pw-price-area.plan{opacity:.025}
+#ad600s-price-workspace .pw-chart-tooltip{width:265px;font-size:.875rem;padding:15px;border-radius:12px;box-shadow:0 12px 35px light-dark(#23395922,#0007)}
+#ad600s-price-workspace .pw-chart-tooltip-head strong{font-size:.875rem}
+#ad600s-price-workspace .pw-chart-tooltip-price{font-size:1.75rem;font-weight:750}
+#ad600s-price-workspace .pw-chart-tooltip-price>span{font-size:.75rem}
+#ad600s-price-workspace .pw-chart-record-link{font-size:.875rem;font-weight:600}
+#ad600s-price-workspace .pw-activity-overview{display:grid;gap:10px;padding:0 16px 16px;max-height:370px;overflow-y:auto;scrollbar-width:thin}
+#ad600s-price-workspace .pw-activity-totals{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
+#ad600s-price-workspace .pw-activity-totals>span{font-size:.75rem;border-radius:5px;padding:3px 7px;background:var(--activity-tint);color:var(--activity-ink)}
+#ad600s-price-workspace .pw-activity-card{position:relative;display:grid;gap:6px;width:100%;padding:12px 14px;text-align:left;border:1px solid var(--activity-line);border-left:4px solid var(--activity-ink);border-radius:9px;background:var(--activity-tint);color:var(--pw-ink);min-width:0}
+#ad600s-price-workspace .pw-activity-card-dates{display:flex;justify-content:space-between;font-size:.8125rem;color:var(--pw-muted);gap:8px}
+#ad600s-price-workspace .pw-activity-card-main{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#ad600s-price-workspace .pw-activity-card-main>strong{font-size:1rem;font-weight:750;color:var(--activity-ink)}
+#ad600s-price-workspace .pw-activity-card-price{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:1.0625rem;font-weight:700;flex-wrap:wrap}
+#ad600s-price-workspace .pw-activity-card-price>span{font-size:.75rem;font-weight:400;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-type{font-weight:700!important}
+#ad600s-price-workspace .pw-record-table [data-record-field="price"]{font-size:1rem;font-weight:750}
+#ad600s-price-workspace .pw-record-table .pw-cell-input{width:112px}
+#ad600s-price-workspace .pw-calendar-day strong{font-size:.9375rem;font-weight:750}
+#ad600s-price-workspace .pw-result-price{font-weight:750;font-size:2.25rem}
+#ad600s-price-workspace .pw-data-manager{background:var(--pw-surface);border-bottom:1px solid var(--pw-line);padding:0 26px 12px}
+#ad600s-price-workspace .pw-data-manager summary{cursor:pointer;font-size:.9375rem;font-weight:650;min-height:32px}
+#ad600s-price-workspace .pw-data-manager summary>span{font-size:.8125rem;font-weight:400;color:var(--pw-muted);margin-left:10px}
+#ad600s-price-workspace .pw-data-manager-body{padding:10px 0 4px}
+#ad600s-price-workspace .pw-data-manager-body p{font-size:.875rem;color:var(--pw-muted);margin-bottom:12px}
+#ad600s-price-workspace :focus-visible{outline:3px solid var(--pw-blue);outline-offset:3px}
+#ad600s-price-workspace .pw-basis-label,#ad600s-price-workspace .pw-label-edit{font-size:.875rem!important}
+#ad600s-price-workspace .pw-rule-table code{font-size:.875rem}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  #ad600s-price-workspace .pw-metric,#ad600s-price-workspace .pw-activity-card,#ad600s-price-workspace .pw-calendar-day,#ad600s-price-workspace .pw-day-tile{transition:transform .16s ease,box-shadow .16s ease}
+  #ad600s-price-workspace .pw-metric:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 8px 22px light-dark(#23395915,#0004)}
+  #ad600s-price-workspace .pw-activity-card:hover{transform:translateY(-2px);box-shadow:0 6px 14px light-dark(#23395915,#0004)}
+  #ad600s-price-workspace .pw-calendar-day:hover,#ad600s-price-workspace .pw-day-tile:hover{transform:scale(1.045);z-index:1;box-shadow:0 4px 14px light-dark(#23395922,#0005)}
+  #ad600s-price-workspace .pw-cell-input:hover{box-shadow:0 0 0 2px var(--activity-line)}
+}
+@media(max-width:1000px){#ad600s-price-workspace .pw-schedule-overview{grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr);gap:12px}}
+@media(max-width:800px){#ad600s-price-workspace .pw-schedule-overview{grid-template-columns:minmax(0,1fr)}#ad600s-price-workspace .pw-activity-overview{grid-template-columns:repeat(2,minmax(0,1fr));max-height:350px}}
+@media(max-width:620px){
+  #ad600s-price-workspace .pw-chart-summary{padding-left:15px;padding-right:15px;gap:7px}
+  #ad600s-price-workspace .pw-chart-summary strong{font-size:1.2rem}
+  #ad600s-price-workspace .pw-chart-summary span{font-size:.75rem}
+  #ad600s-price-workspace .pw-chart{height:300px;padding-left:5px;padding-right:5px}
+  #ad600s-price-workspace .pw-chart-tooltip{width:240px;font-size:.8125rem;padding:12px}
+  #ad600s-price-workspace .pw-data-manager{padding-left:14px;padding-right:14px}
+  #ad600s-price-workspace .pw-data-manager summary>span{display:block;margin:3px 0 0 15px}
+  #ad600s-price-workspace .pw-activity-overview{grid-template-columns:minmax(0,1fr);max-height:370px}
+  #ad600s-price-workspace .pw-nav{gap:13px;padding:0 12px}
+  #ad600s-price-workspace .pw-nav-button{font-size:.875rem;gap:4px}
+  #ad600s-price-workspace .pw-calendar-day strong{font-size:.75rem}
+  #ad600s-price-workspace .pw-metric-value{font-size:1.65rem}
+  #ad600s-price-workspace .pw-day-tile{font-size:.75rem}
+}
+</style><style>/* Clip page edges without creating a scroll container that breaks sticky navigation. */
+#ad600s-price-workspace{max-width:1800px!important;margin:0 auto!important;display:grid;grid-template-columns:210px minmax(0,1fr);min-height:100vh;background:var(--pw-bg);border-radius:0;overflow:clip}
+#ad600s-price-workspace .pw-workspace-body{min-width:0}
+#ad600s-price-workspace .pw-sidebar{position:sticky;top:0;align-self:start;height:100vh;height:100dvh;min-height:0;overflow-y:auto;z-index:10;background:#142039;color:#c5cfe2;padding:29px 17px;display:flex;flex-direction:column;gap:25px}
+#ad600s-price-workspace .pw-sidebar>*{flex-shrink:0}
+#ad600s-price-workspace .pw-side-brand{color:white;display:flex;gap:11px;text-decoration:none;align-items:center;padding:0 8px;font-size:.85rem;letter-spacing:.07em}
+#ad600s-price-workspace .pw-side-brand>span{width:35px;height:38px;background:#6073e6;display:grid;place-items:center;border-radius:9px;font-size:1.25rem;font-weight:800}
+#ad600s-price-workspace .pw-side-brand strong{display:block;font-size:.94rem;letter-spacing:0}
+#ad600s-price-workspace .pw-side-caption{font-size:.75rem;color:#8192b0;padding:15px 10px 0}
+#ad600s-price-workspace .pw-sidebar .pw-nav{display:flex;flex-direction:column;padding:0;gap:9px;background:transparent;border:0}
+#ad600s-price-workspace .pw-sidebar .pw-nav-button{padding:12px 15px;color:#afbdd6;border:0;border-radius:7px;text-align:left;font-size:1rem;justify-content:flex-start}
+#ad600s-price-workspace .pw-sidebar .pw-nav-button.is-active{background:#2a3958;color:white;box-shadow:inset 3px 0 #8f9df4}
+#ad600s-price-workspace .pw-side-foot{margin-top:auto;padding:10px;font-size:.75rem;line-height:1.9;color:#8293b0}
+#ad600s-price-workspace .pw-header{background:var(--pw-surface);border-radius:0;border-bottom:1px solid var(--pw-line);padding:18px 25px}
+#ad600s-price-workspace .pw-header .pw-brand-mark,#ad600s-price-workspace .pw-header .pw-brand .pw-demo-tag{display:none}
+#ad600s-price-workspace .pw-header .pw-brand>div{display:flex;gap:12px;align-items:center}
+#ad600s-price-workspace .pw-header .pw-brand>div>strong{font-size:.95rem}
+#ad600s-price-workspace .pw-main{padding:23px 26px}
+#ad600s-price-workspace .pw-source-dock{padding:22px 23px;border:1px solid var(--pw-line);border-radius:13px;background:var(--pw-surface);margin-bottom:25px}
+#ad600s-price-workspace .pw-analysis-context{padding:15px 20px;border:1px solid var(--pw-line);border-radius:10px;background:var(--pw-surface);margin-bottom:22px}
+#ad600s-price-workspace .pw-analysis-context .pw-product-controls{grid-template-columns:minmax(200px,360px) minmax(0,1fr);margin:0;padding:0;border:0;align-items:center;gap:25px}
+#ad600s-price-workspace .pw-analysis-source{display:grid;gap:3px;font-size:.8rem;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-analysis-source strong{font-weight:600;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-analysis-source button{justify-self:start;color:var(--pw-blue);font-size:.75rem;margin-top:3px}
+#ad600s-price-workspace .pw-data-empty>.pw-button{margin-top:18px}
+@media(max-width:700px){#ad600s-price-workspace .pw-analysis-context{padding:14px}#ad600s-price-workspace .pw-analysis-context .pw-product-controls{grid-template-columns:minmax(0,1fr);gap:12px}}
+#ad600s-price-workspace .pw-source-heading{display:flex;justify-content:space-between;gap:22px;align-items:start}
+#ad600s-price-workspace .pw-eyebrow{font-size:.68rem;letter-spacing:.12em;font-weight:700;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-source-heading h2{font-size:1.3rem;margin-top:4px;letter-spacing:-.02em}
+#ad600s-price-workspace .pw-source-heading p{font-size:.82rem;color:var(--pw-muted);margin-top:6px;max-width:560px}
+#ad600s-price-workspace .pw-source-heading>label{display:grid;gap:7px;font-size:.8rem;color:var(--pw-muted);min-width:210px}
+#ad600s-price-workspace #pw-target-asin{font:600 .95rem ui-monospace,monospace;text-transform:uppercase;padding:9px 11px;width:100%}
+#ad600s-price-workspace .pw-source-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+#ad600s-price-workspace .pw-source-dock .pw-import-panel{margin:18px 0 0;border-top:1px solid var(--pw-line);padding:16px 0 0}
+#ad600s-price-workspace .pw-product-controls{display:grid;grid-template-columns:minmax(200px,.75fr) minmax(0,1.5fr);gap:24px;margin-top:21px;padding-top:19px;border-top:1px solid var(--pw-line)}
+#ad600s-price-workspace .pw-product-focus label{display:grid;gap:6px;font-size:.8rem;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-product-focus>span{display:block;font-size:.75rem;color:var(--pw-muted);margin-top:7px}
+#ad600s-price-workspace .pw-product-focus select{font-size:.875rem;min-height:40px;width:100%;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-compare-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.8rem;color:var(--pw-muted);margin-bottom:8px}
+#ad600s-price-workspace .pw-compare-heading button{font-size:.75rem;color:var(--pw-blue)}
+#ad600s-price-workspace .pw-product-chips{display:flex;gap:7px;flex-wrap:wrap}
+#ad600s-price-workspace .pw-product-chips label{display:flex;align-items:center;gap:7px;font-size:.8rem;padding:8px 10px;border:1px solid var(--pw-line);border-radius:7px;cursor:pointer;min-height:39px}
+#ad600s-price-workspace .pw-product-chips label:has(input:checked){border-color:var(--series-color);background:var(--pw-bg)}
+#ad600s-price-workspace .pw-product-chips i,#ad600s-price-workspace .pw-chart-summary i{width:7px;height:7px;border-radius:50%;background:var(--series-color);display:inline-block;margin-right:4px}
+#ad600s-price-workspace .pw-product-chips input{width:13px;height:13px;accent-color:var(--series-color)}
+#ad600s-price-workspace .pw-global-filters{padding:14px 0 18px;gap:15px}
+#ad600s-price-workspace .pw-global-filters label{font-size:.8rem}
+#ad600s-price-workspace .pw-global-filters .pw-filter-help{display:none}
+#ad600s-price-workspace .pw-title-row{margin-top:8px;margin-bottom:8px}
+#ad600s-price-workspace .pw-data-empty{border:1px dashed var(--pw-line);border-radius:15px;padding:70px 25px;text-align:center;margin:30px 0;background:var(--pw-surface)}
+#ad600s-price-workspace .pw-data-empty>span{font-size:.75rem;letter-spacing:.16em;color:var(--pw-blue)}
+#ad600s-price-workspace .pw-data-empty h2{margin:12px 0;font-size:1.5rem}
+#ad600s-price-workspace .pw-data-empty p{max-width:560px;margin:auto;font-size:.9rem;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-schedule-overview{grid-template-columns:minmax(0,1.45fr) minmax(340px,1fr);align-items:start}
+#ad600s-price-workspace .pw-chart-panel .pw-panel-head{padding:20px 20px 10px}
+#ad600s-price-workspace .pw-chart-summary{display:flex;flex-wrap:wrap;gap:14px 30px;padding:7px 20px 12px}
+#ad600s-price-workspace .pw-chart-summary strong{font-size:1.4rem;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-chart-summary strong>small{font-size:.7rem;font-weight:400;margin-left:8px;color:var(--pw-muted);letter-spacing:0}
+#ad600s-price-workspace .pw-chart-summary>div>span{font-size:.75rem}
+#ad600s-price-workspace .pw-chart{height:360px;padding:0 10px 10px;overflow:auto;scrollbar-width:thin}
+#ad600s-price-workspace .pw-chart svg{max-width:none;overflow:visible}
+#ad600s-price-workspace .pw-chart .pw-grid-line{stroke-dasharray:none;stroke:var(--pw-line);opacity:.55}
+#ad600s-price-workspace .pw-series-line{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+#ad600s-price-workspace .pw-series-area{opacity:.045;pointer-events:none}
+#ad600s-price-workspace .pw-legend .pw-line-key{border-color:var(--pw-muted)}
+#ad600s-price-workspace .pw-series-line.plan{stroke-dasharray:5 5;stroke-width:2}
+#ad600s-price-workspace .pw-series-dot{stroke:var(--pw-surface);stroke-width:1.5}
+#ad600s-price-workspace .pw-chart .pw-chart-event-label{font-size:.625rem;font-weight:600;paint-order:stroke;stroke:var(--pw-surface);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+#ad600s-price-workspace .pw-chart .pw-chart-key-label{font-size:.72rem;font-weight:650;stroke-width:4px}
+#ad600s-price-workspace .pw-chart text{font-size:.72rem}
+#ad600s-price-workspace .pw-chart .pw-reference-label{font-size:.7rem;opacity:.8}
+#ad600s-price-workspace .pw-activity-panel{overflow:hidden}
+#ad600s-price-workspace .pw-activity-totals{display:block;padding:0 20px 9px}
+#ad600s-price-workspace .pw-campaign-axis{display:flex;justify-content:space-between;font-size:.65rem;color:var(--pw-muted);padding:3px 0 9px}
+#ad600s-price-workspace .pw-campaign-lane{margin-bottom:12px}
+#ad600s-price-workspace .pw-campaign-lane>strong{font-size:.72rem;display:block;margin-bottom:6px}
+#ad600s-price-workspace .pw-campaign-track{position:relative;height:28px;border-radius:5px;background:var(--pw-bg)}
+#ad600s-price-workspace .pw-campaign-bar{position:absolute;top:0;height:28px;border:1px solid var(--activity-line);border-radius:4px;background:var(--activity-tint);color:var(--activity-ink);font-size:.58rem;padding:0 2px;overflow:hidden;white-space:nowrap;text-align:center;font-weight:650}
+#ad600s-price-workspace .pw-campaign-bar.plan{border-style:dashed}
+#ad600s-price-workspace .pw-activity-totals>p{font-size:.7rem;margin:4px 0}
+#ad600s-price-workspace .pw-activity-overview{display:block;max-height:310px;padding:0 20px 12px}
+#ad600s-price-workspace .pw-campaign-row.pw-activity-card{display:grid;grid-template-columns:8px minmax(0,1fr) auto 15px;gap:10px;align-items:center;padding:13px 0;background:transparent;border:0;border-top:1px solid var(--pw-line);border-radius:0;box-shadow:none}
+#ad600s-price-workspace .pw-campaign-dot{width:7px;height:7px;border-radius:50%;background:var(--activity-ink)}
+#ad600s-price-workspace .pw-campaign-info{display:grid;gap:4px;min-width:0}
+#ad600s-price-workspace .pw-campaign-info>strong{font-size:.9rem;font-weight:700;color:var(--pw-ink)}
+#ad600s-price-workspace .pw-campaign-info small{display:block;color:var(--pw-muted);font-size:.65rem;font-weight:400;overflow-wrap:anywhere}
+#ad600s-price-workspace .pw-campaign-info>span{font-size:.7rem;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-campaign-value{display:grid;gap:4px;justify-items:end}
+#ad600s-price-workspace .pw-campaign-value>strong{font-size:.85rem;font-weight:650}
+#ad600s-price-workspace .pw-campaign-arrow{color:var(--pw-muted);font-size:1rem}
+#ad600s-price-workspace dialog{color:var(--pw-ink);background:var(--pw-surface);border:1px solid var(--pw-line);border-radius:15px;max-width:calc(100vw - 32px);max-height:85vh;box-shadow:0 25px 90px #0004;padding:25px}
+#ad600s-price-workspace dialog::backdrop{background:#101c3780;backdrop-filter:blur(3px)}
+#ad600s-price-workspace dialog.pw-editor{width:850px;margin:auto;overflow:auto}
+#ad600s-price-workspace .pw-editor-error{padding:10px;background:var(--pw-red-soft);color:var(--pw-red);font-size:.85rem;border-radius:6px}
+#ad600s-price-workspace .pw-campaign-dialog{width:760px}
+#ad600s-price-workspace .pw-campaign-dialog h2{font-size:1.05rem;margin-top:8px}
+#ad600s-price-workspace .pw-campaign-detail-list{display:grid;margin-top:15px}
+#ad600s-price-workspace .pw-campaign-detail-row{display:grid;grid-template-columns:110px 100px 65px minmax(0,1fr);gap:12px;align-items:center;width:100%;padding:14px 6px;border:0;border-top:1px solid var(--pw-line);background:transparent;text-align:left;font-size:.85rem}
+#ad600s-price-workspace .pw-campaign-detail-row>span:last-child{color:var(--pw-muted);font-size:.8rem;overflow-wrap:anywhere}
+#ad600s-price-workspace .pw-record-asin{min-width:145px;font-size:.75rem}
+#ad600s-price-workspace .pw-record-asin span{display:block;font-size:.65rem;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-calendar-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:0 14px 16px;align-items:start}
+#ad600s-price-workspace .pw-calendar-panels.is-single{grid-template-columns:minmax(0,1080px);justify-content:center}
+#ad600s-price-workspace .pw-calendar-board{min-width:0;border:1px solid var(--pw-line);border-top:3px solid var(--series-color);border-radius:10px;background:var(--pw-surface);overflow:hidden}
+#ad600s-price-workspace .pw-calendar-product{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 12px 10px;border-bottom:1px solid var(--pw-line)}
+#ad600s-price-workspace .pw-calendar-product h3{display:flex;gap:7px;align-items:center;font-size:.85rem;font-weight:700;overflow-wrap:anywhere}
+#ad600s-price-workspace .pw-calendar-product i{width:7px;height:7px;border-radius:50%;background:var(--series-color)}
+#ad600s-price-workspace .pw-calendar-product p{font-size:.7rem;color:var(--pw-muted);margin-top:3px}
+#ad600s-price-workspace .pw-calendar-counts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;font-size:.65rem;color:var(--pw-muted)}
+#ad600s-price-workspace .pw-calendar-counts>span{white-space:nowrap}
+#ad600s-price-workspace .pw-calendar-counts b{color:var(--pw-ink);font-weight:650}
+#ad600s-price-workspace .pw-calendar-scroll{overflow-x:auto;scrollbar-width:thin;max-width:100%}
+#ad600s-price-workspace .pw-calendar-board .pw-month-grid{min-width:560px;gap:4px;padding:7px 9px 10px;grid-auto-rows:auto}
+#ad600s-price-workspace .pw-calendar-board .pw-calendar-weekday{font-size:.68rem;padding:2px 0 4px}
+#ad600s-price-workspace .pw-calendar-cell{display:grid;gap:3px;align-content:start;min-width:0}
+#ad600s-price-workspace .pw-calendar-cell .pw-calendar-day{min-height:82px;width:100%;padding:7px 5px;gap:3px;align-items:stretch;justify-content:start;border-left-width:2px;border-radius:5px}
+#ad600s-price-workspace .pw-calendar-day time,#ad600s-price-workspace .pw-calendar-empty time{font-size:.66rem;line-height:1.3;font-weight:500;letter-spacing:-.025em;white-space:nowrap}
+#ad600s-price-workspace .pw-calendar-cell .pw-calendar-day>strong{display:block;font-size:.94rem;line-height:1.55;font-weight:750}
+#ad600s-price-workspace .pw-calendar-cell .pw-calendar-day>.pw-calendar-day-meta{display:flex;align-items:center;justify-content:space-between;gap:3px;margin-top:auto;font-size:.68rem;line-height:1.35;color:var(--activity-ink)}
+#ad600s-price-workspace .pw-calendar-activity{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ad600s-price-workspace .pw-calendar-cell .pw-status-pill{flex-shrink:0;font-size:.59rem;line-height:1.3;padding:1px 3px;border-radius:3px;align-self:auto}
+#ad600s-price-workspace .pw-calendar-empty{padding:7px 5px;min-height:82px;border:1px solid var(--pw-line);border-radius:5px;display:flex;flex-direction:column;gap:9px;color:var(--pw-muted);opacity:.55}
+#ad600s-price-workspace .pw-calendar-empty>span{font-size:.85rem}
+#ad600s-price-workspace .pw-calendar-outside{background:transparent}
+#ad600s-price-workspace .pw-calendar-no-records{padding:0 12px 12px;font-size:.75rem;color:var(--pw-muted)}
+@media(max-width:1439px){#ad600s-price-workspace .pw-calendar-panels{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){#ad600s-price-workspace .pw-calendar-panels{padding:0 9px 12px;gap:13px}#ad600s-price-workspace .pw-calendar-product{padding:10px}#ad600s-price-workspace .pw-calendar-product h3{font-size:.8rem}}
+@media(max-width:1200px){#ad600s-price-workspace{grid-template-columns:175px minmax(0,1fr)}#ad600s-price-workspace .pw-schedule-overview{grid-template-columns:minmax(0,1fr)}#ad600s-price-workspace .pw-activity-overview{max-height:340px}#ad600s-price-workspace .pw-source-heading{flex-wrap:wrap}#ad600s-price-workspace .pw-source-heading>label{min-width:230px}}
+@media(max-width:700px){#ad600s-price-workspace{grid-template-columns:62px minmax(0,1fr)}#ad600s-price-workspace .pw-sidebar{padding:20px 6px;gap:25px}#ad600s-price-workspace .pw-side-brand{padding:0 8px}#ad600s-price-workspace .pw-side-brand>div,#ad600s-price-workspace .pw-side-caption,#ad600s-price-workspace .pw-side-foot{display:none}#ad600s-price-workspace .pw-side-brand>span{width:33px;min-width:33px}#ad600s-price-workspace .pw-sidebar .pw-nav{gap:18px}#ad600s-price-workspace .pw-sidebar .pw-nav-button{font-size:.72rem;line-height:1.5;white-space:normal;padding:10px 6px;text-align:center;justify-content:center}#ad600s-price-workspace .pw-main{padding:14px 11px}#ad600s-price-workspace .pw-header{padding:14px 12px}#ad600s-price-workspace .pw-source-dock{padding:16px 12px}#ad600s-price-workspace .pw-source-heading>label{width:100%;min-width:0}#ad600s-price-workspace .pw-product-controls{grid-template-columns:minmax(0,1fr);gap:18px}#ad600s-price-workspace .pw-chart-summary{padding-left:13px;gap:12px}#ad600s-price-workspace .pw-chart-panel .pw-panel-head{padding:16px 13px 7px}#ad600s-price-workspace .pw-activity-overview{max-height:400px;padding:0 12px 12px}#ad600s-price-workspace .pw-activity-totals{padding-left:12px;padding-right:12px}#ad600s-price-workspace .pw-campaign-row.pw-activity-card{grid-template-columns:6px minmax(0,1fr) auto;gap:7px}#ad600s-price-workspace .pw-campaign-arrow{display:none}#ad600s-price-workspace .pw-campaign-info>span{font-size:.65rem}#ad600s-price-workspace .pw-campaign-value>strong{font-size:.75rem}#ad600s-price-workspace dialog{padding:18px}#ad600s-price-workspace .pw-campaign-detail-row{grid-template-columns:100px 85px 60px;gap:7px}#ad600s-price-workspace .pw-campaign-detail-row>span:last-child{grid-column:1/-1}#ad600s-price-workspace .pw-metrics{grid-template-columns:minmax(0,1fr)}#ad600s-price-workspace .pw-metric:last-child{grid-column:auto}#ad600s-price-workspace .pw-anchor{grid-template-columns:minmax(0,1fr);width:100%}#ad600s-price-workspace .pw-anchor>span,#ad600s-price-workspace .pw-anchor-auto{grid-column:1!important}#ad600s-price-workspace .pw-date-range{flex-wrap:wrap}#ad600s-price-workspace .pw-source-actions .pw-button{font-size:.8rem;padding:7px 10px}#ad600s-price-workspace .pw-config-grid{grid-template-columns:minmax(0,1fr)}}
+@media(hover:hover){#ad600s-price-workspace .pw-campaign-row.pw-activity-card:hover{background:var(--pw-bg);transform:none}#ad600s-price-workspace .pw-campaign-detail-row:hover{background:var(--pw-bg)}}
 </style></body></html>
