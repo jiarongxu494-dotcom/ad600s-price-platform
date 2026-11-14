@@ -10,6 +10,17 @@
       "F": "239.99"
     },
     "labels": {},
-    "formulas": {}
+    "formulas": {},
+    "productSettings": {
+      "B0CTHJW813": {
+        "listPrice": 239.99,
+        "overrides": {
+          "D": "189.99",
+          "F": "239.99"
+        },
+        "labels": {},
+        "formulas": {}
+      }
+    }
   }
 }
